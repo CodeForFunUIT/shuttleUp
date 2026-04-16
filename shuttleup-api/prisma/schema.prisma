@@ -1,0 +1,194 @@
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider   = "postgresql"
+}
+
+// ==========================================
+// BETTER AUTH TABLES (Core)
+// ==========================================
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  name          String?
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Custom ShuttleUp fields
+  phone      String @unique
+  skillLevel String @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED, PRO
+  eloScore   Int    @default(1200)
+  role       String @default("USER") // USER, ADMIN
+
+  // Relations
+  sessions        Session[]
+  accounts        Account[]
+  sessionsAsHost  CourtSession[] @relation("HostSessions")
+  bookings        Booking[]
+  ratingsGiven    Rating[]       @relation("RatedBy")
+  ratingsReceived Rating[]       @relation("RatedTarget")
+  notifications   Notification[]
+
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
+// ==========================================
+// SHUTTLEUP BUSINESS TABLES
+// ==========================================
+
+model Court {
+  id        String                                @id @default(cuid())
+  name      String
+  address   String
+  district  String
+  city      String
+  lat       Float
+  lng       Float
+  // We use PostGIS geometry so we can do spatial queries
+  // Coordinates are stored separately for geometry computations
+  geometry  Unsupported("geometry(Point, 4326)")?
+  createdAt DateTime                              @default(now())
+  updatedAt DateTime                              @updatedAt
+
+  sessions CourtSession[]
+
+  @@map("courts")
+}
+
+model CourtSession {
+  id             String   @id @default(cuid())
+  hostId         String
+  courtId        String
+  title          String
+  description    String?
+  startTime      DateTime
+  endTime        DateTime
+  totalSlots     Int
+  availableSlots Int
+  pricePerSlot   Int
+  skillRequired  String   @default("ALL") // ALL, BEGINNER, INTERMEDIATE, ADVANCED
+  status         String   @default("OPEN") // OPEN, FULL, CANCELLED, COMPLETED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  host     User      @relation("HostSessions", fields: [hostId], references: [id])
+  court    Court     @relation(fields: [courtId], references: [id])
+  bookings Booking[]
+
+  @@index([startTime, status])
+  @@map("court_sessions")
+}
+
+model Booking {
+  id         String   @id @default(cuid())
+  sessionId  String
+  userId     String? // Can be null if guest booking
+  guestName  String? // Used if userId is null
+  guestPhone String? // Used if userId is null
+  status     String   @default("PENDING_PAYMENT") // PENDING_PAYMENT, CONFIRMED, CANCELLED, ATTENDED
+  amountPaid Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  session CourtSession @relation(fields: [sessionId], references: [id])
+  user    User?        @relation(fields: [userId], references: [id])
+  payment Payment?
+
+  @@index([userId, status])
+  @@map("bookings")
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  bookingId     String   @unique
+  provider      String // VNPAY, MOMO
+  amount        Int
+  status        String   @default("PENDING") // PENDING, SUCCESS, FAILED, REFUNDED
+  transactionId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+
+  @@map("payments")
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  sessionId String
+  raterId   String
+  rateeId   String
+  score     Int // 1-5
+  comment   String?
+  createdAt DateTime @default(now())
+
+  rater User @relation("RatedBy", fields: [raterId], references: [id])
+  ratee User @relation("RatedTarget", fields: [rateeId], references: [id])
+
+  @@map("ratings")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  type      String // BOOKING_CREATED, SESSION_REMINDER, etc.
+  isRead    Boolean  @default(false)
+  link      String? // Optional URL to open when clicked
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}

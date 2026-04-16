@@ -42,3 +42,8 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# agents
+.agent
+docs
+plans

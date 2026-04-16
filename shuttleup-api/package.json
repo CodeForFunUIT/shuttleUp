@@ -20,10 +20,24 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "@types/pg": "^8.20.0",
+    "better-auth": "^1.6.4",
+    "bullmq": "^5.74.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "firebase-admin": "^13.8.0",
+    "ioredis": "^5.10.1",
+    "pg": "^8.20.0",
     "reflect-metadata": "^0.2.2",
+    "resend": "^6.12.0",
+    "rrule": "^2.8.1",
     "rxjs": "^7.8.1"
   },
   "devDependencies": {
@@ -68,5 +82,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
