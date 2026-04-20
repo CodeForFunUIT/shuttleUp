@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateSessionDto } from './dto/session.dto';
 import { SearchSessionDto } from './dto/search-session.dto';
 import { Prisma } from '@prisma/client';
+import { SessionStatus, SkillLevel } from '../common/constants/enums';
 
 @Injectable()
 export class SessionsService {
@@ -20,8 +21,8 @@ export class SessionsService {
         totalSlots: data.totalSlots,
         availableSlots: data.totalSlots,
         pricePerSlot: data.pricePerSlot,
-        skillRequired: data.skillRequired || 'ALL',
-        status: 'OPEN',
+        skillRequired: (data.skillRequired as SkillLevel) || SkillLevel.ALL,
+        status: SessionStatus.OPEN,
       }
     });
   }
@@ -88,7 +89,7 @@ export class SessionsService {
 
     return this.prisma.courtSession.findMany({
       where: {
-        status: 'OPEN',
+        status: SessionStatus.OPEN,
         ...(query.district && { court: { district: query.district } }),
         ...(query.skillRequired && { skillRequired: query.skillRequired }),
         ...(query.priceMax && { pricePerSlot: { lte: query.priceMax } })

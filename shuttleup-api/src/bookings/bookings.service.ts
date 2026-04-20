@@ -1,15 +1,17 @@
 import { Injectable, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
-import { NotificationsService } from '../notifications/notifications.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateBookingDto } from './dto/booking.dto';
+import { BookingStatus, PaymentStatus } from '../common/constants/enums';
+import { BookingCreatedEvent, BookingCancelledEvent } from '../common/events/booking.events';
 
 @Injectable()
 export class BookingsService {
   constructor(
-    private prisma: PrismaService, 
+    private prisma: PrismaService,
     private redis: RedisService,
-    private notifications: NotificationsService
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async create(createBookingDto: CreateBookingDto, userId?: string) {
@@ -38,7 +40,7 @@ export class BookingsService {
 
       if (userId) {
         const existing = await this.prisma.booking.findFirst({
-          where: { sessionId, userId, status: { not: 'CANCELLED' } }
+          where: { sessionId, userId, status: { not: BookingStatus.CANCELLED } }
         });
         if (existing) throw new ConflictException('You have already booked this session');
       }
@@ -50,7 +52,7 @@ export class BookingsService {
             userId: userId || null,
             guestName: userId ? null : guestName,
             guestPhone: userId ? null : guestPhone,
-            status: 'PENDING_PAYMENT',
+            status: BookingStatus.PENDING_PAYMENT,
             amountPaid: 0,
           }
         }),
@@ -60,12 +62,11 @@ export class BookingsService {
         })
       ]);
 
-      // Dispatch booking created notification
-      this.notifications.dispatch('booking.created', {
-        bookingId: booking.id,
-        sessionId: session.id,
-        hostId: session.hostId
-      });
+      // Emit event — NotificationsService listens via @OnEvent()
+      this.eventEmitter.emit(
+        'booking.created',
+        new BookingCreatedEvent(booking.id, session.id, session.hostId),
+      );
 
       return booking;
     } finally {
@@ -87,7 +88,7 @@ export class BookingsService {
       throw new ConflictException('Unauthorized cancellation');
     }
 
-    if (booking.status === 'CANCELLED') {
+    if (booking.status === BookingStatus.CANCELLED) {
       throw new ConflictException('Booking is already cancelled');
     }
 
@@ -96,14 +97,14 @@ export class BookingsService {
       // 1. Mark booking cancelled
       await tx.booking.update({
         where: { id: bookingId },
-        data: { status: 'CANCELLED' }
+        data: { status: BookingStatus.CANCELLED }
       });
 
       // 2. Mock refund if previously paid
-      if (booking.payment && booking.payment.status === 'SUCCESS') {
+      if (booking.payment && booking.payment.status === PaymentStatus.SUCCESS) {
         await tx.payment.update({
           where: { id: booking.payment.id },
-          data: { status: 'REFUNDED' }
+          data: { status: PaymentStatus.REFUNDED }
         });
       }
 
@@ -114,13 +115,12 @@ export class BookingsService {
       });
     });
 
-    // Dispatch cancellation notification
-    this.notifications.dispatch('booking.cancelled', {
-      bookingId: booking.id,
-      sessionId: booking.sessionId,
-      hostId: booking.payment ? null : null // We'll fetch host downstream in processor
-    });
+    // Emit event — NotificationsService listens via @OnEvent()
+    this.eventEmitter.emit(
+      'booking.cancelled',
+      new BookingCancelledEvent(booking.id, booking.sessionId),
+    );
 
-    return { success: true, message: 'Booking cancelled and slots returned' };
+    return { message: 'Booking cancelled and slots returned' };
   }
 }

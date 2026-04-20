@@ -1,7 +1,19 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+// Config namespaces
+import appConfig from './config/app.config';
+import redisConfig from './config/redis.config';
+import databaseConfig from './config/database.config';
+import authConfig from './config/auth.config';
+
+// Feature modules
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -11,25 +23,40 @@ import { RedisModule } from './redis/redis.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { PaymentsModule } from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
-import { ConfigModule } from '@nestjs/config';
-import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379'),
-      },
+    // Config — isGlobal: true so ConfigService is available everywhere
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [appConfig, redisConfig, databaseConfig, authConfig],
     }),
+
+    // Event bus for decoupled cross-module communication
+    EventEmitterModule.forRoot(),
+
+    // Bull queue — read Redis config via ConfigService factory
+    BullModule.forRootAsync({
+      useFactory: (config: ConfigService) => ({
+        connection: {
+          host: config.get<string>('redis.host'),
+          port: config.get<number>('redis.port'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+
     ScheduleModule.forRoot(),
-    PrismaModule, 
+
+    // Infrastructure
+    PrismaModule,
+    RedisModule,
+
+    // Features
     AuthModule,
     UsersModule,
     CourtsModule,
     SessionsModule,
-    RedisModule,
     BookingsModule,
     PaymentsModule,
     NotificationsModule,

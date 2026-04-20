@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationsService } from './notifications.service';
+import { SessionStatus, BookingStatus } from '../common/constants/enums';
 
 @Injectable()
 export class NotificationsCron {
@@ -16,7 +17,7 @@ export class NotificationsCron {
    * Run every 15 minutes to find sessions starting exactly in 1 hour
    * and push reminder events into the queue.
    */
-  @Cron(CronExpression.EVERY_15_MINUTES)
+  @Cron('0 */15 * * * *') // Every 15 minutes
   async handleSessionReminders() {
     this.logger.log('Running 1-hour session reminder check...');
     const now = new Date();
@@ -26,7 +27,7 @@ export class NotificationsCron {
 
     const upcomingSessions = await this.prisma.courtSession.findMany({
       where: {
-        status: { notIn: ['CANCELLED', 'COMPLETED'] },
+        status: { notIn: [SessionStatus.CANCELLED, SessionStatus.COMPLETED] },
         startTime: {
           gte: oneHourFromNow,
           lt: oneHour15MinutesFromNow,
@@ -41,7 +42,7 @@ export class NotificationsCron {
     });
 
     for (const session of upcomingSessions) {
-      if (session.status !== 'OPEN' && session.status !== 'FULL') continue;
+      if (session.status !== SessionStatus.OPEN && session.status !== SessionStatus.FULL) continue;
       
       this.logger.log(`Queueing reminder for session ${session.id}`);
 
@@ -50,7 +51,7 @@ export class NotificationsCron {
       userIds.add(session.hostId);
       
       session.bookings.forEach((bk) => {
-        if (bk.status === 'CONFIRMED' && bk.userId) {
+        if (bk.status === BookingStatus.CONFIRMED && bk.userId) {
           userIds.add(bk.userId);
         }
       });
