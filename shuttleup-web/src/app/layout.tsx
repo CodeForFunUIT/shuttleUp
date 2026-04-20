@@ -35,20 +35,21 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
           <QueryProvider>
             <TooltipProvider>
-              <div className="min-h-screen flex flex-col bg-background font-sans antialiased">
+              <div className="min-h-screen flex flex-col bg-background antialiased">
+                <a href="#main-content" className="skip-to-content">
+                  Skip to content
+                </a>
                 <Navbar />
-                <main className="flex-1">
+                <main id="main-content" className="flex-1">
                   {children}
                 </main>
                 <Footer />

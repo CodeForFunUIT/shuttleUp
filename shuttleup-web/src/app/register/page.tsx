@@ -64,7 +64,7 @@ export default function RegisterPage() {
     <div className="flex items-center justify-center min-h-[calc(100vh-theme(spacing.16))] bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md shadow-lg border-0 bg-white">
         <CardHeader className="space-y-2 text-center pb-8 pt-8">
-          <CardTitle className="text-3xl font-bold tracking-tight">Create an account</CardTitle>
+          <CardTitle className="text-3xl font-display font-bold tracking-tight">Create an Account</CardTitle>
           <CardDescription className="text-base">
             Join ShuttleUp to host sessions, manage bookings, and track your ELO.
           </CardDescription>
@@ -79,7 +79,13 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} className="h-12" />
+                      <Input
+                        placeholder="John Doe"
+                        {...field}
+                        className="h-12"
+                        name="name"
+                        autoComplete="name"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -92,7 +98,15 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="name@example.com" {...field} className="h-12" />
+                      <Input
+                        placeholder="name@example.com"
+                        {...field}
+                        className="h-12"
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                        spellCheck={false}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -105,14 +119,26 @@ export default function RegisterPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} className="h-12" />
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        {...field}
+                        className="h-12"
+                        name="password"
+                        autoComplete="new-password"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={loading}>
-                {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "Sign up"}
+              <Button type="submit" className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90" disabled={loading}>
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
+                    Creating account…
+                  </>
+                ) : "Create Account"}
               </Button>
             </form>
           </Form>
