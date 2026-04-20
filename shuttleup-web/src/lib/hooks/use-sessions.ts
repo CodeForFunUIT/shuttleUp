@@ -7,8 +7,8 @@ export function useSessions() {
   return useQuery<CourtSession[]>({
     queryKey: ["sessions"],
     queryFn: async () => {
-      const res = await api.get("/api/sessions");
-      return res as unknown as CourtSession[];
+      const res: any = await api.get("/api/sessions");
+      return (res?.data ?? res) as CourtSession[];
     },
   });
 }
@@ -18,8 +18,8 @@ export function useSession(id: string) {
   return useQuery<CourtSession>({
     queryKey: ["sessions", id],
     queryFn: async () => {
-      const res = await api.get(`/api/sessions/${id}`);
-      return res as unknown as CourtSession;
+      const res: any = await api.get(`/api/sessions/${id}`);
+      return (res?.data ?? res) as CourtSession;
     },
     enabled: !!id,
   });

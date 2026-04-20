@@ -7,8 +7,8 @@ export function useUserProfile() {
   return useQuery<User>({
     queryKey: ["user", "me"],
     queryFn: async () => {
-      const res = await api.get("/api/users/me");
-      return res as unknown as User;
+      const res: any = await api.get("/api/users/me");
+      return (res?.data ?? res) as User;
     },
     retry: false, // Don't retry on 401
   });
