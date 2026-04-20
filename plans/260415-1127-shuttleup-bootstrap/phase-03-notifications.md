@@ -38,13 +38,13 @@ Async notification system using Bull Queue (Redis) with email and FCM push notif
 
 ## Todo
 
-- [ ] Bull Queue setup
-- [ ] NotificationModule (producer/consumer)
-- [ ] Email channel
-- [ ] FCM channel
-- [ ] Notification templates
-- [ ] In-app notifications (DB storage)
-- [ ] Reminder cron job
+- [x] Bull Queue setup
+- [x] NotificationModule (producer/consumer)
+- [x] Email channel
+- [x] FCM channel
+- [x] Notification templates
+- [x] In-app notifications (DB storage)
+- [x] Reminder cron job
 
 ## Success Criteria
 

@@ -1,117 +1,82 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-
-const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
+import { useState } from "react"
+import { signIn } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { toast } from "sonner"
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setLoading(true);
-    const { data, error } = await authClient.signIn.email({
-      email: values.email,
-      password: values.password,
-    });
-
-    setLoading(false);
-
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    
+    // Better Auth sign in
+    const { data, error } = await signIn.email({
+        email,
+        password
+    })
+    
     if (error) {
-      toast.error(error.message || "Failed to sign in");
-      return;
+        toast.error(error.message || "Failed to login")
+        setLoading(false)
+        return
     }
-
-    toast.success("Successfully logged in!");
-    router.push("/dashboard");
-    router.refresh();
-  };
+    
+    toast.success("Welcome back!")
+    router.push("/dashboard")
+    router.refresh()
+  }
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-theme(spacing.16))] bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md shadow-lg border-0 bg-white">
-        <CardHeader className="space-y-2 text-center pb-8 pt-8">
-          <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
-          <CardDescription className="text-base">
-            Login to your account to manage your sessions or bookings.
+    <div className="min-h-[calc(100vh-theme(spacing.16))] flex items-center justify-center p-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl text-center">Login</CardTitle>
+          <CardDescription className="text-center">
+            Enter your email and password to access your dashboard
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="name@example.com" {...field} className="h-12" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input 
+                id="email" 
+                type="email" 
+                placeholder="host@shuttleup.com" 
+                required 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between">
-                      <FormLabel>Password</FormLabel>
-                    </div>
-                    <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} className="h-12" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input 
+                id="password" 
+                type="password" 
+                required 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              <Button type="submit" className="w-full h-12 text-base font-semibold" disabled={loading}>
-                {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : "Sign in"}
-              </Button>
-            </form>
-          </Form>
+            </div>
+            <Button className="w-full bg-emerald-600 hover:bg-emerald-700" type="submit" disabled={loading}>
+              {loading ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
         </CardContent>
-        <CardFooter className="flex justify-center pb-8 border-t pt-6 bg-slate-50/50 rounded-b-xl">
-          <div className="text-sm text-slate-500">
-            Don't have an account?{" "}
-            <Link href="/register" className="font-semibold text-emerald-600 hover:text-emerald-500 hover:underline">
-              Sign up
-            </Link>
-          </div>
+        <CardFooter className="flex justify-center text-sm text-slate-500">
+          <p>Mock Credentials work with Better Auth</p>
         </CardFooter>
       </Card>
     </div>
-  );
+  )
 }

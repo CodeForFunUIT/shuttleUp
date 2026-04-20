@@ -40,7 +40,7 @@ Build a badminton partner-finding platform with 3 separate repos:
 | 0 | [Project Setup & Infra](./phase-00-project-setup.md) | Setup repos, Docker, Supabase, CI/CD | ✅ |
 | 1 | [Backend Core](./phase-01-backend-core.md) | Auth, Users, Courts, Sessions, Bookings | ✅ |
 | 2 | [Search & Booking](./phase-02-search-booking.md) | PostGIS search, booking flow, mock payment | ✅ |
-| 3 | [Notifications](./phase-03-notifications.md) | Email, FCM, Bull Queue | ⬜ |
+| 3 | [Notifications](./phase-03-notifications.md) | Email, FCM, Bull Queue | ✅ |
 | 4 | [Web Frontend](./phase-04-web-frontend.md) | Design system, pages, flows | ⬜ |
 | 5 | [Mobile App](./phase-05-mobile-app.md) | Flutter Bloc + GetIt, core flows | ⬜ |
 | 6 | [Testing & Launch](./phase-06-testing-launch.md) | Tests, perf, portfolio | ⬜ |

@@ -4,6 +4,8 @@ import { NotificationsService } from './notifications.service';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsProcessor } from './notifications.processor';
 
+import { NotificationsCron } from './notifications.cron';
+
 @Module({
   imports: [
     BullModule.registerQueue({
@@ -11,7 +13,7 @@ import { NotificationsProcessor } from './notifications.processor';
     }),
   ],
   controllers: [NotificationsController],
-  providers: [NotificationsService, NotificationsProcessor],
+  providers: [NotificationsService, NotificationsProcessor, NotificationsCron],
   exports: [NotificationsService]
 })
 export class NotificationsModule {}

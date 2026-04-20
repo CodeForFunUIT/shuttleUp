@@ -1,96 +1,40 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { useSession } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
+import Link from "next/link"
+import { useSession } from "@/lib/auth-client"
+import { Button } from "@/components/ui/button"
 
-export default function Navbar() {
-  const { data: session, isPending } = useSession();
-
-  const handleLogout = async () => {
-    await authClient.signOut();
-    window.location.href = "/";
-  };
+export function Navbar() {
+  const { data: session, isPending } = useSession()
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
-      <div className="container mx-auto flex h-16 items-center flex-wrap justify-between px-4 sm:px-6lg:px-8">
-        <div className="flex gap-6 md:gap-10">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold inline-block text-xl">🏸 ShuttleUp</span>
+    <nav className="w-full border-b backdrop-blur-md bg-background/80 sticky top-0 z-50">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <Link href="/" className="font-bold text-2xl tracking-tighter text-primary">
+          ShuttleUp 🏸
+        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/sessions">
+            <Button variant="ghost">Find Group</Button>
           </Link>
-          <nav className="hidden md:flex gap-6">
-            <Link
-              href="/sessions"
-              className="flex items-center text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-            >
-              Sessions
-            </Link>
-            <Link
-              href="/courts"
-              className="flex items-center text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-            >
-              Courts
-            </Link>
-          </nav>
-        </div>
-
-        <div className="flex items-center space-x-4">
-          <Link href="/dashboard/sessions/new" className="hidden sm:block">
-            <Button variant="outline" size="sm">
-              Host a Session
-            </Button>
-          </Link>
-          {!isPending && !session?.user && (
-            <Link href="/login">
-              <Button size="sm">Login</Button>
-            </Link>
-          )}
-
-          {!isPending && session?.user && (
-            <DropdownMenu>
-              <DropdownMenuTrigger className="rounded-full outline-none">
-                <Avatar className="h-8 w-8 cursor-pointer">
-                  <AvatarImage src={session.user.image || ""} alt={session.user.name} />
-                  <AvatarFallback>{session.user.name?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{session.user.name}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{session.user.email}</p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Link href="/dashboard" className="w-full">Dashboard</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/profile" className="w-full">My Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/bookings" className="w-full">My Bookings</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-500 cursor-pointer">
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {!isPending && (
+            session ? (
+              <>
+                <Link href="/dashboard">
+                  <Button variant="outline">Dashboard</Button>
+                </Link>
+                <Link href="/profile">
+                  <Button>Profile</Button>
+                </Link>
+              </>
+            ) : (
+              <Link href="/login">
+                <Button>Login</Button>
+              </Link>
+            )
           )}
         </div>
       </div>
-    </header>
-  );
+    </nav>
+  )
 }

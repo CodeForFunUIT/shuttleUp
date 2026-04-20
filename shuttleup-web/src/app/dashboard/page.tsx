@@ -1,100 +1,68 @@
-import Link from "next/link";
-import { Users, Calendar, DollarSign, Activity } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { PlusCircle, Calendar as CalendarIcon, Users } from "lucide-react"
+import Link from "next/link"
 
-export default function DashboardOverview() {
+export default function DashboardPage() {
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard Overview</h1>
-          <p className="text-slate-500">Welcome back. Here's what's happening with your sessions.</p>
+          <h1 className="text-3xl font-bold tracking-tight">Host Dashboard</h1>
+          <p className="text-muted-foreground mt-1">Manage your badminton sessions and bookings</p>
         </div>
         <Link href="/dashboard/sessions/new">
           <Button className="bg-emerald-600 hover:bg-emerald-700">
-            Host New Session
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Create Session
           </Button>
         </Link>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
-            <Calendar className="h-4 w-4 text-emerald-600" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Upcoming Sessions</CardTitle>
+            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3</div>
-            <p className="text-xs text-muted-foreground">
-              +1 upcoming this week
-            </p>
+            <div className="text-2xl font-bold">2</div>
+            <p className="text-xs text-muted-foreground">Next one tomorrow at 18:00</p>
           </CardContent>
         </Card>
-        
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
-            <Users className="h-4 w-4 text-emerald-600" />
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Total Participants</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">
-              Across all pending sessions
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Est. Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-emerald-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">600.000 ₫</div>
-            <p className="text-xs text-muted-foreground">
-              From approved participants
-            </p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">ELO Rating</CardTitle>
-            <Activity className="h-4 w-4 text-emerald-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">1254</div>
-            <p className="text-xs text-emerald-600 font-medium">
-              Top 15% player
-            </p>
+            <div className="text-2xl font-bold">14</div>
+            <p className="text-xs text-muted-foreground">+3 since last week</p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7 mt-6">
-        <Card className="col-span-4">
-          <CardHeader>
-            <CardTitle>Recent Booking Requests</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-10 text-slate-500 text-sm">
-              No new pending booking requests.
+      <h2 className="text-xl font-bold mt-8 mb-4">Your Recent Sessions</h2>
+      <Card>
+        <CardContent className="p-0">
+          <div className="divide-y">
+            <div className="p-4 flex items-center justify-between">
+              <div>
+                <h4 className="font-medium">Weekend Smash - District 7</h4>
+                <p className="text-sm text-slate-500">Tomorrow • 18:00 - 20:00</p>
+              </div>
+              <Button size="sm" variant="outline">Manage</Button>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-3">
-          <CardHeader>
-            <CardTitle>Upcoming Sessions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-center py-10 text-slate-500 text-sm">
-              You have no active upcoming sessions.
+            <div className="p-4 flex items-center justify-between">
+              <div>
+                <h4 className="font-medium">Advanced Drills</h4>
+                <p className="text-sm text-slate-500">28 Apr • 19:00 - 21:00</p>
+              </div>
+              <Button size="sm" variant="outline">Manage</Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  );
+  )
 }

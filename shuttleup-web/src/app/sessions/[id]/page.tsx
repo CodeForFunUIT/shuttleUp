@@ -1,142 +1,148 @@
-import Link from "next/link";
-import { parseISO, format } from "date-fns";
-import { MapPin, Calendar, Clock, Navigation, ShieldCheck, ChevronLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { MapPin, Calendar, Clock, User, ShieldAlert, CheckCircle2 } from "lucide-react"
+import Link from "next/link"
 
-const SESSION_MOCK = {
-  id: "1",
-  courtName: "Tao Dan Sports Club",
-  address: "1 Huyen Tran Cong Chua, Ben Thanh, District 1, HCMC",
-  startTime: "2026-04-18T18:00:00Z",
-  endTime: "2026-04-18T20:00:00Z",
-  price: 50000,
-  availableSlots: 4,
-  totalSlots: 6,
-  skillLevel: "INTERMEDIATE",
-  description: "Friendly match, shuttles are provided! Please bring your own racket. We play doubles and rotate every 2 games.",
-  host: {
-    name: "Tuan Anh",
-    avatar: null,
-    rating: 4.8,
-    reviewsCount: 12
+export default function SessionDetailPage({ params }: { params: { id: string } }) {
+  // Mock data for Phase 4 UI visualization
+  const session = {
+    id: params.id,
+    title: "Weekend Smash",
+    courtName: "District 7 Sports Center",
+    address: "123 Nguyen Van Linh, District 7, HCMC",
+    date: "2026-04-25",
+    time: "18:00 - 20:00",
+    skillRequired: "INTERMEDIATE",
+    totalSlots: 8,
+    availableSlots: 2,
+    price: 50000,
+    hostName: "Minh Tran",
+    hostElo: 1450,
+    status: "OPEN",
+    description: "Looking for intermediate players to practice doubles. Feather shuttlecocks provided.",
   }
-};
-
-export default async function SessionDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  // const session = await fetchSession(id);
-  const session = SESSION_MOCK;
 
   return (
-    <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8 max-w-4xl">
-      <Link href="/sessions" className="inline-flex items-center text-sm text-slate-500 hover:text-slate-900 mb-6">
-        <ChevronLeft className="h-4 w-4 mr-1" /> Back to feed
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <Link href="/sessions" className="text-sm text-emerald-600 hover:underline mb-6 inline-block">
+        &larr; Back to all sessions
       </Link>
       
-      <div className="bg-white rounded-2xl border overflow-hidden shadow-sm">
-        {/* Banner/Header */}
-        <div className="h-32 md:h-48 bg-gradient-to-r from-emerald-500 to-teal-400"></div>
-        
-        <div className="p-6 sm:p-8 relative">
-          <div className="flex flex-col md:flex-row gap-8">
-            
-            {/* Main Info */}
-            <div className="flex-1 -mt-16 md:-mt-20">
-              <div className="bg-white p-2 rounded-xl inline-block shadow-sm mb-4">
-                <div className="bg-emerald-50 text-emerald-700 h-16 w-16 rounded-lg flex items-center justify-center font-bold text-xl">
-                  {format(parseISO(session.startTime), "d")}
-                  <br />
-                  <span className="text-sm font-normal">{format(parseISO(session.startTime), "MMM")}</span>
-                </div>
-              </div>
-              
-              <div className="mb-6">
-                <div className="flex gap-2 mb-3">
-                  <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">{session.skillLevel}</Badge>
-                </div>
-                <h1 className="text-3xl font-extrabold text-slate-900 mb-2">{session.courtName}</h1>
-                <p className="text-slate-500 flex items-center">
-                  <MapPin className="h-4 w-4 mr-1" />
-                  {session.address}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-8 bg-slate-50 p-4 rounded-xl border">
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-slate-500 flex items-center mb-1">
-                    <Calendar className="mr-1.5 h-4 w-4" /> Date
-                  </span>
-                  <span className="font-semibold">{format(parseISO(session.startTime), "EEEE, MMMM d, yyyy")}</span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-slate-500 flex items-center mb-1">
-                    <Clock className="mr-1.5 h-4 w-4" /> Time
-                  </span>
-                  <span className="font-semibold">{format(parseISO(session.startTime), "h:mm a")} - {format(parseISO(session.endTime), "h:mm a")}</span>
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-xl font-bold mb-3">About this session</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  {session.description}
-                </p>
-              </div>
-
-              <div className="mt-8 pt-8 border-t">
-                <h3 className="text-xl font-bold mb-4">Hosted by</h3>
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-12 w-12">
-                    <AvatarFallback className="bg-slate-200 text-lg">{session.host.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="font-semibold text-lg flex items-center">
-                      {session.host.name} <ShieldCheck className="h-4 w-4 text-emerald-500 ml-1" />
-                    </div>
-                    <div className="text-sm text-slate-500">
-                      ★ {session.host.rating} ({session.host.reviewsCount} reviews)
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <div className="grid md:grid-cols-3 gap-8 mt-2">
+        <div className="md:col-span-2 space-y-6">
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-3xl font-bold">{session.title}</h1>
+              <Badge variant="default" className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border-none">
+                {session.status}
+              </Badge>
             </div>
-
-            {/* Sidebar / CTA */}
-            <div className="w-full md:w-80 flex-shrink-0">
-              <div className="bg-white rounded-xl border shadow-lg p-6 sticky top-24">
-                <div className="text-3xl font-extrabold text-slate-900 mb-1">
-                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(session.price)}
-                </div>
-                <div className="text-sm text-slate-500 mb-6">per person</div>
-                
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-slate-600">Available Slots</span>
-                    <span className="font-bold">{session.availableSlots} / {session.totalSlots}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b">
-                    <span className="text-slate-600">Skill Level</span>
-                    <span className="font-medium text-sm">{session.skillLevel}</span>
-                  </div>
-                </div>
-
-                <Link href={`/sessions/${id}/book`}>
-                  <Button className="w-full h-12 text-base font-bold bg-emerald-600 hover:bg-emerald-700">
-                    Book Now
-                  </Button>
-                </Link>
-                
-                <p className="text-center text-xs text-slate-400 mt-4">
-                  No account required to book.
-                </p>
-              </div>
-            </div>
-
+            <p className="text-muted-foreground flex items-center gap-2">
+              <MapPin className="h-4 w-4" /> {session.courtName} - {session.address}
+            </p>
           </div>
+
+          <Card>
+            <CardContent className="p-6 grid grid-cols-2 gap-6">
+              <div className="flex gap-3">
+                <Calendar className="h-5 w-5 text-emerald-600" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Date</p>
+                  <p className="font-medium">{session.date}</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Clock className="h-5 w-5 text-emerald-600" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Time</p>
+                  <p className="font-medium">{session.time}</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <ShieldAlert className="h-5 w-5 text-emerald-600" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Skill Level</p>
+                  <p className="font-medium">{session.skillRequired}</p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Availability</p>
+                  <p className="font-medium">{session.availableSlots} / {session.totalSlots} slots open</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div>
+            <h3 className="text-xl font-bold mb-3">About this session</h3>
+            <p className="text-slate-600 leading-relaxed whitespace-pre-line">
+              {session.description}
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <Card className="border-emerald-100 shadow-sm">
+            <CardHeader className="bg-emerald-50 rounded-t-xl border-b pb-4">
+              <CardTitle className="text-lg flex justify-between items-center">
+                <span>Fee per slot</span>
+                <span className="text-2xl font-bold text-emerald-700">
+                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(session.price)}
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <Link href={`/sessions/${session.id}/book`}>
+                <Button className="w-full bg-emerald-600 hover:bg-emerald-700 h-12 text-lg">
+                  Book Slot Now
+                </Button>
+              </Link>
+              <p className="text-xs text-center text-slate-500 mt-3">
+                No account required to book.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Hosted by</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold">
+                  {session.hostName.charAt(0)}
+                </div>
+                <div>
+                  <p className="font-bold">{session.hostName}</p>
+                  <p className="text-sm text-slate-500 flex items-center gap-1">
+                    <StarIcon className="h-3 w-3 text-orange-400" />
+                    ELO: {session.hostElo}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
-  );
+  )
+}
+
+function StarIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      stroke="none"
+    >
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  )
 }

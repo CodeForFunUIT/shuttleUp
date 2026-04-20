@@ -12,6 +12,7 @@ import { BookingsModule } from './bookings/bookings.module';
 import { PaymentsModule } from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ConfigModule } from '@nestjs/config';
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
     }),
+    ScheduleModule.forRoot(),
     PrismaModule, 
     AuthModule,
     UsersModule,

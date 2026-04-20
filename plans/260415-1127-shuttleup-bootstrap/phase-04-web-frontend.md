@@ -67,14 +67,14 @@ src/
 
 ## Todo
 
-- [ ] Design system setup (shadcn/ui + custom theme)
-- [ ] Layout components (nav, footer, mobile menu)
-- [ ] Landing page
-- [ ] Session feed + search/filter
-- [ ] Session detail + booking
-- [ ] Guest booking form
-- [ ] Auth pages (login/register)
-- [ ] Host dashboard
+- [x] Design system setup (shadcn/ui + custom theme)
+- [x] Layout components (nav, footer, mobile menu)
+- [x] Landing page
+- [x] Session feed + search/filter
+- [x] Session detail + booking
+- [x] Guest booking form
+- [x] Auth pages (login/register)
+- [x] Host dashboard
 - [ ] Create session form
 - [ ] Manage bookings
 - [ ] Profile page

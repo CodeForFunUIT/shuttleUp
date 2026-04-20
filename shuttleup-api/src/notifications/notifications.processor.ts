@@ -40,6 +40,10 @@ export class NotificationsProcessor extends WorkerHost {
         await this.handleBookingCancelled(job.data);
         break;
       }
+      case 'session.reminder': {
+        await this.handleSessionReminder(job.data);
+        break;
+      }
       default:
         this.logger.warn(`Unknown job name: ${job.name}`);
     }
@@ -81,10 +85,17 @@ export class NotificationsProcessor extends WorkerHost {
     }
 
     // 4. Send FCM Push Notification
-    // Assumption: we have device tokens stored somewhere. (We don't yet, so this is a placeholder check.)
-    // if (host.fcmToken) {
-    //    await admin.messaging().send({ token: host.fcmToken, notification: { title, body: message } });
-    // }
+    if (host.pushEnabled && host.fcmToken) {
+      try {
+        await admin.messaging().send({
+          token: host.fcmToken,
+          notification: { title, body: message }
+        });
+        this.logger.log(`Sent FCM push to ${host.id}`);
+      } catch (e) {
+        this.logger.error('Failed to send FCM push', e);
+      }
+    }
   }
 
   private async handleBookingCancelled(data: { bookingId: string, sessionId: string, hostId: string }) {
@@ -94,13 +105,84 @@ export class NotificationsProcessor extends WorkerHost {
     
     if (!host || !session) return;
 
+    const title = 'Booking Cancelled';
+    const message = `A participant cancelled their slot for ${session.court.name}.`;
+
     await this.prisma.notification.create({
       data: {
         userId: host.id,
-        title: 'Booking Cancelled',
-        message: `A participant cancelled their slot for ${session.court.name}.`,
+        title,
+        message,
         type: 'BOOKING_CANCELLED'
       }
     });
+
+    if (process.env.RESEND_API_KEY) {
+      try {
+        await resend.emails.send({
+          from: 'ShuttleUp <noreply@shuttleup.io>',
+          to: host.email,
+          subject: title,
+          html: `<p>${message}</p>`
+        });
+      } catch (e) {
+        this.logger.error('Resend email failed', e);
+      }
+    }
+
+    if (host.pushEnabled && host.fcmToken) {
+      try {
+        await admin.messaging().send({
+          token: host.fcmToken,
+          notification: { title, body: message }
+        });
+      } catch (e) {
+        this.logger.error('Failed to send FCM push', e);
+      }
+    }
+  }
+
+  private async handleSessionReminder(data: { sessionId: string, userId: string }) {
+    const user = await this.prisma.user.findUnique({ where: { id: data.userId } });
+    const session = await this.prisma.courtSession.findUnique({ where: { id: data.sessionId }, include: { court: true } });
+    
+    if (!user || !session) return;
+
+    const title = 'Session Reminder';
+    const message = `Your badminton session at ${session.court.name} starts in 1 hour!`;
+
+    await this.prisma.notification.create({
+      data: {
+        userId: user.id,
+        title,
+        message,
+        type: 'SESSION_REMINDER',
+        link: `/sessions/${session.id}`
+      }
+    });
+
+    if (process.env.RESEND_API_KEY) {
+      try {
+        await resend.emails.send({
+          from: 'ShuttleUp <noreply@shuttleup.io>',
+          to: user.email,
+          subject: title,
+          html: `<p>${message}</p>`
+        });
+      } catch (e) {
+        this.logger.error('Resend email failed', e);
+      }
+    }
+
+    if (user.pushEnabled && user.fcmToken) {
+      try {
+        await admin.messaging().send({
+          token: user.fcmToken,
+          notification: { title, body: message }
+        });
+      } catch (e) {
+        this.logger.error('Failed to send FCM push', e);
+      }
+    }
   }
 }
