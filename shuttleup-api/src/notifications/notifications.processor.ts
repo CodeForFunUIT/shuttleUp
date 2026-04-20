@@ -85,10 +85,12 @@ export class NotificationsProcessor extends WorkerHost {
     }
 
     // 4. Send FCM Push Notification
-    if (host.pushEnabled && host.fcmToken) {
+    // TODO: fcmToken/pushEnabled will be restored when FCM is re-enabled
+    const hostAny = host as any;
+    if (hostAny.pushEnabled && hostAny.fcmToken) {
       try {
         await admin.messaging().send({
-          token: host.fcmToken,
+          token: hostAny.fcmToken,
           notification: { title, body: message }
         });
         this.logger.log(`Sent FCM push to ${host.id}`);
@@ -130,10 +132,12 @@ export class NotificationsProcessor extends WorkerHost {
       }
     }
 
-    if (host.pushEnabled && host.fcmToken) {
+    // TODO: fcmToken/pushEnabled will be restored when FCM is re-enabled
+    const hostAny2 = host as any;
+    if (hostAny2.pushEnabled && hostAny2.fcmToken) {
       try {
         await admin.messaging().send({
-          token: host.fcmToken,
+          token: hostAny2.fcmToken,
           notification: { title, body: message }
         });
       } catch (e) {
@@ -174,10 +178,12 @@ export class NotificationsProcessor extends WorkerHost {
       }
     }
 
-    if (user.pushEnabled && user.fcmToken) {
+    // TODO: fcmToken/pushEnabled will be restored when FCM is re-enabled
+    const userAny = user as any;
+    if (userAny.pushEnabled && userAny.fcmToken) {
       try {
         await admin.messaging().send({
-          token: user.fcmToken,
+          token: userAny.fcmToken,
           notification: { title, body: message }
         });
       } catch (e) {

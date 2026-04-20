@@ -1,9 +1,9 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider   = "postgresql"
+  provider = "postgresql"
 }
 
 // ==========================================
@@ -20,21 +20,22 @@ model User {
   updatedAt     DateTime @updatedAt
 
   // Custom ShuttleUp fields
-  phone        String  @unique
-  skillLevel   String  @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED, PRO
-  eloScore     Int     @default(1200)
-  role         String  @default("USER") // USER, ADMIN
-  fcmToken     String? // Firebase Cloud Messaging Token
-  pushEnabled  Boolean @default(true)
+  phone        String?  @unique  // nullable — not required at sign-up
+  skillLevel   String   @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED, PRO
+  eloScore     Int      @default(1200)
+  role         String   @default("USER") // USER, ADMIN
+
+  // Better Auth anonymous plugin field
+  isAnonymous  Boolean  @default(false)
 
   // Relations
-  sessions        Session[]
   accounts        Account[]
-  sessionsAsHost  CourtSession[] @relation("HostSessions")
   bookings        Booking[]
-  ratingsGiven    Rating[]       @relation("RatedBy")
-  ratingsReceived Rating[]       @relation("RatedTarget")
+  sessionsAsHost  CourtSession[] @relation("HostSessions")
   notifications   Notification[]
+  ratingsReceived Rating[]       @relation("RatedTarget")
+  ratingsGiven    Rating[]       @relation("RatedBy")
+  sessions        Session[]
 
   @@map("user")
 }
@@ -42,13 +43,13 @@ model User {
 model Session {
   id        String   @id @default(cuid())
   userId    String
+  token     String   @unique  // Better Auth session token (cookie value)
   expiresAt DateTime
   ipAddress String?
   userAgent String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
 }
@@ -66,8 +67,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([providerId, accountId])
   @@map("account")
@@ -84,31 +84,24 @@ model Verification {
   @@map("verification")
 }
 
-// ==========================================
-// SHUTTLEUP BUSINESS TABLES
-// ==========================================
-
 model Court {
-  id        String                                @id @default(cuid())
+  id        String                   @id @default(cuid())
   name      String
   address   String
   district  String
   city      String
   lat       Float
   lng       Float
-  // We use PostGIS geometry so we can do spatial queries
-  // Coordinates are stored separately for geometry computations
-  geometry  Unsupported("geometry(Point, 4326)")?
-  createdAt DateTime                              @default(now())
-  updatedAt DateTime                              @updatedAt
-
-  sessions CourtSession[]
+  geometry  Unsupported("geometry")?
+  createdAt DateTime                 @default(now())
+  updatedAt DateTime                 @updatedAt
+  sessions  CourtSession[]
 
   @@map("courts")
 }
 
 model CourtSession {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   hostId         String
   courtId        String
   title          String
@@ -118,33 +111,31 @@ model CourtSession {
   totalSlots     Int
   availableSlots Int
   pricePerSlot   Int
-  skillRequired  String   @default("ALL") // ALL, BEGINNER, INTERMEDIATE, ADVANCED
-  status         String   @default("OPEN") // OPEN, FULL, CANCELLED, COMPLETED
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  host     User      @relation("HostSessions", fields: [hostId], references: [id])
-  court    Court     @relation(fields: [courtId], references: [id])
-  bookings Booking[]
+  skillRequired  String    @default("ALL")
+  status         String    @default("OPEN")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  bookings       Booking[]
+  court          Court     @relation(fields: [courtId], references: [id])
+  host           User      @relation("HostSessions", fields: [hostId], references: [id])
 
   @@index([startTime, status])
   @@map("court_sessions")
 }
 
 model Booking {
-  id         String   @id @default(cuid())
+  id         String       @id @default(cuid())
   sessionId  String
-  userId     String? // Can be null if guest booking
-  guestName  String? // Used if userId is null
-  guestPhone String? // Used if userId is null
-  status     String   @default("PENDING_PAYMENT") // PENDING_PAYMENT, CONFIRMED, CANCELLED, ATTENDED
-  amountPaid Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  session CourtSession @relation(fields: [sessionId], references: [id])
-  user    User?        @relation(fields: [userId], references: [id])
-  payment Payment?
+  userId     String?
+  guestName  String?
+  guestPhone String?
+  status     String       @default("PENDING_PAYMENT")
+  amountPaid Int          @default(0)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  session    CourtSession @relation(fields: [sessionId], references: [id])
+  user       User?        @relation(fields: [userId], references: [id])
+  payment    Payment?
 
   @@index([userId, status])
   @@map("bookings")
@@ -153,14 +144,13 @@ model Booking {
 model Payment {
   id            String   @id @default(cuid())
   bookingId     String   @unique
-  provider      String // VNPAY, MOMO
+  provider      String
   amount        Int
-  status        String   @default("PENDING") // PENDING, SUCCESS, FAILED, REFUNDED
+  status        String   @default("PENDING")
   transactionId String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
-  booking Booking @relation(fields: [bookingId], references: [id])
+  booking       Booking  @relation(fields: [bookingId], references: [id])
 
   @@map("payments")
 }
@@ -170,12 +160,11 @@ model Rating {
   sessionId String
   raterId   String
   rateeId   String
-  score     Int // 1-5
+  score     Int
   comment   String?
   createdAt DateTime @default(now())
-
-  rater User @relation("RatedBy", fields: [raterId], references: [id])
-  ratee User @relation("RatedTarget", fields: [rateeId], references: [id])
+  ratee     User     @relation("RatedTarget", fields: [rateeId], references: [id])
+  rater     User     @relation("RatedBy", fields: [raterId], references: [id])
 
   @@map("ratings")
 }
@@ -185,12 +174,20 @@ model Notification {
   userId    String
   title     String
   message   String
-  type      String // BOOKING_CREATED, SESSION_REMINDER, etc.
+  type      String
   isRead    Boolean  @default(false)
-  link      String? // Optional URL to open when clicked
+  link      String?
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
 }

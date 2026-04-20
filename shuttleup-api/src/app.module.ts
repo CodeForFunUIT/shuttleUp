@@ -35,22 +35,22 @@ import { NotificationsModule } from './notifications/notifications.module';
     // Event bus for decoupled cross-module communication
     EventEmitterModule.forRoot(),
 
-    // Bull queue — read Redis config via ConfigService factory
-    BullModule.forRootAsync({
-      useFactory: (config: ConfigService) => ({
-        connection: {
-          host: config.get<string>('redis.host'),
-          port: config.get<number>('redis.port'),
-        },
-      }),
-      inject: [ConfigService],
-    }),
+    // 🚧 TẠM THỜI COMMENT ĐỂ TEST AUTH MÀ KHÔNG CẦN REDIS SERVER
+    // BullModule.forRootAsync({
+    //   useFactory: (config: ConfigService) => ({
+    //     connection: {
+    //       host: config.get<string>('redis.host'),
+    //       port: config.get<number>('redis.port'),
+    //     },
+    //   }),
+    //   inject: [ConfigService],
+    // }),
 
     ScheduleModule.forRoot(),
 
     // Infrastructure
     PrismaModule,
-    RedisModule,
+    RedisModule, // (Đã được mock RedisService mock)
 
     // Features
     AuthModule,
@@ -59,7 +59,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     SessionsModule,
     BookingsModule,
     PaymentsModule,
-    NotificationsModule,
+    // NotificationsModule, // Tạm disable Module này vì nó phụ thuộc vào BullMQ
   ],
   controllers: [AppController],
   providers: [AppService],
