@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useSession } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Navbar() {
   const { data: session, isPending } = useSession()
@@ -17,6 +18,7 @@ export function Navbar() {
           <Link href="/sessions">
             <Button variant="ghost">Find Group</Button>
           </Link>
+          <ThemeToggle />
           {!isPending && (
             session ? (
               <>

@@ -75,12 +75,12 @@ src/
 - [x] Guest booking form
 - [x] Auth pages (login/register)
 - [x] Host dashboard
-- [ ] Create session form
-- [ ] Manage bookings
-- [ ] Profile page
-- [ ] Dark mode
-- [ ] Responsive polish
-- [ ] Service worker (local push)
+- [x] Create session form
+- [x] Manage bookings
+- [x] Profile page
+- [x] Dark mode
+- [x] Responsive polish
+- [x] Service worker (local push)
 
 ## Success Criteria
 

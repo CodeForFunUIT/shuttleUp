@@ -2,6 +2,8 @@
 
 ## Priority: 🟢 Medium (parallel with Phase 4)
 
+**Status:** ✅ Completed
+
 ## Overview
 
 Flutter app using Bloc + GetIt (DI), mirroring all web flows. FCM push notifications.
@@ -57,17 +59,17 @@ lib/
 
 ## Todo
 
-- [ ] Project structure + DI setup
-- [ ] API client (Dio + interceptors)
-- [ ] Theme + design system
-- [ ] Session list + search
-- [ ] Session detail + booking
-- [ ] Guest booking form
-- [ ] Auth flow (Better Auth)
-- [ ] Host dashboard
-- [ ] Profile page
-- [ ] FCM setup
-- [ ] Local notifications
+- [x] Project structure + DI setup
+- [x] API client (Dio + interceptors)
+- [x] Theme + design system
+- [x] Session list + search
+- [x] Session detail + booking
+- [x] Guest booking form
+- [x] Auth flow (Better Auth)
+- [x] Host dashboard
+- [x] Profile page
+- [x] FCM setup
+- [x] Local notifications
 
 ## Success Criteria
 
