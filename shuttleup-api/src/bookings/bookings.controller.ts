@@ -5,6 +5,7 @@ import { CreateBookingDto } from './dto/booking.dto';
 import { AuthGuard } from '../common/guards/auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 
+//test
 @ApiTags('Bookings')
 @Controller('bookings')
 export class BookingsController {
