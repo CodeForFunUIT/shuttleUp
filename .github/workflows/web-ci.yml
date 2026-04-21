@@ -2,27 +2,43 @@ name: Web CI
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'shuttleup-web/**'
+    branches: [main]
+    paths: ['shuttleup-web/**']
   pull_request:
-    branches: [ main ]
-    paths:
-      - 'shuttleup-web/**'
+    branches: [main]
+    paths: ['shuttleup-web/**']
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./shuttleup-web
 
+    env:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22.x'
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run build
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: shuttleup-web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build
