@@ -5,8 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Clock, Loader2, AlertCircle, Plus, ArrowRight } from "lucide-react";
 import { useSessions } from "@/lib/hooks/use-sessions";
-import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+
+/** Locale-aware date formatter */
+const dateFmt = new Intl.DateTimeFormat("en-GB", {
+  weekday: "short",
+  day: "2-digit",
+  month: "short",
+  year: "numeric",
+});
+
+/** Locale-aware time formatter */
+const timeFmt = new Intl.DateTimeFormat("en-GB", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
 
 /** Map raw skill enum → readable label */
 const SKILL_LABELS: Record<string, string> = {
@@ -53,7 +67,7 @@ export default function SessionsPage() {
       {/* Page header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
-          <h1 className="font-display text-4xl font-bold tracking-tight">Find Sessions</h1>
+          <h1 className="font-display text-4xl font-bold tracking-tight" style={{ textWrap: "balance" }}>Find Sessions</h1>
           <p className="text-muted-foreground mt-1">
             Join upcoming games matched to your skill level
           </p>
@@ -68,7 +82,7 @@ export default function SessionsPage() {
 
       {/* Loading */}
       {isLoading && (
-        <div className="flex items-center justify-center py-32">
+        <div className="flex items-center justify-center py-32" role="status" aria-live="polite">
           <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
           <span className="ml-3 text-muted-foreground">Loading sessions…</span>
         </div>
@@ -76,7 +90,7 @@ export default function SessionsPage() {
 
       {/* Error */}
       {error && (
-        <div className="flex flex-col items-center justify-center py-32 text-center">
+        <div className="flex flex-col items-center justify-center py-32 text-center" role="alert" aria-live="polite">
           <div className="h-16 w-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
             <AlertCircle className="h-8 w-8 text-destructive" aria-hidden="true" />
           </div>
@@ -125,7 +139,7 @@ export default function SessionsPage() {
                 href={`/sessions/${session.id}`}
                 className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
               >
-                <article className="h-full flex flex-col rounded-2xl border bg-card overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300">
+                <article className="h-full flex flex-col rounded-2xl border bg-card overflow-hidden hover:shadow-lg hover:border-primary/30 transition-[shadow,border-color] duration-300">
 
                   {/* Colored top bar based on skill */}
                   <div
@@ -167,13 +181,13 @@ export default function SessionsPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
-                        <span>{format(new Date(session.startTime), "EEE, dd MMM yyyy")}</span>
+                        <span>{dateFmt.format(new Date(session.startTime))}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Clock className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
                         <span>
-                          {format(new Date(session.startTime), "HH:mm")} –{" "}
-                          {format(new Date(session.endTime), "HH:mm")}
+                          {timeFmt.format(new Date(session.startTime))} –{" "}
+                          {timeFmt.format(new Date(session.endTime))}
                         </span>
                       </div>
                     </div>

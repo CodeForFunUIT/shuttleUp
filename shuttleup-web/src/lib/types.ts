@@ -54,7 +54,7 @@ export interface CourtSession {
   createdAt: string;
   updatedAt: string;
   court?: Court;
-  host?: Pick<User, "id" | "name" | "image">;
+  host?: Pick<User, "id" | "name" | "image" | "eloScore">;
   bookings?: Booking[];
 }
 

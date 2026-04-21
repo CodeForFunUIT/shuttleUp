@@ -1,148 +1,234 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { MapPin, Calendar, Clock, User, ShieldAlert, CheckCircle2 } from "lucide-react"
-import Link from "next/link"
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { MapPin, Calendar, Clock, ShieldAlert, CheckCircle2, Star, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useSession } from "@/lib/hooks/use-sessions";
+import { cn } from "@/lib/utils";
+
+/** Map raw skill enum → readable label */
+const SKILL_LABELS: Record<string, string> = {
+  BEGINNER: "Beginner",
+  INTERMEDIATE: "Intermediate",
+  ADVANCED: "Advanced",
+  PRO: "Pro",
+  ALL: "All Levels",
+};
+
+/** Map skill → badge CSS utility */
+const SKILL_CLASS: Record<string, string> = {
+  BEGINNER: "skill-beginner",
+  INTERMEDIATE: "skill-intermediate",
+  ADVANCED: "skill-advanced",
+  PRO: "skill-pro",
+  ALL: "skill-all",
+};
+
+/** Locale-aware date formatter */
+const dateFmt = new Intl.DateTimeFormat("en-GB", {
+  weekday: "long",
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+});
+
+/** Locale-aware time formatter */
+const timeFmt = new Intl.DateTimeFormat("en-GB", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+
+/** Locale-aware currency formatter */
+const priceFmt = new Intl.NumberFormat("vi-VN", {
+  style: "currency",
+  currency: "VND",
+});
+
+/** Avatar with initials */
+function HostAvatar({ name }: { name: string }) {
+  const initials = name
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+
+  return (
+    <div
+      className="h-12 w-12 rounded-full bg-primary/20 text-primary flex items-center justify-center text-sm font-bold shrink-0"
+      aria-hidden="true"
+    >
+      {initials}
+    </div>
+  );
+}
 
 export default function SessionDetailPage({ params }: { params: { id: string } }) {
-  // Mock data for Phase 4 UI visualization
-  const session = {
-    id: params.id,
-    title: "Weekend Smash",
-    courtName: "District 7 Sports Center",
-    address: "123 Nguyen Van Linh, District 7, HCMC",
-    date: "2026-04-25",
-    time: "18:00 - 20:00",
-    skillRequired: "INTERMEDIATE",
-    totalSlots: 8,
-    availableSlots: 2,
-    price: 50000,
-    hostName: "Minh Tran",
-    hostElo: 1450,
-    status: "OPEN",
-    description: "Looking for intermediate players to practice doubles. Feather shuttlecocks provided.",
+  const { data: session, isLoading, error } = useSession(params.id);
+
+  /* Loading */
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-32 flex items-center justify-center" role="status" aria-live="polite">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
+        <span className="ml-3 text-muted-foreground">Loading session…</span>
+      </div>
+    );
   }
+
+  /* Error */
+  if (error || !session) {
+    return (
+      <div className="container mx-auto px-4 py-32 flex flex-col items-center text-center" role="alert" aria-live="polite">
+        <div className="h-16 w-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
+          <AlertCircle className="h-8 w-8 text-destructive" aria-hidden="true" />
+        </div>
+        <h1 className="font-display text-xl font-semibold mb-2">Session Not Found</h1>
+        <p className="text-muted-foreground text-sm mb-6">
+          This session may have been removed or doesn't exist.
+        </p>
+        <Link href="/sessions">
+          <Button variant="outline">
+            <ArrowLeft className="h-4 w-4 mr-2" aria-hidden="true" />
+            Back to Sessions
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const isFull = session.availableSlots <= 0;
+  const skillLabel = SKILL_LABELS[session.skillRequired] ?? session.skillRequired;
+  const skillClass = SKILL_CLASS[session.skillRequired] ?? "skill-all";
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <Link href="/sessions" className="text-sm text-emerald-600 hover:underline mb-6 inline-block">
-        &larr; Back to all sessions
+      <Link href="/sessions" className="text-sm text-primary hover:underline mb-6 inline-flex items-center gap-1">
+        <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+        Back to All Sessions
       </Link>
-      
+
       <div className="grid md:grid-cols-3 gap-8 mt-2">
+        {/* Main content */}
         <div className="md:col-span-2 space-y-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold">{session.title}</h1>
-              <Badge variant="default" className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 border-none">
+              <h1 className="font-display text-3xl font-bold" style={{ textWrap: "balance" }}>
+                {session.title}
+              </h1>
+              <Badge
+                variant={isFull ? "destructive" : "secondary"}
+                className={cn(!isFull && "bg-primary/10 text-primary border-primary/20")}
+              >
                 {session.status}
               </Badge>
             </div>
             <p className="text-muted-foreground flex items-center gap-2">
-              <MapPin className="h-4 w-4" /> {session.courtName} - {session.address}
+              <MapPin className="h-4 w-4" aria-hidden="true" />
+              {session.court?.name ?? "Unknown Court"} – {session.court?.address ?? ""}
             </p>
           </div>
 
+          {/* Details card */}
           <Card>
             <CardContent className="p-6 grid grid-cols-2 gap-6">
               <div className="flex gap-3">
-                <Calendar className="h-5 w-5 text-emerald-600" />
+                <Calendar className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Date</p>
-                  <p className="font-medium">{session.date}</p>
+                  <p className="font-medium">{dateFmt.format(new Date(session.startTime))}</p>
                 </div>
               </div>
               <div className="flex gap-3">
-                <Clock className="h-5 w-5 text-emerald-600" />
+                <Clock className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Time</p>
-                  <p className="font-medium">{session.time}</p>
+                  <p className="font-medium">
+                    {timeFmt.format(new Date(session.startTime))} – {timeFmt.format(new Date(session.endTime))}
+                  </p>
                 </div>
               </div>
               <div className="flex gap-3">
-                <ShieldAlert className="h-5 w-5 text-emerald-600" />
+                <ShieldAlert className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Skill Level</p>
-                  <p className="font-medium">{session.skillRequired}</p>
+                  <span className={cn("text-xs font-semibold px-2.5 py-1 rounded-full", skillClass)}>
+                    {skillLabel}
+                  </span>
                 </div>
               </div>
               <div className="flex gap-3">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                <CheckCircle2 className="h-5 w-5 text-primary shrink-0" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Availability</p>
-                  <p className="font-medium">{session.availableSlots} / {session.totalSlots} slots open</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div>
-            <h3 className="text-xl font-bold mb-3">About this session</h3>
-            <p className="text-slate-600 leading-relaxed whitespace-pre-line">
-              {session.description}
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <Card className="border-emerald-100 shadow-sm">
-            <CardHeader className="bg-emerald-50 rounded-t-xl border-b pb-4">
-              <CardTitle className="text-lg flex justify-between items-center">
-                <span>Fee per slot</span>
-                <span className="text-2xl font-bold text-emerald-700">
-                  {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(session.price)}
-                </span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <Link href={`/sessions/${session.id}/book`}>
-                <Button className="w-full bg-emerald-600 hover:bg-emerald-700 h-12 text-lg">
-                  Book Slot Now
-                </Button>
-              </Link>
-              <p className="text-xs text-center text-slate-500 mt-3">
-                No account required to book.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Hosted by</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-slate-200 flex items-center justify-center text-slate-600 font-bold">
-                  {session.hostName.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-bold">{session.hostName}</p>
-                  <p className="text-sm text-slate-500 flex items-center gap-1">
-                    <StarIcon className="h-3 w-3 text-orange-400" />
-                    ELO: {session.hostElo}
+                  <p className="font-medium tabular-nums">
+                    {session.availableSlots} / {session.totalSlots} slots open
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
+
+          {/* Description */}
+          {session.description && (
+            <div>
+              <h2 className="font-display text-xl font-bold mb-3">About This Session</h2>
+              <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                {session.description}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-6">
+          {/* Price + CTA */}
+          <Card className="border-primary/20">
+            <CardHeader className="bg-secondary rounded-t-xl border-b pb-4">
+              <CardTitle className="text-lg flex justify-between items-center">
+                <span>Fee per Slot</span>
+                <span className="font-display text-2xl font-bold text-primary tabular-nums">
+                  {priceFmt.format(session.pricePerSlot)}
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <Link href={`/sessions/${session.id}/book`}>
+                <Button className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold" disabled={isFull}>
+                  {isFull ? "Session Full" : "Book Slot Now"}
+                </Button>
+              </Link>
+              <p className="text-xs text-center text-muted-foreground mt-3">
+                No account required to book.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Host card */}
+          {session.host && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Hosted By</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-3">
+                  <HostAvatar name={session.host.name ?? "Host"} />
+                  <div className="min-w-0">
+                    <p className="font-bold truncate">{session.host.name}</p>
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <Star className="h-3 w-3 text-orange-400" aria-hidden="true" />
+                      ELO: <span className="tabular-nums">{session.host.eloScore}</span>
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
-  )
-}
-
-function StarIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      stroke="none"
-    >
-      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-    </svg>
-  )
+  );
 }
