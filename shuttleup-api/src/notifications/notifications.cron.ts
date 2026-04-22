@@ -23,7 +23,9 @@ export class NotificationsCron {
     const now = new Date();
     const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
     // Add a 15-minute window for checking, covering until the next cron execution
-    const oneHour15MinutesFromNow = new Date(oneHourFromNow.getTime() + 15 * 60 * 1000);
+    const oneHour15MinutesFromNow = new Date(
+      oneHourFromNow.getTime() + 15 * 60 * 1000,
+    );
 
     const upcomingSessions = await this.prisma.courtSession.findMany({
       where: {
@@ -36,29 +38,36 @@ export class NotificationsCron {
       include: {
         host: true,
         bookings: {
-          include: { user: true }
-        }
-      }
+          include: { user: true },
+        },
+      },
     });
 
     for (const session of upcomingSessions) {
-      if (session.status !== SessionStatus.OPEN && session.status !== SessionStatus.FULL) continue;
-      
+      if (
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        session.status !== SessionStatus.OPEN &&
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        session.status !== SessionStatus.FULL
+      )
+        continue;
+
       this.logger.log(`Queueing reminder for session ${session.id}`);
 
       // Collect all users (host + booked users who have an account)
       const userIds = new Set<string>();
       userIds.add(session.hostId);
-      
+
       session.bookings.forEach((bk) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
         if (bk.status === BookingStatus.CONFIRMED && bk.userId) {
           userIds.add(bk.userId);
         }
       });
 
       // Dispatch one event per user or a bulk event depending on preference
-      userIds.forEach(userId => {
-        this.notificationsService.dispatch('session.reminder', {
+      userIds.forEach((userId) => {
+        void this.notificationsService.dispatch('session.reminder', {
           sessionId: session.id,
           userId,
         });

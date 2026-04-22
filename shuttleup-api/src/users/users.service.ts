@@ -8,14 +8,30 @@ export class UsersService {
 
   async findAll() {
     return this.prisma.user.findMany({
-      select: { id: true, email: true, name: true, phone: true, skillLevel: true, eloScore: true, role: true }
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        phone: true,
+        skillLevel: true,
+        eloScore: true,
+        role: true,
+      },
     });
   }
 
   async findOne(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select: { id: true, email: true, name: true, phone: true, skillLevel: true, eloScore: true, role: true }
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        phone: true,
+        skillLevel: true,
+        eloScore: true,
+        role: true,
+      },
     });
     if (!user) throw new NotFoundException('User not found');
     return user;

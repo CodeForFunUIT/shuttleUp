@@ -4,9 +4,14 @@ import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor() {
-    const connectionString = process.env.DATABASE_URL || "postgresql://shuttleup:shuttleup_dev@localhost:5432/shuttleup?schema=public";
+    const connectionString =
+      process.env.DATABASE_URL ||
+      'postgresql://shuttleup:shuttleup_dev@localhost:5432/shuttleup?schema=public';
     const pool = new Pool({ connectionString });
     const adapter = new PrismaPg(pool);
     super({ adapter });

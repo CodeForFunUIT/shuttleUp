@@ -4,13 +4,15 @@ import { Injectable, Logger } from '@nestjs/common';
 export class RedisService {
   private readonly logger = new Logger(RedisService.name);
 
-  async acquireLock(key: string, ttlSeconds: number = 10): Promise<boolean> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  acquireLock(_key: string, _ttlSeconds: number = 10): Promise<boolean> {
     // 🚧 Tạm thời trả về true để bypass Redis ở dev môi trường
-    this.logger.debug(`[OFFLINE MODE] Bypassed lock for: ${key}`);
-    return true;
+    this.logger.debug(`[OFFLINE MODE] Bypassed lock`);
+    return Promise.resolve(true);
   }
 
-  async releaseLock(key: string): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async releaseLock(_key: string): Promise<void> {
     // 🚧 Chế độ Dev: không làm gì
   }
 }

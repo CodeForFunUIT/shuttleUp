@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { AuthService } from '../../auth/auth.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -23,7 +24,9 @@ export class AuthGuard implements CanActivate {
     ]);
     if (isPublic) return true;
 
-    const request = context.switchToHttp().getRequest();
+    const request = context
+      .switchToHttp()
+      .getRequest<Request & { user?: unknown; session?: unknown }>();
 
     try {
       const sessionData = await this.authService.auth.api.getSession({
@@ -38,7 +41,7 @@ export class AuthGuard implements CanActivate {
       request.session = sessionData.session;
 
       return true;
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Authentication failed');
     }
   }

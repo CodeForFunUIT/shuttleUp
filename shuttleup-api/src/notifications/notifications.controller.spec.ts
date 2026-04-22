@@ -10,7 +10,6 @@ jest.mock('../auth/auth.service', () => ({
 }));
 
 import { Test, TestingModule } from '@nestjs/testing';
-import { Reflector } from '@nestjs/core';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
 import { AuthGuard } from '../common/guards/auth.guard';
@@ -45,12 +44,17 @@ describe('NotificationsController', () => {
   it('should return notifications for user', async () => {
     const result = await controller.getMine('user-123');
     expect(result).toEqual([]);
-    expect(mockNotificationsService.getUserNotifications).toHaveBeenCalledWith('user-123');
+    expect(mockNotificationsService.getUserNotifications).toHaveBeenCalledWith(
+      'user-123',
+    );
   });
 
   it('should mark notification as read', async () => {
     const result = await controller.markAsRead('notif-1', 'user-123');
     expect(result).toEqual({ count: 1 });
-    expect(mockNotificationsService.markAsRead).toHaveBeenCalledWith('notif-1', 'user-123');
+    expect(mockNotificationsService.markAsRead).toHaveBeenCalledWith(
+      'notif-1',
+      'user-123',
+    );
   });
 });

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { SessionsService } from './sessions.service';
 import { CreateSessionDto } from './dto/session.dto';
@@ -28,7 +36,9 @@ export class SessionsController {
     return this.sessionsService.findAll();
   }
 
-  @ApiOperation({ summary: 'Search nearby sessions (supports geo-search via lat/lng)' })
+  @ApiOperation({
+    summary: 'Search nearby sessions (supports geo-search via lat/lng)',
+  })
   @Get('search')
   search(@Query() query: SearchSessionDto) {
     return this.sessionsService.searchNearby(query);

@@ -23,28 +23,35 @@ export class SessionsService {
         pricePerSlot: data.pricePerSlot,
         skillRequired: (data.skillRequired as SkillLevel) || SkillLevel.ALL,
         status: SessionStatus.OPEN,
-      }
+      },
     });
   }
 
   async findAll() {
     return this.prisma.courtSession.findMany({
-      include: { 
-        court: true, 
-        host: { select: { id: true, name: true, eloScore: true } } 
+      include: {
+        court: true,
+        host: { select: { id: true, name: true, eloScore: true } },
       },
-      orderBy: { startTime: 'asc' }
+      orderBy: { startTime: 'asc' },
     });
   }
 
   async findOne(id: string) {
     const session = await this.prisma.courtSession.findUnique({
       where: { id },
-      include: { 
-        court: true, 
+      include: {
+        court: true,
         host: { select: { id: true, name: true, eloScore: true } },
-        bookings: { select: { id: true, status: true, guestName: true, user: { select: { name: true, eloScore: true } } } }
-      }
+        bookings: {
+          select: {
+            id: true,
+            status: true,
+            guestName: true,
+            user: { select: { name: true, eloScore: true } },
+          },
+        },
+      },
     });
     if (!session) throw new NotFoundException('Session not found');
     return session;
@@ -53,13 +60,13 @@ export class SessionsService {
   async searchNearby(query: SearchSessionDto) {
     if (query.lat && query.lng) {
       const radius = query.radiusMm || 5000;
-      
-      const skillFilter = query.skillRequired 
-        ? Prisma.sql`AND s."skillRequired" = ${query.skillRequired}` 
+
+      const skillFilter = query.skillRequired
+        ? Prisma.sql`AND s."skillRequired" = ${query.skillRequired}`
         : Prisma.empty;
-        
-      const priceFilter = query.priceMax 
-        ? Prisma.sql`AND s."pricePerSlot" <= ${query.priceMax}` 
+
+      const priceFilter = query.priceMax
+        ? Prisma.sql`AND s."pricePerSlot" <= ${query.priceMax}`
         : Prisma.empty;
 
       const page = Number(query.page) || 1;
@@ -83,7 +90,7 @@ export class SessionsService {
         LIMIT ${limit} OFFSET ${(page - 1) * limit};
       `;
     }
-    
+
     const page = Number(query.page) || 1;
     const limit = Number(query.limit) || 10;
 
@@ -92,15 +99,15 @@ export class SessionsService {
         status: SessionStatus.OPEN,
         ...(query.district && { court: { district: query.district } }),
         ...(query.skillRequired && { skillRequired: query.skillRequired }),
-        ...(query.priceMax && { pricePerSlot: { lte: query.priceMax } })
+        ...(query.priceMax && { pricePerSlot: { lte: query.priceMax } }),
       },
-      include: { 
-        court: true, 
-        host: { select: { id: true, name: true, eloScore: true } } 
+      include: {
+        court: true,
+        host: { select: { id: true, name: true, eloScore: true } },
       },
       skip: (page - 1) * limit,
       take: limit,
-      orderBy: { startTime: 'asc' }
+      orderBy: { startTime: 'asc' },
     });
   }
 }

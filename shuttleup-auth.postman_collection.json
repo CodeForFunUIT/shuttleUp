@@ -1,0 +1,189 @@
+{
+	"info": {
+		"_postman_id": "c13d80d2-dfa6-444f-8dd9-f9c1ae024f22",
+		"name": "ShuttleUp Auth v2 (Better Auth)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Sign Up (Email)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"testuser@shuttleup.dev\",\n  \"password\": \"Password123\",\n  \"name\": \"Test User\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/sign-up/email",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"sign-up",
+						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Sign In (Email)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"testuser@shuttleup.dev\",\n  \"password\": \"Password123\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/sign-in/email",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"sign-in",
+						"email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Get Session",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/get-session",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"get-session"
+					]
+				},
+				"description": "Lưu ý: Better Auth trả về thông tin qua cookie `better-auth.session_token`. Đảm bảo Postman của bạn đang lưu cookie hoặc bạn gửi kèm Authorization: Bearer <token> (mặc dù better-auth ưu tiên dùng cookie).\n\nNếu trong Postman bị null, hãy kiểm tra tab Cookies của domain localhost."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Anonymous Sign In",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/sign-in/anonymous",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"sign-in",
+						"anonymous"
+					]
+				},
+				"description": "Tạo session anonymous cho guest (phục vụ guest booking không cần tạo user chính thức)."
+			},
+			"response": []
+		},
+		{
+			"name": "5. Sign Out",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/sign-out",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"sign-out"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Forget Password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"testuser@shuttleup.dev\",\n  \"redirectTo\": \"http://localhost:3001/reset-password\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/forget-password",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"forget-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Reset Password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"newPassword\": \"NewPassword123\",\n  \"token\": \"<token-from-email>\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/reset-password",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"reset-password"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}

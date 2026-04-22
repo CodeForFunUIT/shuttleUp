@@ -3,7 +3,10 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '../prisma/prisma.service';
-import { BookingCreatedEvent, BookingCancelledEvent } from '../common/events/booking.events';
+import {
+  BookingCreatedEvent,
+  BookingCancelledEvent,
+} from '../common/events/booking.events';
 
 @Injectable()
 export class NotificationsService {
@@ -11,7 +14,7 @@ export class NotificationsService {
 
   constructor(
     @InjectQueue('notifications') private notificationsQueue: Queue,
-    private prisma: PrismaService
+    private prisma: PrismaService,
   ) {}
 
   /**
@@ -33,7 +36,7 @@ export class NotificationsService {
 
   @OnEvent('booking.created')
   handleBookingCreated(event: BookingCreatedEvent) {
-    this.dispatch('booking.created', {
+    void this.dispatch('booking.created', {
       bookingId: event.bookingId,
       sessionId: event.sessionId,
       hostId: event.hostId,
@@ -42,7 +45,7 @@ export class NotificationsService {
 
   @OnEvent('booking.cancelled')
   handleBookingCancelled(event: BookingCancelledEvent) {
-    this.dispatch('booking.cancelled', {
+    void this.dispatch('booking.cancelled', {
       bookingId: event.bookingId,
       sessionId: event.sessionId,
     });

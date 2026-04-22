@@ -15,10 +15,14 @@ export class CourtsService {
   }
 
   async findOne(id: string) {
-    return this.prisma.court.findUnique({ where: { id }, include: { sessions: true } });
+    return this.prisma.court.findUnique({
+      where: { id },
+      include: { sessions: true },
+    });
   }
 
-  async findNearby(lat: number, lng: number, radiusKm: number = 5) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async findNearby(lat: number, lng: number, _radiusKm: number = 5) {
     // For now, returning all courts (SearchModule handles advanced PostGIS)
     return this.prisma.court.findMany();
   }

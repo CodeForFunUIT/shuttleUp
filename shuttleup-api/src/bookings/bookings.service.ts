@@ -1,10 +1,18 @@
-import { Injectable, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateBookingDto } from './dto/booking.dto';
 import { BookingStatus, PaymentStatus } from '../common/constants/enums';
-import { BookingCreatedEvent, BookingCancelledEvent } from '../common/events/booking.events';
+import {
+  BookingCreatedEvent,
+  BookingCancelledEvent,
+} from '../common/events/booking.events';
 
 @Injectable()
 export class BookingsService {
@@ -24,12 +32,16 @@ export class BookingsService {
     const lockKey = `lock:session:${sessionId}`;
     const locked = await this.redis.acquireLock(lockKey, 5);
     if (!locked) {
-      throw new ConflictException('Session is being booked by another user. Please retry briefly.');
+      throw new ConflictException(
+        'Session is being booked by another user. Please retry briefly.',
+      );
     }
 
     try {
-      const session = await this.prisma.courtSession.findUnique({ where: { id: sessionId } });
-      
+      const session = await this.prisma.courtSession.findUnique({
+        where: { id: sessionId },
+      });
+
       if (!session) {
         throw new BadRequestException('Session not found');
       }
@@ -40,9 +52,15 @@ export class BookingsService {
 
       if (userId) {
         const existing = await this.prisma.booking.findFirst({
-          where: { sessionId, userId, status: { not: BookingStatus.CANCELLED } }
+          where: {
+            sessionId,
+            userId,
+
+            status: { not: BookingStatus.CANCELLED },
+          },
         });
-        if (existing) throw new ConflictException('You have already booked this session');
+        if (existing)
+          throw new ConflictException('You have already booked this session');
       }
 
       const [booking] = await this.prisma.$transaction([
@@ -54,12 +72,12 @@ export class BookingsService {
             guestPhone: userId ? null : guestPhone,
             status: BookingStatus.PENDING_PAYMENT,
             amountPaid: 0,
-          }
+          },
         }),
         this.prisma.courtSession.update({
           where: { id: sessionId },
-          data: { availableSlots: { decrement: 1 } }
-        })
+          data: { availableSlots: { decrement: 1 } },
+        }),
       ]);
 
       // Emit event — NotificationsService listens via @OnEvent()
@@ -77,7 +95,7 @@ export class BookingsService {
   async cancel(bookingId: string, userId?: string) {
     const booking = await this.prisma.booking.findUnique({
       where: { id: bookingId },
-      include: { payment: true }
+      include: { payment: true },
     });
 
     if (!booking) {
@@ -88,6 +106,7 @@ export class BookingsService {
       throw new ConflictException('Unauthorized cancellation');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
     if (booking.status === BookingStatus.CANCELLED) {
       throw new ConflictException('Booking is already cancelled');
     }
@@ -97,21 +116,22 @@ export class BookingsService {
       // 1. Mark booking cancelled
       await tx.booking.update({
         where: { id: bookingId },
-        data: { status: BookingStatus.CANCELLED }
+        data: { status: BookingStatus.CANCELLED },
       });
 
-      // 2. Mock refund if previously paid
+      // Mock refund if previously paid
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (booking.payment && booking.payment.status === PaymentStatus.SUCCESS) {
         await tx.payment.update({
           where: { id: booking.payment.id },
-          data: { status: PaymentStatus.REFUNDED }
+          data: { status: PaymentStatus.REFUNDED },
         });
       }
 
       // 3. Return the slot to the pool
       await tx.courtSession.update({
         where: { id: booking.sessionId },
-        data: { availableSlots: { increment: 1 } }
+        data: { availableSlots: { increment: 1 } },
       });
     });
 

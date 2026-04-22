@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CourtsService } from './courts.service';
 import { CreateCourtDto } from './dto/court.dto';
@@ -17,7 +25,9 @@ export class CourtsController {
     return this.courtsService.create(createCourtDto);
   }
 
-  @ApiOperation({ summary: 'Get all courts (optionally filter by lat/lng proximity)' })
+  @ApiOperation({
+    summary: 'Get all courts (optionally filter by lat/lng proximity)',
+  })
   @Get()
   findAll(@Query('lat') lat?: number, @Query('lng') lng?: number) {
     if (lat && lng) {

@@ -14,6 +14,6 @@ import { NotificationsCron } from './notifications.cron';
   ],
   controllers: [NotificationsController],
   providers: [NotificationsService, NotificationsProcessor, NotificationsCron],
-  exports: [NotificationsService]
+  exports: [NotificationsService],
 })
 export class NotificationsModule {}

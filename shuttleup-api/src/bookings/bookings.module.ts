@@ -10,4 +10,3 @@ import { RedisModule } from '../redis/redis.module';
   exports: [BookingsService],
 })
 export class BookingsModule {}
-

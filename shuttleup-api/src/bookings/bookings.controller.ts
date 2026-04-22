@@ -38,10 +38,7 @@ export class BookingsController {
   @ApiOperation({ summary: 'Cancel a booking as authenticated user' })
   @UseGuards(AuthGuard)
   @Post(':id/cancel')
-  cancelAuth(
-    @CurrentUser('id') userId: string,
-    @Param('id') id: string,
-  ) {
+  cancelAuth(@CurrentUser('id') userId: string, @Param('id') id: string) {
     return this.bookingsService.cancel(id, userId);
   }
 }

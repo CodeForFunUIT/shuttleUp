@@ -41,19 +41,31 @@ describe('SessionsService', () => {
 
   describe('findOne', () => {
     it('should return a session when found', async () => {
-      const mockSession = { id: 'session-id', title: 'Test Session', hostId: 'host-id' };
-      
+      const mockSession = {
+        id: 'session-id',
+        title: 'Test Session',
+        hostId: 'host-id',
+      };
+
       mockPrismaService.courtSession.findUnique.mockResolvedValue(mockSession);
 
       const result = await service.findOne('session-id');
-      
+
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(prisma.courtSession.findUnique).toHaveBeenCalledWith({
         where: { id: 'session-id' },
         include: {
           court: true,
           host: { select: { id: true, name: true, eloScore: true } },
-          bookings: { select: { id: true, status: true, guestName: true, user: { select: { name: true, eloScore: true } } } }
-        }
+          bookings: {
+            select: {
+              id: true,
+              status: true,
+              guestName: true,
+              user: { select: { name: true, eloScore: true } },
+            },
+          },
+        },
       });
       expect(result).toEqual(mockSession);
     });
@@ -61,8 +73,12 @@ describe('SessionsService', () => {
     it('should throw NotFoundException when session is not found', async () => {
       mockPrismaService.courtSession.findUnique.mockResolvedValue(null);
 
-      await expect(service.findOne('invalid-id')).rejects.toThrow(NotFoundException);
-      await expect(service.findOne('invalid-id')).rejects.toThrow('Session not found');
+      await expect(service.findOne('invalid-id')).rejects.toThrow(
+        NotFoundException,
+      );
+      await expect(service.findOne('invalid-id')).rejects.toThrow(
+        'Session not found',
+      );
     });
   });
 
@@ -76,7 +92,7 @@ describe('SessionsService', () => {
         endTime: '2026-05-10T12:00:00Z',
         totalSlots: 10,
         pricePerSlot: 50000,
-        skillRequired: 'BEGINNER'
+        skillRequired: 'BEGINNER',
       };
 
       const expectedCreatedSession = {
@@ -89,10 +105,13 @@ describe('SessionsService', () => {
         endTime: new Date(createDto.endTime),
       };
 
-      mockPrismaService.courtSession.create.mockResolvedValue(expectedCreatedSession);
+      mockPrismaService.courtSession.create.mockResolvedValue(
+        expectedCreatedSession,
+      );
 
       const result = await service.create('host-1', createDto);
 
+      // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(prisma.courtSession.create).toHaveBeenCalledWith({
         data: {
           hostId: 'host-1',
@@ -106,9 +125,9 @@ describe('SessionsService', () => {
           pricePerSlot: 50000,
           skillRequired: 'BEGINNER',
           status: 'OPEN',
-        }
+        },
       });
-      
+
       expect(result).toEqual(expectedCreatedSession);
     });
   });

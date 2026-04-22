@@ -37,7 +37,9 @@ export class PrismaExceptionFilter implements ExceptionFilter {
         message = 'Related record does not exist';
         break;
       default:
-        this.logger.error(`Unhandled Prisma error [${exception.code}]: ${exception.message}`);
+        this.logger.error(
+          `Unhandled Prisma error [${exception.code}]: ${exception.message}`,
+        );
     }
 
     response.status(status).json({

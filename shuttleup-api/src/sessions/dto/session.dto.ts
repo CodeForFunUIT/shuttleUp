@@ -1,4 +1,11 @@
-import { IsString, IsInt, IsDateString, IsEnum, Min, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  IsDateString,
+  IsEnum,
+  Min,
+  IsOptional,
+} from 'class-validator';
 
 export class CreateSessionDto {
   @IsString()

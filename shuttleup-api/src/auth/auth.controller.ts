@@ -26,7 +26,10 @@ export class AuthController {
       },
     },
   })
-  @ApiResponse({ status: 200, description: 'Login successful, returns session token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful, returns session token',
+  })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
   async signIn(@Req() req: Request, @Res() res: Response) {
     return toNodeHandler(this.authService.auth)(req, res);
@@ -65,7 +68,10 @@ export class AuthController {
   @Get('get-session')
   @Public()
   @ApiOperation({ summary: 'Get current active session and user info' })
-  @ApiResponse({ status: 200, description: 'Session data or null if not authenticated' })
+  @ApiResponse({
+    status: 200,
+    description: 'Session data or null if not authenticated',
+  })
   async getSession(@Req() req: Request, @Res() res: Response) {
     return toNodeHandler(this.authService.auth)(req, res);
   }
@@ -76,7 +82,8 @@ export class AuthController {
   @Public()
   @ApiOperation({
     summary: 'Create anonymous guest session',
-    description: 'Used for guest court bookings without requiring a full account. Can be upgraded to a full account later.',
+    description:
+      'Used for guest court bookings without requiring a full account. Can be upgraded to a full account later.',
   })
   @ApiResponse({ status: 200, description: 'Anonymous session created' })
   async signInAnonymous(@Req() req: Request, @Res() res: Response) {
@@ -94,11 +101,17 @@ export class AuthController {
       required: ['email'],
       properties: {
         email: { type: 'string', example: 'user@example.com' },
-        redirectTo: { type: 'string', example: 'http://localhost:3001/reset-password' },
+        redirectTo: {
+          type: 'string',
+          example: 'http://localhost:3001/reset-password',
+        },
       },
     },
   })
-  @ApiResponse({ status: 200, description: 'Reset email sent (check server logs in dev)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Reset email sent (check server logs in dev)',
+  })
   async forgetPassword(@Req() req: Request, @Res() res: Response) {
     return toNodeHandler(this.authService.auth)(req, res);
   }

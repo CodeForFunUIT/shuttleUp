@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
@@ -22,8 +21,6 @@ import { SessionsModule } from './sessions/sessions.module';
 import { RedisModule } from './redis/redis.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { PaymentsModule } from './payments/payments.module';
-import { NotificationsModule } from './notifications/notifications.module';
-
 @Module({
   imports: [
     // Config — isGlobal: true so ConfigService is available everywhere

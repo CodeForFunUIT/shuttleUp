@@ -19,7 +19,11 @@ export class NotificationsProcessor extends WorkerHost {
       if (process.env.FIREBASE_SERVICE_ACCOUNT) {
         if (!admin.apps.length) {
           admin.initializeApp({
-             credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT))
+            credential: admin.credential.cert(
+              JSON.parse(
+                process.env.FIREBASE_SERVICE_ACCOUNT,
+              ) as admin.ServiceAccount,
+            ),
           });
         }
       }
@@ -28,20 +32,26 @@ export class NotificationsProcessor extends WorkerHost {
     }
   }
 
-  async process(job: Job<any, any, string>): Promise<any> {
+  async process(job: Job<unknown, unknown, string>): Promise<unknown> {
     this.logger.log(`Processing job ${job.id} of type ${job.name}`);
 
     switch (job.name) {
       case 'booking.created': {
-        await this.handleBookingCreated(job.data);
+        await this.handleBookingCreated(
+          job.data as { bookingId: string; sessionId: string; hostId: string },
+        );
         break;
       }
       case 'booking.cancelled': {
-        await this.handleBookingCancelled(job.data);
+        await this.handleBookingCancelled(
+          job.data as { bookingId: string; sessionId: string; hostId: string },
+        );
         break;
       }
       case 'session.reminder': {
-        await this.handleSessionReminder(job.data);
+        await this.handleSessionReminder(
+          job.data as { sessionId: string; userId: string },
+        );
         break;
       }
       default:
@@ -49,11 +59,20 @@ export class NotificationsProcessor extends WorkerHost {
     }
   }
 
-  private async handleBookingCreated(data: { bookingId: string, sessionId: string, hostId: string }) {
+  private async handleBookingCreated(data: {
+    bookingId: string;
+    sessionId: string;
+    hostId: string;
+  }) {
     // 1. Fetch data
-    const host = await this.prisma.user.findUnique({ where: { id: data.hostId } });
-    const session = await this.prisma.courtSession.findUnique({ where: { id: data.sessionId }, include: { court: true } });
-    
+    const host = await this.prisma.user.findUnique({
+      where: { id: data.hostId },
+    });
+    const session = await this.prisma.courtSession.findUnique({
+      where: { id: data.sessionId },
+      include: { court: true },
+    });
+
     if (!host || !session) return;
 
     const title = 'New Booking Received!';
@@ -66,8 +85,8 @@ export class NotificationsProcessor extends WorkerHost {
         title,
         message,
         type: 'BOOKING_CREATED',
-        link: `/sessions/${session.id}`
-      }
+        link: `/sessions/${session.id}`,
+      },
     });
 
     // 3. Send Email (if real API key present)
@@ -77,7 +96,7 @@ export class NotificationsProcessor extends WorkerHost {
           from: 'ShuttleUp <noreply@shuttleup.io>',
           to: host.email,
           subject: title,
-          html: `<p>${message}</p><p>Check your dashboard for more details.</p>`
+          html: `<p>${message}</p><p>Check your dashboard for more details.</p>`,
         });
       } catch (e) {
         this.logger.error('Resend email failed', e);
@@ -86,12 +105,15 @@ export class NotificationsProcessor extends WorkerHost {
 
     // 4. Send FCM Push Notification
     // TODO: fcmToken/pushEnabled will be restored when FCM is re-enabled
-    const hostAny = host as any;
-    if (hostAny.pushEnabled && hostAny.fcmToken) {
+    const hostData = host as unknown as {
+      pushEnabled?: boolean;
+      fcmToken?: string;
+    };
+    if (hostData.pushEnabled && hostData.fcmToken) {
       try {
         await admin.messaging().send({
-          token: hostAny.fcmToken,
-          notification: { title, body: message }
+          token: hostData.fcmToken,
+          notification: { title, body: message },
         });
         this.logger.log(`Sent FCM push to ${host.id}`);
       } catch (e) {
@@ -100,11 +122,20 @@ export class NotificationsProcessor extends WorkerHost {
     }
   }
 
-  private async handleBookingCancelled(data: { bookingId: string, sessionId: string, hostId: string }) {
+  private async handleBookingCancelled(data: {
+    bookingId: string;
+    sessionId: string;
+    hostId: string;
+  }) {
     // Logic similar to booking.created
-    const host = await this.prisma.user.findUnique({ where: { id: data.hostId } });
-    const session = await this.prisma.courtSession.findUnique({ where: { id: data.sessionId }, include: { court: true } });
-    
+    const host = await this.prisma.user.findUnique({
+      where: { id: data.hostId },
+    });
+    const session = await this.prisma.courtSession.findUnique({
+      where: { id: data.sessionId },
+      include: { court: true },
+    });
+
     if (!host || !session) return;
 
     const title = 'Booking Cancelled';
@@ -115,8 +146,8 @@ export class NotificationsProcessor extends WorkerHost {
         userId: host.id,
         title,
         message,
-        type: 'BOOKING_CANCELLED'
-      }
+        type: 'BOOKING_CANCELLED',
+      },
     });
 
     if (process.env.RESEND_API_KEY) {
@@ -125,7 +156,7 @@ export class NotificationsProcessor extends WorkerHost {
           from: 'ShuttleUp <noreply@shuttleup.io>',
           to: host.email,
           subject: title,
-          html: `<p>${message}</p>`
+          html: `<p>${message}</p>`,
         });
       } catch (e) {
         this.logger.error('Resend email failed', e);
@@ -133,12 +164,15 @@ export class NotificationsProcessor extends WorkerHost {
     }
 
     // TODO: fcmToken/pushEnabled will be restored when FCM is re-enabled
-    const hostAny2 = host as any;
-    if (hostAny2.pushEnabled && hostAny2.fcmToken) {
+    const hostData = host as unknown as {
+      pushEnabled?: boolean;
+      fcmToken?: string;
+    };
+    if (hostData.pushEnabled && hostData.fcmToken) {
       try {
         await admin.messaging().send({
-          token: hostAny2.fcmToken,
-          notification: { title, body: message }
+          token: hostData.fcmToken,
+          notification: { title, body: message },
         });
       } catch (e) {
         this.logger.error('Failed to send FCM push', e);
@@ -146,10 +180,18 @@ export class NotificationsProcessor extends WorkerHost {
     }
   }
 
-  private async handleSessionReminder(data: { sessionId: string, userId: string }) {
-    const user = await this.prisma.user.findUnique({ where: { id: data.userId } });
-    const session = await this.prisma.courtSession.findUnique({ where: { id: data.sessionId }, include: { court: true } });
-    
+  private async handleSessionReminder(data: {
+    sessionId: string;
+    userId: string;
+  }) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: data.userId },
+    });
+    const session = await this.prisma.courtSession.findUnique({
+      where: { id: data.sessionId },
+      include: { court: true },
+    });
+
     if (!user || !session) return;
 
     const title = 'Session Reminder';
@@ -161,8 +203,8 @@ export class NotificationsProcessor extends WorkerHost {
         title,
         message,
         type: 'SESSION_REMINDER',
-        link: `/sessions/${session.id}`
-      }
+        link: `/sessions/${session.id}`,
+      },
     });
 
     if (process.env.RESEND_API_KEY) {
@@ -171,7 +213,7 @@ export class NotificationsProcessor extends WorkerHost {
           from: 'ShuttleUp <noreply@shuttleup.io>',
           to: user.email,
           subject: title,
-          html: `<p>${message}</p>`
+          html: `<p>${message}</p>`,
         });
       } catch (e) {
         this.logger.error('Resend email failed', e);
@@ -179,12 +221,15 @@ export class NotificationsProcessor extends WorkerHost {
     }
 
     // TODO: fcmToken/pushEnabled will be restored when FCM is re-enabled
-    const userAny = user as any;
-    if (userAny.pushEnabled && userAny.fcmToken) {
+    const userData = user as unknown as {
+      pushEnabled?: boolean;
+      fcmToken?: string;
+    };
+    if (userData.pushEnabled && userData.fcmToken) {
       try {
         await admin.messaging().send({
-          token: userAny.fcmToken,
-          notification: { title, body: message }
+          token: userData.fcmToken,
+          notification: { title, body: message },
         });
       } catch (e) {
         this.logger.error('Failed to send FCM push', e);
