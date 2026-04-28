@@ -88,7 +88,7 @@ export default function SessionDetailPage({ params }: { params: { id: string } }
         </div>
         <h1 className="font-display text-xl font-semibold mb-2">Session Not Found</h1>
         <p className="text-muted-foreground text-sm mb-6">
-          This session may have been removed or doesn't exist.
+          This session may have been removed or doesn&apos;t exist.
         </p>
         <Link href="/sessions">
           <Button variant="outline">

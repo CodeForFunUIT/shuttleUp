@@ -18,9 +18,9 @@ export class TransformInterceptor<T> implements NestInterceptor<
     next: CallHandler,
   ): Observable<ApiResponse<T>> {
     return next.handle().pipe(
-      map((data: unknown) => ({
-        success: true,
-        data,
+      map((data) => ({
+        success: true as const,
+        data: data as T,
       })),
     );
   }

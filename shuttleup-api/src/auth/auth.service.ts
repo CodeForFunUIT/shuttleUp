@@ -7,7 +7,8 @@ import { anonymous } from 'better-auth/plugins';
 
 @Injectable()
 export class AuthService {
-  public auth: ReturnType<typeof betterAuth>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public auth: any;
 
   constructor(
     private readonly prisma: PrismaService,

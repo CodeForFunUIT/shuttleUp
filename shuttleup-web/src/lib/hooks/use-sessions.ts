@@ -7,6 +7,7 @@ export function useSessions() {
   return useQuery<CourtSession[]>({
     queryKey: ["sessions"],
     queryFn: async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res: any = await api.get("/api/sessions");
       return (res?.data ?? res) as CourtSession[];
     },
@@ -18,6 +19,7 @@ export function useSession(id: string) {
   return useQuery<CourtSession>({
     queryKey: ["sessions", id],
     queryFn: async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res: any = await api.get(`/api/sessions/${id}`);
       return (res?.data ?? res) as CourtSession;
     },

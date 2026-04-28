@@ -32,7 +32,7 @@ export class NotificationsProcessor extends WorkerHost {
     }
   }
 
-  async process(job: Job<unknown, unknown, string>): Promise<unknown> {
+  async process(job: Job<unknown, void, string>): Promise<void> {
     this.logger.log(`Processing job ${job.id} of type ${job.name}`);
 
     switch (job.name) {

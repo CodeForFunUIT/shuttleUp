@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
 
     try {
       const sessionData = await this.authService.auth.api.getSession({
-        headers: request.headers,
+        headers: request.headers as unknown as HeadersInit,
       });
 
       if (!sessionData) {
