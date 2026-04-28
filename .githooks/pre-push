@@ -1,0 +1,58 @@
+#!/bin/sh
+# ══════════════════════════════════════════════════════════════════════════════
+# Pre-push hook — Runs lint on staged sub-projects before allowing push
+# Setup: git config core.hooksPath .githooks
+# ══════════════════════════════════════════════════════════════════════════════
+
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+echo ""
+echo "╔══════════════════════════════════════╗"
+echo "║     🚀 Pre-push lint validation      ║"
+echo "╚══════════════════════════════════════╝"
+echo ""
+
+FAILED=0
+
+# ── API lint ─────────────────────────────────────────────────────────────────
+if [ -d "shuttleup-api" ]; then
+  echo "${YELLOW}▸ Linting shuttleup-api...${NC}"
+  if (cd shuttleup-api && npm run lint 2>&1); then
+    echo "${GREEN}  ✓ API lint passed${NC}"
+  else
+    echo "${RED}  ✗ API lint failed${NC}"
+    FAILED=1
+  fi
+  echo ""
+fi
+
+# ── Web lint ─────────────────────────────────────────────────────────────────
+if [ -d "shuttleup-web" ]; then
+  echo "${YELLOW}▸ Linting shuttleup-web...${NC}"
+  if (cd shuttleup-web && npm run lint 2>&1); then
+    echo "${GREEN}  ✓ Web lint passed${NC}"
+  else
+    echo "${RED}  ✗ Web lint failed${NC}"
+    FAILED=1
+  fi
+  echo ""
+fi
+
+# ── Result ───────────────────────────────────────────────────────────────────
+if [ $FAILED -ne 0 ]; then
+  echo "${RED}══════════════════════════════════════${NC}"
+  echo "${RED}  ✗ Push blocked — fix lint errors    ${NC}"
+  echo "${RED}══════════════════════════════════════${NC}"
+  exit 1
+fi
+
+echo "${GREEN}══════════════════════════════════════${NC}"
+echo "${GREEN}  ✓ All lint checks passed — pushing  ${NC}"
+echo "${GREEN}══════════════════════════════════════${NC}"
+echo ""
+exit 0

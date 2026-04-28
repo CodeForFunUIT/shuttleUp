@@ -7,7 +7,6 @@ import { anonymous } from 'better-auth/plugins';
 
 @Injectable()
 export class AuthService {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public auth: any;
 
   constructor(
