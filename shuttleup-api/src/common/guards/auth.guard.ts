@@ -29,7 +29,6 @@ export class AuthGuard implements CanActivate {
       .getRequest<Request & { user?: unknown; session?: unknown }>();
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const sessionData = await this.authService.auth.api.getSession({
         headers: request.headers as unknown as HeadersInit,
       });
@@ -38,9 +37,8 @@ export class AuthGuard implements CanActivate {
         throw new UnauthorizedException('Invalid or expired session');
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       request.user = sessionData.user;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       request.session = sessionData.session;
 
       return true;

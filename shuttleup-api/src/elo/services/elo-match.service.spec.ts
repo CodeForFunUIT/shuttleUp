@@ -66,10 +66,12 @@ const makePrismaMock = () => {
   const tx = makeMockTx();
   return {
     user: {
-      findMany: jest.fn().mockImplementation((args: any) => {
-        const ids = args.where?.id?.in as string[] || [];
-        return Promise.resolve(ids.map(id => ({ id })));
-      }),
+      findMany: jest
+        .fn()
+        .mockImplementation((args: { where?: { id?: { in?: string[] } } }) => {
+          const ids = args?.where?.id?.in || [];
+          return Promise.resolve(ids.map((id) => ({ id })));
+        }),
     },
     courtSession: {
       findUnique: jest.fn(),
@@ -197,7 +199,10 @@ describe('EloMatchService', () => {
     });
 
     it('passes when all player IDs exist in DB', async () => {
-      prisma.user.findMany.mockResolvedValue([{ id: PLAYER_A }, { id: PLAYER_B }]);
+      prisma.user.findMany.mockResolvedValue([
+        { id: PLAYER_A },
+        { id: PLAYER_B },
+      ]);
       const result = await service.submitMatch(SESSION_ID, singlesDto, HOST_ID);
       expect(result).toBeDefined();
     });

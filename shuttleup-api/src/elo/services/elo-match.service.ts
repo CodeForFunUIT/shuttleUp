@@ -79,7 +79,11 @@ export class EloMatchService {
     // 5. Load pair synergy counts (doubles/mixed only)
     let synergyA = 0;
     let synergyB = 0;
-    if (dto.gameType !== GameType.SINGLES && dto.teamA.length === 2 && dto.teamB.length === 2) {
+    if (
+      dto.gameType !== GameType.SINGLES &&
+      dto.teamA.length === 2 &&
+      dto.teamB.length === 2
+    ) {
       synergyA = await this.getSynergyCount(
         dto.teamA[0],
         dto.teamA[1],
