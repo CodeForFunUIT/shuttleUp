@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateSessionDto } from './dto/session.dto';
 import { SearchSessionDto } from './dto/search-session.dto';
 import { Prisma } from '@prisma/client';
-import { SessionStatus, SkillLevel } from '../common/constants/enums';
+import { SessionStatus, SkillLevel, GameType } from '../common/constants/enums';
 
 @Injectable()
 export class SessionsService {
@@ -22,6 +22,7 @@ export class SessionsService {
         availableSlots: data.totalSlots,
         pricePerSlot: data.pricePerSlot,
         skillRequired: (data.skillRequired as SkillLevel) || SkillLevel.ALL,
+        gameType: data.gameType ?? GameType.SINGLES,
         status: SessionStatus.OPEN,
       },
     });

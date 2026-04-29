@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, CalendarPlus, List, CreditCard, User, LogOut, Loader2 } from "lucide-react";
+import { LayoutDashboard, CalendarPlus, List, CreditCard, User, LogOut, Loader2, Trophy } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -36,6 +36,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
     { label: "My Sessions", href: "/dashboard/sessions", icon: List },
     { label: "Host a Session", href: "/dashboard/sessions/new", icon: CalendarPlus },
+    { label: "BELo Ranking", href: "/dashboard/belo", icon: Trophy },
     { label: "Transactions", href: "/dashboard/transactions", icon: CreditCard },
     { label: "Profile Settings", href: "/profile", icon: User },
   ];

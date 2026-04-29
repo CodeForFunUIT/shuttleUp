@@ -46,6 +46,13 @@ export class BookingsService {
         throw new BadRequestException('Session not found');
       }
 
+      // ELO sessions require registered users (guests cannot participate in ranked matches)
+      if (session.gameType && !userId) {
+        throw new BadRequestException(
+          'ELO sessions require a registered account. Please sign up to join this session.',
+        );
+      }
+
       if (session.availableSlots <= 0) {
         throw new ConflictException('No slots available for this session');
       }

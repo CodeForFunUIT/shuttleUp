@@ -42,7 +42,7 @@ export default function RegisterPage() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
-    const { data, error } = await authClient.signUp.email({
+    const { error } = await authClient.signUp.email({
       email: values.email,
       password: values.password,
       name: values.name,

@@ -36,3 +36,29 @@ export enum PaymentProvider {
   VNPAY = 'VNPAY',
   MOMO = 'MOMO',
 }
+
+// ==========================================
+// ELO / BELo Ranking Enums
+// ==========================================
+
+export enum GameType {
+  SINGLES = 'singles',
+  DOUBLES = 'doubles',
+  MIXED = 'mixed',
+}
+
+export enum MatchScore {
+  TWO_ZERO = '2-0',
+  TWO_ONE = '2-1',
+}
+
+export enum EloMatchStatus {
+  CONFIRMED = 'CONFIRMED',
+  DISPUTED = 'DISPUTED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum TeamSide {
+  TEAM_A = 'TEAM_A',
+  TEAM_B = 'TEAM_B',
+}

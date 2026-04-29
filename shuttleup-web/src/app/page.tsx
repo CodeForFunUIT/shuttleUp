@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, MapPin, Calendar, Star, ChevronRight } from "lucide-react";
+import { BeloPublicSimulator } from "@/components/belo/belo-public-simulator";
 
 export default function Home() {
   return (
@@ -153,6 +154,13 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── BELo Ranking Simulator ────────────────────────────────────────────── */}
+      <section className="py-24 bg-slate-950">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <BeloPublicSimulator />
         </div>
       </section>
 

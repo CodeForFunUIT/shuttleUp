@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlusCircle, Calendar as CalendarIcon, Users, Loader2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useSessions } from "@/lib/hooks/use-sessions";

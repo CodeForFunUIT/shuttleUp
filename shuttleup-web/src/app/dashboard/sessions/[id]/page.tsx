@@ -11,7 +11,7 @@ const MOCK_BOOKINGS = [
   { id: "2", name: "Tran Thi B", phone: "0987654321", status: "CONFIRMED", isGuest: false },
 ]
 
-export default function ManageSessionPage({ params }: { params: { id: string } }) {
+export default function ManageSessionPage() {
   return (
     <div className="container mx-auto px-4 py-8">
       <Link href="/dashboard" className="text-sm text-emerald-600 hover:underline mb-6 inline-block">
