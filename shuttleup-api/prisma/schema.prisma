@@ -223,7 +223,6 @@ model EloMatch {
   id        String   @id @default(cuid())
   sessionId String?  @unique // null for future standalone challenges
   gameType  String   // GameType
-  score     String   // MatchScore: '2-0' | '2-1'
   status    String   @default("CONFIRMED") // EloMatchStatus
   playedAt  DateTime
   createdAt DateTime @default(now())
@@ -248,7 +247,6 @@ model EloMatchParticipant {
   expectedScore   Float
   carryWeight     Float   // 1.0 for singles (no split)
   synergyBonus    Int     @default(0) // 0 for singles
-  scoreMultiplier Float
 
   match EloMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
   user  User     @relation(fields: [userId], references: [id])
