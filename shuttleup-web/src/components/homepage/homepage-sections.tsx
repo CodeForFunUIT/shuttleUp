@@ -1,0 +1,271 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, MapPin, Calendar, Star, ChevronRight } from "lucide-react";
+import { AnimatedSection } from "@/components/ui/animated-section";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { StaggerContainer, StaggerItem } from "@/components/ui/stagger-container";
+
+/* ── Framer Motion Variants ─────────────────────────────────────────────── */
+
+const heroContentVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.15, delayChildren: 0.3 },
+  },
+};
+
+const heroChildVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" as const },
+  },
+};
+
+/* ── Stats Data ──────────────────────────────────────────────────────────── */
+
+const stats = [
+  { value: 1000, suffix: "+", label: "Active Players" },
+  { value: 50, suffix: "+", label: "Partner Courts" },
+  { value: 200, suffix: "+", label: "Sessions / Week" },
+  { value: 4.9, suffix: " ★", label: "Average Rating", isDecimal: true },
+];
+
+/* ── Features Data ───────────────────────────────────────────────────────── */
+
+const features = [
+  {
+    icon: MapPin,
+    title: "Location Based",
+    description: "Find courts near you instantly with our interactive map and geo-search.",
+    cta: "Explore courts",
+    iconBg: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
+  },
+  {
+    icon: Star,
+    title: "Skill Matching",
+    description: "Filter sessions by skill levels to ensure competitive and fun games for everyone.",
+    cta: "Check your level",
+    iconBg: "bg-secondary text-primary",
+  },
+  {
+    icon: Calendar,
+    title: "Instant Booking",
+    description: "Secure your slot with live availability and pay effortlessly through integrated payments.",
+    cta: "Book now",
+    iconBg: "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400",
+  },
+];
+
+/* ── Gallery Data ────────────────────────────────────────────────────────── */
+
+const galleryImages = [
+  { src: "/images/hero-court-1.jpg", alt: "Indoor badminton court" },
+  { src: "/images/hero-court-2.jpg", alt: "Outdoor badminton game" },
+  { src: "/images/hero-court-3.jpg", alt: "Players warming up" },
+  { src: "/images/hero-court-4.jpg", alt: "Tournament match" },
+];
+
+/* ── Component ───────────────────────────────────────────────────────────── */
+
+export function HeroSection() {
+  return (
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Background photo with Ken Burns zoom */}
+      <Image
+        src="/images/hero-court-5.jpg"
+        alt="Badminton court with players in action"
+        fill
+        priority
+        className="object-cover object-center animate-ken-burns"
+        sizes="100vw"
+      />
+
+      {/* Dark gradient overlay */}
+      <div
+        className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/75 to-slate-900/30"
+        aria-hidden="true"
+      />
+
+      {/* Content — staggered entrance */}
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <motion.div
+          className="max-w-2xl"
+          variants={heroContentVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Live badge — slide in from left */}
+          <motion.div
+            variants={heroChildVariants}
+            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-1.5 text-sm text-white font-medium mb-8"
+          >
+            <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" aria-hidden="true" />
+            1,000+ players across Vietnam
+          </motion.div>
+
+          {/* Headline */}
+          <motion.h1
+            variants={heroChildVariants}
+            className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-none"
+          >
+            Find the Perfect{" "}
+            <span className="text-primary">Badminton</span>{" "}
+            Session Near You
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            variants={heroChildVariants}
+            className="text-lg text-white/80 max-w-xl mb-10 leading-relaxed"
+          >
+            Stop messaging multiple groups to find an open slot. Discover active courts,
+            match with players at your skill level, and book instantly.
+          </motion.p>
+
+          {/* CTAs */}
+          <motion.div variants={heroChildVariants} className="flex flex-col sm:flex-row gap-4">
+            <Link href="/sessions">
+              <Button
+                size="lg"
+                className="h-13 px-8 text-base font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30"
+              >
+                Find a Session
+                <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+              </Button>
+            </Link>
+            <Link href="/dashboard/sessions/new">
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-13 px-8 text-base font-semibold border-white/30 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
+              >
+                Host a Session
+              </Button>
+            </Link>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Bottom fade */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent"
+        aria-hidden="true"
+      />
+    </section>
+  );
+}
+
+export function StatsStrip() {
+  return (
+    <section className="bg-background border-b py-10">
+      <StaggerContainer
+        className="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
+        staggerDelay={0.12}
+      >
+        {stats.map(({ value, suffix, label, isDecimal }) => (
+          <StaggerItem key={label}>
+            <div className="font-display text-3xl font-bold text-primary tabular-nums">
+              {isDecimal ? (
+                <>{value}{suffix}</>
+              ) : (
+                <AnimatedCounter value={value} suffix={suffix} />
+              )}
+            </div>
+            <div className="text-sm text-muted-foreground mt-1">{label}</div>
+          </StaggerItem>
+        ))}
+      </StaggerContainer>
+    </section>
+  );
+}
+
+export function FeaturesSection() {
+  return (
+    <section className="py-24 bg-background">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section header */}
+        <AnimatedSection className="text-center mb-16">
+          <h2 className="font-display text-4xl font-bold mb-4">
+            Everything You Need to Play
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
+            One platform to find your next game, manage your sessions, and level up your game.
+          </p>
+        </AnimatedSection>
+
+        <StaggerContainer className="grid md:grid-cols-3 gap-8" staggerDelay={0.15}>
+          {features.map(({ icon: Icon, title, description, cta, iconBg }) => (
+            <StaggerItem key={title}>
+              <div className="group flex flex-col p-8 rounded-2xl border bg-card hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer h-full">
+                <div className={`h-14 w-14 ${iconBg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                  <Icon className="h-7 w-7" aria-hidden="true" />
+                </div>
+                <h3 className="font-display text-xl font-bold mb-3">{title}</h3>
+                <p className="text-muted-foreground flex-1">{description}</p>
+                <div className="flex items-center gap-1 text-primary text-sm font-medium mt-6">
+                  {cta} <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                </div>
+              </div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+export function GalleryStrip() {
+  return (
+    <section className="py-12 bg-muted/40 border-t border-b overflow-hidden">
+      <StaggerContainer
+        className="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-3 h-48 md:h-64"
+        staggerDelay={0.1}
+      >
+        {galleryImages.map(({ src, alt }) => (
+          <StaggerItem key={src}>
+            <div className="relative rounded-xl overflow-hidden h-full">
+              <Image
+                src={src}
+                alt={alt}
+                fill
+                loading="lazy"
+                className="object-cover hover:scale-105 transition-transform duration-500"
+                sizes="(max-width: 768px) 50vw, 25vw"
+              />
+            </div>
+          </StaggerItem>
+        ))}
+      </StaggerContainer>
+    </section>
+  );
+}
+
+export function CtaBanner() {
+  return (
+    <section className="py-24 bg-primary text-primary-foreground">
+      <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="font-display text-4xl md:text-5xl font-extrabold mb-4">
+          Ready to Play?
+        </h2>
+        <p className="text-primary-foreground/80 mb-10 max-w-xl mx-auto text-lg">
+          Browse our live feed of upcoming sessions happening in your area over the next 7 days.
+        </p>
+        <Link href="/sessions">
+          <Button
+            size="lg"
+            className="text-base px-10 h-13 bg-white text-primary hover:bg-white/90 font-semibold shadow-lg"
+          >
+            Browse All Sessions
+            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+          </Button>
+        </Link>
+      </AnimatedSection>
+    </section>
+  );
+}

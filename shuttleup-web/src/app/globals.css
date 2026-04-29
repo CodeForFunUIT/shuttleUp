@@ -206,3 +206,49 @@
   .skill-pro         { @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400; }
   .skill-all         { @apply bg-muted text-muted-foreground; }
 }
+
+/* ── Animation Keyframes ─────────────────────────────────────────────────── */
+@keyframes ken-burns {
+  0%   { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes gradient-shimmer {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@layer utilities {
+  .animate-ken-burns {
+    animation: ken-burns 8s ease-out forwards;
+  }
+
+  .animate-shimmer {
+    background-size: 200% 200%;
+    animation: gradient-shimmer 6s ease infinite;
+  }
+
+  .animate-float {
+    animation: float-gentle 4s ease-in-out infinite;
+  }
+
+  .animate-float-delayed {
+    animation: float-gentle 5s ease-in-out 1s infinite;
+  }
+}
+
+/* ── Reduced Motion — Accessibility ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
