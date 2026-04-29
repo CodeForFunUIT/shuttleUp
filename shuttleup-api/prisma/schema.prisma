@@ -29,13 +29,15 @@ model User {
   isAnonymous  Boolean  @default(false)
 
   // Relations
-  accounts        Account[]
-  bookings        Booking[]
-  sessionsAsHost  CourtSession[] @relation("HostSessions")
-  notifications   Notification[]
-  ratingsReceived Rating[]       @relation("RatedTarget")
-  ratingsGiven    Rating[]       @relation("RatedBy")
-  sessions        Session[]
+  accounts             Account[]
+  bookings             Booking[]
+  sessionsAsHost       CourtSession[]       @relation("HostSessions")
+  notifications        Notification[]
+  ratingsReceived      Rating[]             @relation("RatedTarget")
+  ratingsGiven         Rating[]             @relation("RatedBy")
+  sessions             Session[]
+  eloRatings           UserEloRating[]
+  eloMatchParticipants EloMatchParticipant[]
 
   @@map("user")
 }
@@ -112,12 +114,14 @@ model CourtSession {
   availableSlots Int
   pricePerSlot   Int
   skillRequired  String    @default("ALL")
+  gameType       String    @default("singles") // GameType: singles | doubles | mixed
   status         String    @default("OPEN")
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
   bookings       Booking[]
   court          Court     @relation(fields: [courtId], references: [id])
   host           User      @relation("HostSessions", fields: [hostId], references: [id])
+  eloMatch       EloMatch?
 
   @@index([startTime, status])
   @@map("court_sessions")
@@ -190,4 +194,78 @@ model spatial_ref_sys {
   auth_srid Int?
   srtext    String? @db.VarChar(2048)
   proj4text String? @db.VarChar(2048)
+}
+
+// ==========================================
+// BELo ELO Ranking Models
+// ==========================================
+
+/// ELO rating per user per game type (3 independent ratings: singles, doubles, mixed)
+model UserEloRating {
+  id            String   @id @default(cuid())
+  userId        String
+  gameType      String   // GameType: 'singles' | 'doubles' | 'mixed'
+  eloScore      Int      @default(1000)
+  totalGames    Int      @default(0)
+  isCalibrating Boolean  @default(true) // false after >= 5 completed matches
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, gameType])
+  @@index([gameType, eloScore(sort: Desc)])
+  @@map("user_elo_ratings")
+}
+
+/// ELO match record — 1 per session. sessionId nullable for future standalone challenges.
+model EloMatch {
+  id        String   @id @default(cuid())
+  sessionId String?  @unique // null for future standalone challenges
+  gameType  String   // GameType
+  score     String   // MatchScore: '2-0' | '2-1'
+  status    String   @default("CONFIRMED") // EloMatchStatus
+  playedAt  DateTime
+  createdAt DateTime @default(now())
+
+  session      CourtSession?        @relation(fields: [sessionId], references: [id])
+  participants EloMatchParticipant[]
+
+  @@map("elo_matches")
+}
+
+/// Full audit trail for each player in a match: delta, K-factor, weights, expected score
+model EloMatchParticipant {
+  id              String  @id @default(cuid())
+  matchId         String
+  userId          String
+  team            String  // TeamSide: 'TEAM_A' | 'TEAM_B'
+  isWinner        Boolean
+  eloBefore       Int
+  eloAfter        Int
+  delta           Int
+  kFactor         Int
+  expectedScore   Float
+  carryWeight     Float   // 1.0 for singles (no split)
+  synergyBonus    Int     @default(0) // 0 for singles
+  scoreMultiplier Float
+
+  match EloMatch @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  user  User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("elo_match_participants")
+}
+
+/// Pair synergy tracker — counts how many matches two players have played together
+model PairSynergy {
+  id            String   @id @default(cuid())
+  playerIdA     String   // Always the lexicographically smaller userId (normalized key)
+  playerIdB     String
+  gameType      String   // GameType
+  gamesTogether Int      @default(0)
+  updatedAt     DateTime @updatedAt
+
+  @@unique([playerIdA, playerIdB, gameType])
+  @@map("pair_synergy")
 }

@@ -21,6 +21,7 @@ import { SessionsModule } from './sessions/sessions.module';
 import { RedisModule } from './redis/redis.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { PaymentsModule } from './payments/payments.module';
+import { EloModule } from './elo/elo.module';
 @Module({
   imports: [
     // Config — isGlobal: true so ConfigService is available everywhere
@@ -56,6 +57,7 @@ import { PaymentsModule } from './payments/payments.module';
     SessionsModule,
     BookingsModule,
     PaymentsModule,
+    EloModule,
     // NotificationsModule, // Tạm disable Module này vì nó phụ thuộc vào BullMQ
   ],
   controllers: [AppController],
