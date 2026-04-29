@@ -65,6 +65,12 @@ const makeMockTx = () => ({
 const makePrismaMock = () => {
   const tx = makeMockTx();
   return {
+    user: {
+      findMany: jest.fn().mockImplementation((args: any) => {
+        const ids = args.where?.id?.in as string[] || [];
+        return Promise.resolve(ids.map(id => ({ id })));
+      }),
+    },
     courtSession: {
       findUnique: jest.fn(),
     },
@@ -153,6 +159,47 @@ describe('EloMatchService', () => {
     it('creates participant records via transaction', async () => {
       await service.submitMatch(SESSION_ID, singlesDto, HOST_ID);
       expect(prisma.$transaction).toHaveBeenCalled();
+    });
+  });
+
+  describe('submitMatch — player existence validation', () => {
+    beforeEach(() => {
+      prisma.courtSession.findUnique.mockResolvedValue(
+        mockSession(HOST_ID, SESSION_ID),
+      );
+      prisma.userEloRating.findMany.mockResolvedValue([
+        mockRating(PLAYER_A, 1200, 10),
+        mockRating(PLAYER_B, 1000, 10),
+      ]);
+    });
+
+    it('throws BadRequestException when teamA contains non-existent userId', async () => {
+      prisma.user.findMany.mockResolvedValue([{ id: PLAYER_B }]);
+      await expect(
+        service.submitMatch(SESSION_ID, singlesDto, HOST_ID),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('throws BadRequestException when teamB contains non-existent userId', async () => {
+      prisma.user.findMany.mockResolvedValue([{ id: PLAYER_A }]);
+      await expect(
+        service.submitMatch(SESSION_ID, singlesDto, HOST_ID),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('error message contains the missing player IDs', async () => {
+      prisma.user.findMany.mockResolvedValue([{ id: PLAYER_B }]);
+      await expect(
+        service.submitMatch(SESSION_ID, singlesDto, HOST_ID),
+      ).rejects.toThrow(
+        `The following player IDs are not registered users: ${PLAYER_A}`,
+      );
+    });
+
+    it('passes when all player IDs exist in DB', async () => {
+      prisma.user.findMany.mockResolvedValue([{ id: PLAYER_A }, { id: PLAYER_B }]);
+      const result = await service.submitMatch(SESSION_ID, singlesDto, HOST_ID);
+      expect(result).toBeDefined();
     });
   });
 

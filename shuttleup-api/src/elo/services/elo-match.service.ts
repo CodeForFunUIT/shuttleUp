@@ -69,8 +69,11 @@ export class EloMatchService {
     // 3. Validate team sizes and no duplicate player IDs
     this.validateTeamSizes(dto);
 
-    // 4. Load or initialize ELO ratings for all players
+    // 3.5. Verify all players are registered users (block guest/phantom IDs)
     const allPlayerIds = [...dto.teamA, ...dto.teamB];
+    await this.validatePlayersExist(allPlayerIds);
+
+    // 4. Load or initialize ELO ratings for all players
     const ratings = await this.loadOrInitEloRatings(allPlayerIds, dto.gameType);
 
     // 5. Load pair synergy counts (doubles/mixed only)
@@ -146,6 +149,22 @@ export class EloMatchService {
   }
 
   // ─── Private helpers ─────────────────────────────────────────────────────
+
+  /** Verify all submitted player IDs correspond to registered users in DB */
+  private async validatePlayersExist(playerIds: string[]): Promise<void> {
+    const users = await this.prisma.user.findMany({
+      where: { id: { in: playerIds } },
+      select: { id: true },
+    });
+
+    if (users.length !== playerIds.length) {
+      const foundIds = new Set(users.map((u) => u.id));
+      const missing = playerIds.filter((id) => !foundIds.has(id));
+      throw new BadRequestException(
+        `The following player IDs are not registered users: ${missing.join(', ')}`,
+      );
+    }
+  }
 
   private validateTeamSizes(dto: SubmitMatchDto): void {
     const expectedSize = dto.gameType === GameType.SINGLES ? 1 : 2;
