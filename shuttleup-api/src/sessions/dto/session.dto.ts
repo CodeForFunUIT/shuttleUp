@@ -38,7 +38,10 @@ export class CreateSessionDto {
   @IsEnum(['ALL', 'BEGINNER', 'INTERMEDIATE', 'ADVANCED'])
   skillRequired?: string;
 
-  @ApiPropertyOptional({ enum: GameType, description: 'Game type for ELO tracking' })
+  @ApiPropertyOptional({
+    enum: GameType,
+    description: 'Game type for ELO tracking',
+  })
   @IsOptional()
   @IsEnum(GameType)
   gameType?: GameType;

@@ -173,7 +173,13 @@ export class EloMatchService {
       userIds.map((userId) =>
         this.prisma.userEloRating.upsert({
           where: { userId_gameType: { userId, gameType } },
-          create: { userId, gameType, eloScore: 1000, totalGames: 0, isCalibrating: true },
+          create: {
+            userId,
+            gameType,
+            eloScore: 1000,
+            totalGames: 0,
+            isCalibrating: true,
+          },
           update: {},
         }),
       ),
@@ -198,7 +204,9 @@ export class EloMatchService {
   ): Promise<number> {
     const [playerIdA, playerIdB] = this.normalizePairKey(idA, idB);
     const synergy = await this.prisma.pairSynergy.findUnique({
-      where: { playerIdA_playerIdB_gameType: { playerIdA, playerIdB, gameType } },
+      where: {
+        playerIdA_playerIdB_gameType: { playerIdA, playerIdB, gameType },
+      },
     });
     return synergy?.gamesTogether ?? 0;
   }
@@ -216,7 +224,10 @@ export class EloMatchService {
     return this.runDoublesCalc(dto, ratings, synergyA, synergyB);
   }
 
-  private runSinglesCalc(dto: SubmitMatchDto, ratings: RatingMap): PlayerResult[] {
+  private runSinglesCalc(
+    dto: SubmitMatchDto,
+    ratings: RatingMap,
+  ): PlayerResult[] {
     const [idA] = dto.teamA;
     const [idB] = dto.teamB;
     const rA = ratings[idA];
@@ -256,7 +267,10 @@ export class EloMatchService {
         expectedScore: result.expectedB,
         carryWeight: 1.0,
         synergyBonus: 0,
-        scoreMultiplier: this.eloCalc.getScoreMultiplier(dto.score, dto.winner === 'B'),
+        scoreMultiplier: this.eloCalc.getScoreMultiplier(
+          dto.score,
+          dto.winner === 'B',
+        ),
       },
     ];
   }
@@ -330,7 +344,10 @@ export class EloMatchService {
         expectedScore: 1 - result.expectedA,
         carryWeight: result.playerB1.carryWeight,
         synergyBonus: synergyBonusB,
-        scoreMultiplier: this.eloCalc.getScoreMultiplier(dto.score, dto.winner === 'B'),
+        scoreMultiplier: this.eloCalc.getScoreMultiplier(
+          dto.score,
+          dto.winner === 'B',
+        ),
       },
       {
         userId: idB2,
@@ -343,7 +360,10 @@ export class EloMatchService {
         expectedScore: 1 - result.expectedA,
         carryWeight: result.playerB2.carryWeight,
         synergyBonus: synergyBonusB,
-        scoreMultiplier: this.eloCalc.getScoreMultiplier(dto.score, dto.winner === 'B'),
+        scoreMultiplier: this.eloCalc.getScoreMultiplier(
+          dto.score,
+          dto.winner === 'B',
+        ),
       },
     ];
   }
@@ -389,7 +409,9 @@ export class EloMatchService {
       for (const p of playerResults) {
         const newTotalGames = ratings[p.userId].totalGames + 1;
         await tx.userEloRating.update({
-          where: { userId_gameType: { userId: p.userId, gameType: dto.gameType } },
+          where: {
+            userId_gameType: { userId: p.userId, gameType: dto.gameType },
+          },
           data: {
             eloScore: p.eloAfter,
             totalGames: newTotalGames,

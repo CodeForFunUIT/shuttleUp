@@ -235,7 +235,9 @@ describe('EloMatchService', () => {
   describe('findMatch', () => {
     it('returns match with participants', async () => {
       const matchWithParticipants = { id: 'match-1', participants: [] };
-      prisma.eloMatch.findUnique.mockResolvedValue(matchWithParticipants as never);
+      prisma.eloMatch.findUnique.mockResolvedValue(
+        matchWithParticipants as never,
+      );
       const result = await service.findMatch('match-1');
       expect(result.id).toBe('match-1');
     });
@@ -251,9 +253,9 @@ describe('EloMatchService', () => {
   describe('getUserMatchHistory', () => {
     it('returns paginated match history', async () => {
       prisma.eloMatchParticipant.count.mockResolvedValue(5);
-      prisma.eloMatchParticipant.findMany.mockResolvedValue(
-        [{ id: 'p1', match: {} }] as never,
-      );
+      prisma.eloMatchParticipant.findMany.mockResolvedValue([
+        { id: 'p1', match: {} },
+      ] as never);
       const result = await service.getUserMatchHistory('user-1', 1, 10);
       expect(result.total).toBe(5);
       expect(result.data).toHaveLength(1);

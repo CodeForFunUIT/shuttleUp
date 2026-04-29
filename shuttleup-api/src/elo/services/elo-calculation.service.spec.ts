@@ -135,11 +135,16 @@ describe('EloCalculationService', () => {
 
   describe('getMismatchLevel', () => {
     it('0 diff → none', () => expect(service.getMismatchLevel(0)).toBe('none'));
-    it('200 diff → none (boundary)', () => expect(service.getMismatchLevel(200)).toBe('none'));
-    it('201 diff → warning', () => expect(service.getMismatchLevel(201)).toBe('warning'));
-    it('400 diff → warning (boundary)', () => expect(service.getMismatchLevel(400)).toBe('warning'));
-    it('401 diff → danger', () => expect(service.getMismatchLevel(401)).toBe('danger'));
-    it('negative diff uses abs value', () => expect(service.getMismatchLevel(-300)).toBe('warning'));
+    it('200 diff → none (boundary)', () =>
+      expect(service.getMismatchLevel(200)).toBe('none'));
+    it('201 diff → warning', () =>
+      expect(service.getMismatchLevel(201)).toBe('warning'));
+    it('400 diff → warning (boundary)', () =>
+      expect(service.getMismatchLevel(400)).toBe('warning'));
+    it('401 diff → danger', () =>
+      expect(service.getMismatchLevel(401)).toBe('danger'));
+    it('negative diff uses abs value', () =>
+      expect(service.getMismatchLevel(-300)).toBe('warning'));
   });
 
   // ─── Tier ─────────────────────────────────────────────────────────────────
@@ -255,11 +260,15 @@ describe('EloCalculationService', () => {
 
   describe('calculateDoubles', () => {
     const baseParams = {
-      eloA1: 1200, eloA2: 1200,
-      totalGamesA1: 30, totalGamesA2: 30,
+      eloA1: 1200,
+      eloA2: 1200,
+      totalGamesA1: 30,
+      totalGamesA2: 30,
       gamesA1A2Together: 0,
-      eloB1: 1200, eloB2: 1200,
-      totalGamesB1: 30, totalGamesB2: 30,
+      eloB1: 1200,
+      eloB2: 1200,
+      totalGamesB1: 30,
+      totalGamesB2: 30,
       gamesB1B2Together: 0,
       winner: 'A' as const,
       score: '2-0' as const,
@@ -306,7 +315,9 @@ describe('EloCalculationService', () => {
         eloA1: 1600, // stronger
         eloA2: 800, // weaker → should get higher carry weight
       });
-      expect(result.playerA2.carryWeight).toBeGreaterThan(result.playerA1.carryWeight);
+      expect(result.playerA2.carryWeight).toBeGreaterThan(
+        result.playerA1.carryWeight,
+      );
     });
 
     it('equal team → players split delta equally', () => {

@@ -94,7 +94,10 @@ export class EloCalculationService {
   calculateSingles(params: SinglesMatchParams): SinglesResult {
     const { eloA, eloB, winner, score, totalGamesA, totalGamesB } = params;
 
-    const k = Math.min(this.getKFactor(totalGamesA), this.getKFactor(totalGamesB));
+    const k = Math.min(
+      this.getKFactor(totalGamesA),
+      this.getKFactor(totalGamesB),
+    );
 
     const expectedA = this.expectedScore(eloA, eloB);
     const expectedB = 1 - expectedA;
@@ -177,10 +180,26 @@ export class EloCalculationService {
     const dB2 = Math.round(totalDeltaB * wB2);
 
     return {
-      playerA1: { newElo: Math.max(100, eloA1 + dA1), delta: dA1, carryWeight: wA1 },
-      playerA2: { newElo: Math.max(100, eloA2 + dA2), delta: dA2, carryWeight: wA2 },
-      playerB1: { newElo: Math.max(100, eloB1 + dB1), delta: dB1, carryWeight: wB1 },
-      playerB2: { newElo: Math.max(100, eloB2 + dB2), delta: dB2, carryWeight: wB2 },
+      playerA1: {
+        newElo: Math.max(100, eloA1 + dA1),
+        delta: dA1,
+        carryWeight: wA1,
+      },
+      playerA2: {
+        newElo: Math.max(100, eloA2 + dA2),
+        delta: dA2,
+        carryWeight: wA2,
+      },
+      playerB1: {
+        newElo: Math.max(100, eloB1 + dB1),
+        delta: dB1,
+        carryWeight: wB1,
+      },
+      playerB2: {
+        newElo: Math.max(100, eloB2 + dB2),
+        delta: dB2,
+        carryWeight: wB2,
+      },
       kFactor: k,
       synergyBonusA: synA,
       synergyBonusB: synB,
