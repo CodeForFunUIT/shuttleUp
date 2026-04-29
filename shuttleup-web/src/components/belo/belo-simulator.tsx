@@ -15,63 +15,13 @@ import {
 } from "@/components/ui/select";
 import { Play, RotateCcw, ArrowUp, ArrowDown, Minus } from "lucide-react";
 
-// ─── Core ELO Calculation (mirrors backend EloCalculationService) ─────────
+import {
+  getTierInfo,
+  simulateSingles,
+  type SinglesSimResult,
+} from "./belo-calc-engine";
 
-function getKFactor(totalGames: number): number {
-  if (totalGames < 20) return 32;
-  if (totalGames < 100) return 24;
-  return 16;
-}
-
-function getTierInfo(elo: number): { name: string; emoji: string; color: string } {
-  if (elo >= 2000) return { name: "Kim Cương", emoji: "💎", color: "text-cyan-700 bg-cyan-100" };
-  if (elo >= 1700) return { name: "Vàng", emoji: "🥇", color: "text-amber-700 bg-amber-100" };
-  if (elo >= 1400) return { name: "Bạc", emoji: "🥈", color: "text-slate-700 bg-slate-100" };
-  if (elo >= 1100) return { name: "Đồng", emoji: "🥉", color: "text-orange-700 bg-orange-100" };
-  if (elo >= 800) return { name: "Sắt", emoji: "⚙️", color: "text-stone-700 bg-stone-100" };
-  return { name: "Nhập môn", emoji: "🌱", color: "text-green-700 bg-green-50" };
-}
-
-interface SimResult {
-  expectedA: number;
-  expectedB: number;
-  deltaA: number;
-  deltaB: number;
-  newEloA: number;
-  newEloB: number;
-  kFactor: number;
-}
-
-function simulateSingles(
-  eloA: number,
-  eloB: number,
-  winner: "A" | "B",
-  gamesA: number,
-  gamesB: number,
-): SimResult {
-  const kA = getKFactor(gamesA);
-  const kB = getKFactor(gamesB);
-  const k = Math.min(kA, kB);
-
-  const expectedA = 1 / (1 + Math.pow(10, (eloB - eloA) / 400));
-  const expectedB = 1 - expectedA;
-
-  const sA = winner === "A" ? 1 : 0;
-  const sB = 1 - sA;
-
-  const deltaA = Math.round(k * (sA - expectedA));
-  const deltaB = Math.round(k * (sB - expectedB));
-
-  return {
-    expectedA,
-    expectedB,
-    deltaA,
-    deltaB,
-    newEloA: Math.max(100, eloA + deltaA),
-    newEloB: Math.max(100, eloB + deltaB),
-    kFactor: k,
-  };
-}
+type SimResult = SinglesSimResult;
 
 // ─── Component ────────────────────────────────────────────────────────────
 
