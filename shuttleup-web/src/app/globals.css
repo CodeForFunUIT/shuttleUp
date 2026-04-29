@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -108,7 +108,7 @@
   --sidebar-ring: oklch(0.59 0.17 162);
 
   /* Typography */
-  --font-display: 'Barlow Condensed', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
   --font-body: 'Barlow', 'Geist', sans-serif;
 }
 
