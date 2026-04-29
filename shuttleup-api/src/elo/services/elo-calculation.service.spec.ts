@@ -111,26 +111,6 @@ describe('EloCalculationService', () => {
     });
   });
 
-  // ─── Score Multiplier ─────────────────────────────────────────────────────
-
-  describe('getScoreMultiplier — spec §7', () => {
-    it('winner 2-0 → ×1.2', () => {
-      expect(service.getScoreMultiplier('2-0', true)).toBe(1.2);
-    });
-
-    it('winner 2-1 → ×1.0', () => {
-      expect(service.getScoreMultiplier('2-1', true)).toBe(1.0);
-    });
-
-    it('loser 2-0 → ×1.0 (reduced loss for close defeat)', () => {
-      expect(service.getScoreMultiplier('2-0', false)).toBe(1.0);
-    });
-
-    it('loser 2-1 → ×0.85 (smaller loss for close match)', () => {
-      expect(service.getScoreMultiplier('2-1', false)).toBe(0.85);
-    });
-  });
-
   // ─── Mismatch Level ───────────────────────────────────────────────────────
 
   describe('getMismatchLevel', () => {
@@ -172,7 +152,6 @@ describe('EloCalculationService', () => {
         eloA: 1400,
         eloB: 1200,
         winner: 'A',
-        score: '2-1',
         totalGamesA: 50,
         totalGamesB: 50,
       });
@@ -184,7 +163,6 @@ describe('EloCalculationService', () => {
         eloA: 1200,
         eloB: 1200,
         winner: 'A',
-        score: '2-0',
         totalGamesA: 10,
         totalGamesB: 10,
       });
@@ -199,7 +177,6 @@ describe('EloCalculationService', () => {
         eloA: 100,
         eloB: 2000,
         winner: 'B',
-        score: '2-0',
         totalGamesA: 5,
         totalGamesB: 5,
       });
@@ -211,7 +188,6 @@ describe('EloCalculationService', () => {
         eloA: 1200,
         eloB: 1200,
         winner: 'A',
-        score: '2-1',
         totalGamesA: 5, // K=32
         totalGamesB: 150, // K=16 → min wins
       });
@@ -223,7 +199,6 @@ describe('EloCalculationService', () => {
         eloA: 1000,
         eloB: 1000,
         winner: 'A',
-        score: '2-0',
         totalGamesA: 0,
         totalGamesB: 0,
       });
@@ -235,7 +210,6 @@ describe('EloCalculationService', () => {
         eloA: 800,
         eloB: 1600,
         winner: 'A',
-        score: '2-0',
         totalGamesA: 10,
         totalGamesB: 10,
       });
@@ -243,16 +217,17 @@ describe('EloCalculationService', () => {
       expect(result.deltaA).toBeGreaterThan(15);
     });
 
-    it('returns correct scoreMultiplier for winner 2-0', () => {
+    it('equal ELO match → delta is ±K/2 (no multiplier)', () => {
       const result = service.calculateSingles({
         eloA: 1200,
         eloB: 1200,
         winner: 'A',
-        score: '2-0',
-        totalGamesA: 10,
-        totalGamesB: 10,
+        totalGamesA: 50,
+        totalGamesB: 50,
       });
-      expect(result.scoreMultiplier).toBe(1.2);
+      // K=24, expected=0.5, delta = round(24*(1-0.5)) = 12
+      expect(result.deltaA).toBe(12);
+      expect(result.deltaB).toBe(-12);
     });
   });
 
@@ -271,7 +246,6 @@ describe('EloCalculationService', () => {
       totalGamesB2: 30,
       gamesB1B2Together: 0,
       winner: 'A' as const,
-      score: '2-0' as const,
     };
 
     it('synergy bonus included in pair rating — team with synergy has advantage', () => {
@@ -303,7 +277,6 @@ describe('EloCalculationService', () => {
         eloB1: 100,
         eloB2: 100,
         winner: 'A',
-        score: '2-0',
       });
       expect(result.playerB1.newElo).toBeGreaterThanOrEqual(100);
       expect(result.playerB2.newElo).toBeGreaterThanOrEqual(100);

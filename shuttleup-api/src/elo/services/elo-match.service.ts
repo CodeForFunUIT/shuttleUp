@@ -25,7 +25,6 @@ interface PlayerResult {
   expectedScore: number;
   carryWeight: number;
   synergyBonus: number;
-  scoreMultiplier: number;
 }
 
 /** Rating map loaded/initialized before calculation */
@@ -260,7 +259,6 @@ export class EloMatchService {
       eloA: rA.eloScore,
       eloB: rB.eloScore,
       winner: dto.winner,
-      score: dto.score,
       totalGamesA: rA.totalGames,
       totalGamesB: rB.totalGames,
     });
@@ -277,7 +275,6 @@ export class EloMatchService {
         expectedScore: result.expectedA,
         carryWeight: 1.0, // singles: no split
         synergyBonus: 0,
-        scoreMultiplier: result.scoreMultiplier,
       },
       {
         userId: idB,
@@ -290,10 +287,6 @@ export class EloMatchService {
         expectedScore: result.expectedB,
         carryWeight: 1.0,
         synergyBonus: 0,
-        scoreMultiplier: this.eloCalc.getScoreMultiplier(
-          dto.score,
-          dto.winner === 'B',
-        ),
       },
     ];
   }
@@ -323,7 +316,6 @@ export class EloMatchService {
       totalGamesB2: rB2.totalGames,
       gamesB1B2Together: synergyB,
       winner: dto.winner,
-      score: dto.score,
     });
 
     const synergyBonusA = result.synergyBonusA;
@@ -341,7 +333,6 @@ export class EloMatchService {
         expectedScore: result.expectedA,
         carryWeight: result.playerA1.carryWeight,
         synergyBonus: synergyBonusA,
-        scoreMultiplier: result.scoreMultiplier,
       },
       {
         userId: idA2,
@@ -354,7 +345,6 @@ export class EloMatchService {
         expectedScore: result.expectedA,
         carryWeight: result.playerA2.carryWeight,
         synergyBonus: synergyBonusA,
-        scoreMultiplier: result.scoreMultiplier,
       },
       {
         userId: idB1,
@@ -367,10 +357,6 @@ export class EloMatchService {
         expectedScore: 1 - result.expectedA,
         carryWeight: result.playerB1.carryWeight,
         synergyBonus: synergyBonusB,
-        scoreMultiplier: this.eloCalc.getScoreMultiplier(
-          dto.score,
-          dto.winner === 'B',
-        ),
       },
       {
         userId: idB2,
@@ -383,10 +369,6 @@ export class EloMatchService {
         expectedScore: 1 - result.expectedA,
         carryWeight: result.playerB2.carryWeight,
         synergyBonus: synergyBonusB,
-        scoreMultiplier: this.eloCalc.getScoreMultiplier(
-          dto.score,
-          dto.winner === 'B',
-        ),
       },
     ];
   }
@@ -404,7 +386,6 @@ export class EloMatchService {
         data: {
           sessionId,
           gameType: dto.gameType,
-          score: dto.score,
           status: 'CONFIRMED',
           playedAt: dto.playedAt ? new Date(dto.playedAt) : new Date(),
         },
@@ -424,7 +405,6 @@ export class EloMatchService {
           expectedScore: p.expectedScore,
           carryWeight: p.carryWeight,
           synergyBonus: p.synergyBonus,
-          scoreMultiplier: p.scoreMultiplier,
         })),
       });
 

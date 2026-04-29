@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Calculator, Scale, Gauge, BarChart3 } from "lucide-react";
+import { Calculator, Gauge, BarChart3 } from "lucide-react";
 
 const steps = [
   {
@@ -21,14 +21,6 @@ const steps = [
     color: "text-amber-600 bg-amber-50",
   },
   {
-    icon: Scale,
-    title: "Score Multiplier",
-    desc: "Thắng 2-0: ×1.2 • Thắng 2-1: ×1.0 • Thua 2-1: ×0.85",
-    detail:
-      "Thắng áp đảo được thưởng thêm. Thua sát nút bị trừ ít hơn — phản ánh đúng chênh lệch trình độ.",
-    color: "text-purple-600 bg-purple-50",
-  },
-  {
     icon: BarChart3,
     title: "Carry Weight (Đôi)",
     desc: "gap = |R_A − R_B| / 400 → weight_strong ≥ 0.35",
@@ -45,7 +37,7 @@ export function BeloHowItWorks() {
         Cách tính điểm BELo
       </h2>
       <p className="text-sm text-muted-foreground mb-5">
-        Công thức ELO mở rộng với K-factor, Score Multiplier, và Carry Weight
+        Công thức ELO mở rộng với K-factor và Carry Weight
       </p>
 
       <div className="grid gap-4 sm:grid-cols-2">

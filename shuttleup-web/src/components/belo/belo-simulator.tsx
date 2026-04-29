@@ -23,12 +23,6 @@ function getKFactor(totalGames: number): number {
   return 16;
 }
 
-function getScoreMultiplier(score: string, isWinner: boolean): number {
-  if (isWinner && score === "2-0") return 1.2;
-  if (!isWinner && score === "2-1") return 0.85;
-  return 1.0;
-}
-
 function getTierInfo(elo: number): { name: string; emoji: string; color: string } {
   if (elo >= 2000) return { name: "Kim Cương", emoji: "💎", color: "text-cyan-700 bg-cyan-100" };
   if (elo >= 1700) return { name: "Vàng", emoji: "🥇", color: "text-amber-700 bg-amber-100" };
@@ -46,14 +40,12 @@ interface SimResult {
   newEloA: number;
   newEloB: number;
   kFactor: number;
-  scoreMultiplier: number;
 }
 
 function simulateSingles(
   eloA: number,
   eloB: number,
   winner: "A" | "B",
-  score: string,
   gamesA: number,
   gamesB: number,
 ): SimResult {
@@ -67,11 +59,8 @@ function simulateSingles(
   const sA = winner === "A" ? 1 : 0;
   const sB = 1 - sA;
 
-  const multA = getScoreMultiplier(score, winner === "A");
-  const multB = getScoreMultiplier(score, winner === "B");
-
-  const deltaA = Math.round(k * (sA - expectedA) * multA);
-  const deltaB = Math.round(k * (sB - expectedB) * multB);
+  const deltaA = Math.round(k * (sA - expectedA));
+  const deltaB = Math.round(k * (sB - expectedB));
 
   return {
     expectedA,
@@ -81,7 +70,6 @@ function simulateSingles(
     newEloA: Math.max(100, eloA + deltaA),
     newEloB: Math.max(100, eloB + deltaB),
     kFactor: k,
-    scoreMultiplier: multA,
   };
 }
 
@@ -93,12 +81,11 @@ export function BeloSimulator() {
   const [gamesA, setGamesA] = useState(10);
   const [gamesB, setGamesB] = useState(25);
   const [winner, setWinner] = useState<"A" | "B">("A");
-  const [score, setScore] = useState("2-0");
   const [result, setResult] = useState<SimResult | null>(null);
 
   const handleSimulate = useCallback(() => {
-    setResult(simulateSingles(eloA, eloB, winner, score, gamesA, gamesB));
-  }, [eloA, eloB, winner, score, gamesA, gamesB]);
+    setResult(simulateSingles(eloA, eloB, winner, gamesA, gamesB));
+  }, [eloA, eloB, winner, gamesA, gamesB]);
 
   const handleReset = () => {
     setEloA(1200);
@@ -106,7 +93,6 @@ export function BeloSimulator() {
     setGamesA(10);
     setGamesB(25);
     setWinner("A");
-    setScore("2-0");
     setResult(null);
   };
 
@@ -201,35 +187,21 @@ export function BeloSimulator() {
               </div>
             </div>
 
-            {/* Match params */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label className="text-xs">Người thắng</Label>
-                <Select
-                  value={winner}
-                  onValueChange={(v) => { if (v) setWinner(v as "A" | "B"); }}
-                >
-                  <SelectTrigger className="mt-1 h-9">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="A">Người chơi A thắng</SelectItem>
-                    <SelectItem value="B">Người chơi B thắng</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label className="text-xs">Tỉ số</Label>
-                <Select value={score} onValueChange={(v) => { if (v) setScore(v); }}>
-                  <SelectTrigger className="mt-1 h-9">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2-0">2 - 0 (áp đảo)</SelectItem>
-                    <SelectItem value="2-1">2 - 1 (sát nút)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Match params — Winner only */}
+            <div>
+              <Label className="text-xs">Người thắng</Label>
+              <Select
+                value={winner}
+                onValueChange={(v) => { if (v) setWinner(v as "A" | "B"); }}
+              >
+                <SelectTrigger className="mt-1 h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="A">Người chơi A thắng</SelectItem>
+                  <SelectItem value="B">Người chơi B thắng</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Actions */}
@@ -299,10 +271,6 @@ export function BeloSimulator() {
                     Chi tiết tính toán
                   </h4>
                   <DetailRow label="K-Factor" value={result.kFactor.toString()} />
-                  <DetailRow
-                    label="Score Multiplier"
-                    value={`×${result.scoreMultiplier}`}
-                  />
                   <DetailRow
                     label="Xác suất A thắng"
                     value={`${(result.expectedA * 100).toFixed(1)}%`}

@@ -2,7 +2,6 @@ export interface SinglesMatchParams {
   eloA: number;
   eloB: number;
   winner: 'A' | 'B';
-  score: '2-0' | '2-1';
   totalGamesA: number;
   totalGamesB: number;
 }
@@ -15,7 +14,6 @@ export interface SinglesResult {
   kFactor: number;
   expectedA: number;
   expectedB: number;
-  scoreMultiplier: number;
 }
 
 export interface DoublesMatchParams {
@@ -32,7 +30,6 @@ export interface DoublesMatchParams {
   totalGamesB2: number;
   gamesB1B2Together: number; // synergy count for pair B
   winner: 'A' | 'B';
-  score: '2-0' | '2-1';
 }
 
 export interface PlayerDoublesResult {
@@ -50,7 +47,6 @@ export interface DoublesResult {
   synergyBonusA: number;
   synergyBonusB: number;
   expectedA: number;
-  scoreMultiplier: number;
 }
 
 export type MismatchLevel = 'none' | 'warning' | 'danger';

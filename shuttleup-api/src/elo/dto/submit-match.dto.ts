@@ -17,14 +17,6 @@ export class SubmitMatchDto {
   gameType: GameType;
 
   @ApiProperty({
-    example: '2-0',
-    enum: ['2-0', '2-1'],
-    description: 'Final score of the match',
-  })
-  @IsIn(['2-0', '2-1'])
-  score: '2-0' | '2-1';
-
-  @ApiProperty({
     example: ['userId1'],
     description: '1 player (singles) or 2 players (doubles/mixed)',
   })

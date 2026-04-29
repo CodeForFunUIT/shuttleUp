@@ -25,16 +25,6 @@ export class EloCalculationService {
   }
 
   /**
-   * Score multiplier per spec §7.
-   * Winner 2-0 → ×1.2  | Winner 2-1 → ×1.0
-   * Loser  2-1 → ×0.85 | Loser  2-0 → ×1.0
-   */
-  getScoreMultiplier(score: '2-0' | '2-1', isWinner: boolean): number {
-    if (score === '2-0') return isWinner ? 1.2 : 1.0;
-    return isWinner ? 1.0 : 0.85;
-  }
-
-  /**
    * Synergy bonus per spec §4.
    * 0–4 games → 0, 5–9 → +5, 10–19 → +10, 20+ → +15
    */
@@ -92,7 +82,7 @@ export class EloCalculationService {
    * K is min(kA, kB) to protect veterans from big swings.
    */
   calculateSingles(params: SinglesMatchParams): SinglesResult {
-    const { eloA, eloB, winner, score, totalGamesA, totalGamesB } = params;
+    const { eloA, eloB, winner, totalGamesA, totalGamesB } = params;
 
     const k = Math.min(
       this.getKFactor(totalGamesA),
@@ -105,11 +95,8 @@ export class EloCalculationService {
     const sA = winner === 'A' ? 1 : 0;
     const sB = 1 - sA;
 
-    const multiplierA = this.getScoreMultiplier(score, sA === 1);
-    const multiplierB = this.getScoreMultiplier(score, sB === 1);
-
-    const deltaA = Math.round(k * (sA - expectedA) * multiplierA);
-    const deltaB = Math.round(k * (sB - expectedB) * multiplierB);
+    const deltaA = Math.round(k * (sA - expectedA));
+    const deltaB = Math.round(k * (sB - expectedB));
 
     return {
       newEloA: Math.max(100, eloA + deltaA),
@@ -119,7 +106,6 @@ export class EloCalculationService {
       kFactor: k,
       expectedA,
       expectedB,
-      scoreMultiplier: multiplierA,
     };
   }
 
@@ -142,7 +128,6 @@ export class EloCalculationService {
       totalGamesB2,
       gamesB1B2Together,
       winner,
-      score,
     } = params;
 
     const synA = this.getSynergyBonus(gamesA1A2Together);
@@ -164,12 +149,9 @@ export class EloCalculationService {
     const sA = winner === 'A' ? 1 : 0;
     const sB = 1 - sA;
 
-    const multiplierA = this.getScoreMultiplier(score, sA === 1);
-    const multiplierB = this.getScoreMultiplier(score, sB === 1);
-
     // Total team delta before splitting
-    const totalDeltaA = k * (sA - expectedA) * multiplierA;
-    const totalDeltaB = k * (sB - expectedB) * multiplierB;
+    const totalDeltaA = k * (sA - expectedA);
+    const totalDeltaB = k * (sB - expectedB);
 
     const [wA1, wA2] = this.getCarryWeights(eloA1, eloA2);
     const [wB1, wB2] = this.getCarryWeights(eloB1, eloB2);
@@ -204,7 +186,6 @@ export class EloCalculationService {
       synergyBonusA: synA,
       synergyBonusB: synB,
       expectedA,
-      scoreMultiplier: multiplierA,
     };
   }
 }
