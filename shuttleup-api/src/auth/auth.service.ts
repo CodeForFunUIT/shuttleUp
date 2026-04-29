@@ -15,7 +15,9 @@ export class AuthService {
   ) {
     const secret = this.configService.get<string>('auth.secret');
     const baseURL = this.configService.get<string>('auth.url');
-    const corsOrigins = this.configService.get<string[]>('app.corsOrigin') ?? ['http://localhost:3001'];
+    const corsOrigins = this.configService.get<string[]>('app.corsOrigin') ?? [
+      'http://localhost:3001',
+    ];
     const nodeEnv = this.configService.get<string>('app.nodeEnv');
     const isProd = nodeEnv === 'production';
 
