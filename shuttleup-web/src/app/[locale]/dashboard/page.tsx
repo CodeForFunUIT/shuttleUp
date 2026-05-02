@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlusCircle, Calendar as CalendarIcon, Users, Loader2, AlertCircle } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useSessions } from "@/lib/hooks/use-sessions";
 import { useSession } from "@/lib/auth-client";
 import { format } from "date-fns";

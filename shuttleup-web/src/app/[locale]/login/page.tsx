@@ -2,13 +2,13 @@
 
 import { useState } from "react"
 import { signIn } from "@/lib/auth-client"
-import { useRouter } from "next/navigation"
+import { useRouter } from "@/i18n/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation";
 import { Loader2 } from "lucide-react"
 
 export default function LoginPage() {

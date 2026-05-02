@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Users, CheckCircle, XCircle } from "lucide-react"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation";
 
 const MOCK_BOOKINGS = [
   { id: "1", name: "Nguyen Van A", phone: "0901234567", status: "PENDING_PAYMENT", isGuest: true },

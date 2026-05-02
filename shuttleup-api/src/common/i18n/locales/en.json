@@ -1,0 +1,12 @@
+{
+  "errors": {
+    "unauthorized": "You must be logged in to perform this action.",
+    "forbidden": "You do not have permission to access this resource.",
+    "notFound": "Resource not found.",
+    "internal": "An internal server error occurred.",
+    "validation": "Validation failed.",
+    "sessionFull": "This session is already full.",
+    "insufficientBalance": "Insufficient balance for this transaction.",
+    "bookingConflict": "You already have a booking that conflicts with this time."
+  }
+}

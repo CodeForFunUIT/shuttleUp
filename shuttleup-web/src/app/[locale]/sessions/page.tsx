@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Clock, Loader2, AlertCircle, Plus, ArrowRight } from "lucide-react";
 import { useSessions } from "@/lib/hooks/use-sessions";
 import { cn } from "@/lib/utils";
+import { useTranslations, useLocale } from "next-intl";
 
 /** Locale-aware date formatter */
 const dateFmt = new Intl.DateTimeFormat("en-GB", {
@@ -23,12 +24,15 @@ const timeFmt = new Intl.DateTimeFormat("en-GB", {
 });
 
 /** Map raw skill enum → readable label */
-const SKILL_LABELS: Record<string, string> = {
-  BEGINNER: "Beginner",
-  INTERMEDIATE: "Intermediate",
-  ADVANCED: "Advanced",
-  PRO: "Pro",
-  ALL: "All Levels",
+const getSkillLabel = (skill: string, t: any) => {
+  const map: Record<string, string> = {
+    BEGINNER: t('skills.BEGINNER'),
+    INTERMEDIATE: t('skills.INTERMEDIATE'),
+    ADVANCED: t('skills.ADVANCED'),
+    PRO: t('skills.PRO'),
+    ALL: t('skills.ALL'),
+  };
+  return map[skill] ?? skill;
 };
 
 /** Map skill → badge CSS utility */
@@ -61,21 +65,38 @@ function HostAvatar({ name }: { name: string }) {
 
 export default function SessionsPage() {
   const { data: sessions, isLoading, error } = useSessions();
+  const t = useTranslations('SessionsPage');
+  const locale = useLocale();
+
+  /** Locale-aware date formatter */
+  const dateFmt = new Intl.DateTimeFormat(locale === 'vi' ? 'vi-VN' : 'en-GB', {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+  /** Locale-aware time formatter */
+  const timeFmt = new Intl.DateTimeFormat(locale === 'vi' ? 'vi-VN' : 'en-GB', {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
   return (
     <div className="container mx-auto px-4 py-10">
       {/* Page header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
         <div>
-          <h1 className="font-display text-4xl font-bold tracking-tight" style={{ textWrap: "balance" }}>Find Sessions</h1>
+          <h1 className="font-display text-4xl font-bold tracking-tight" style={{ textWrap: "balance" }}>{t('title')}</h1>
           <p className="text-muted-foreground mt-1">
-            Join upcoming games matched to your skill level
+            {t('subtitle')}
           </p>
         </div>
         <Link href="/dashboard/sessions/new">
           <Button className="bg-primary hover:bg-primary/90 gap-2">
             <Plus className="h-4 w-4" aria-hidden="true" />
-            Host a Session
+            {t('hostSession')}
           </Button>
         </Link>
       </div>
@@ -84,7 +105,7 @@ export default function SessionsPage() {
       {isLoading && (
         <div className="flex items-center justify-center py-32" role="status" aria-live="polite">
           <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden="true" />
-          <span className="ml-3 text-muted-foreground">Loading sessions…</span>
+          <span className="ml-3 text-muted-foreground">{t('loading')}</span>
         </div>
       )}
 
@@ -94,10 +115,11 @@ export default function SessionsPage() {
           <div className="h-16 w-16 rounded-2xl bg-destructive/10 flex items-center justify-center mb-4">
             <AlertCircle className="h-8 w-8 text-destructive" aria-hidden="true" />
           </div>
-          <h3 className="font-display text-xl font-semibold mb-2">Failed to Load Sessions</h3>
+          <h3 className="font-display text-xl font-semibold mb-2">{t('errorTitle')}</h3>
           <p className="text-muted-foreground text-sm max-w-sm">
-            Could not connect to the API. Make sure the backend is running at{" "}
-            <code className="bg-muted px-1.5 py-0.5 rounded text-xs">localhost:3000</code>.
+            {t.rich('errorDesc', {
+              primary: (chunks) => <code className="bg-muted px-1.5 py-0.5 rounded text-xs">{chunks}</code>
+            })}
           </p>
         </div>
       )}
@@ -108,14 +130,14 @@ export default function SessionsPage() {
           <div className="h-16 w-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
             <Calendar className="h-8 w-8 text-muted-foreground" aria-hidden="true" />
           </div>
-          <h3 className="font-display text-xl font-semibold mb-2">No Sessions Yet</h3>
+          <h3 className="font-display text-xl font-semibold mb-2">{t('emptyTitle')}</h3>
           <p className="text-muted-foreground text-sm mb-6">
-            Be the first to host a badminton session in your area!
+            {t('emptyDesc')}
           </p>
           <Link href="/dashboard/sessions/new">
             <Button className="bg-primary hover:bg-primary/90">
               <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
-              Host a Session
+              {t('hostSession')}
             </Button>
           </Link>
         </div>
@@ -127,10 +149,10 @@ export default function SessionsPage() {
           {sessions.map((session) => {
             const isFull = session.availableSlots <= 0;
             const skillClass = SKILL_CLASS[session.skillRequired] ?? "skill-all";
-            const skillLabel = SKILL_LABELS[session.skillRequired] ?? session.skillRequired;
-            const price = new Intl.NumberFormat("vi-VN", {
+            const skillLabel = getSkillLabel(session.skillRequired, t);
+            const price = new Intl.NumberFormat(locale === 'vi' ? 'vi-VN' : 'en-US', {
               style: "currency",
-              currency: "VND",
+              currency: locale === 'vi' ? 'VND' : 'USD',
             }).format(session.pricePerSlot);
 
             return (
@@ -169,7 +191,7 @@ export default function SessionsPage() {
                           !isFull && "bg-primary/10 text-primary border-primary/20"
                         )}
                       >
-                        {isFull ? "Full" : `${session.availableSlots} left`}
+                        {isFull ? t('full') : t('left', { count: session.availableSlots })}
                       </Badge>
                     </div>
 
@@ -177,7 +199,7 @@ export default function SessionsPage() {
                     <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
                         <MapPin className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
-                        <span className="truncate">{session.court?.name ?? "Unknown Court"}</span>
+                        <span className="truncate">{session.court?.name ?? t('unknownCourt')}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Calendar className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
@@ -204,7 +226,7 @@ export default function SessionsPage() {
                       <div className="flex items-center gap-2 pt-2 border-t">
                         <HostAvatar name={session.host.name ?? "Host"} />
                         <div className="min-w-0">
-                          <span className="text-xs text-muted-foreground">Hosted by </span>
+                          <span className="text-xs text-muted-foreground">{t('hostedBy')}</span>
                           <span className="text-xs font-medium truncate">{session.host.name}</span>
                         </div>
                       </div>
@@ -217,7 +239,7 @@ export default function SessionsPage() {
                       {price}
                     </span>
                     <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
-                      View details
+                      {t('viewDetails')}
                       <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </span>
                   </div>

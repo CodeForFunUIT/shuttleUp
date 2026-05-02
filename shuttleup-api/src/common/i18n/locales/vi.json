@@ -1,0 +1,12 @@
+{
+  "errors": {
+    "unauthorized": "Bạn phải đăng nhập để thực hiện hành động này.",
+    "forbidden": "Bạn không có quyền truy cập tài nguyên này.",
+    "notFound": "Không tìm thấy tài nguyên.",
+    "internal": "Đã xảy ra lỗi máy chủ nội bộ.",
+    "validation": "Lỗi xác thực dữ liệu.",
+    "sessionFull": "Phiên này đã đầy.",
+    "insufficientBalance": "Số dư không đủ cho giao dịch này.",
+    "bookingConflict": "Bạn đã có một đặt chỗ trùng với thời gian này."
+  }
+}

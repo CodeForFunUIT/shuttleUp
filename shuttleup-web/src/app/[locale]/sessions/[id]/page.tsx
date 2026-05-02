@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, Clock, ShieldAlert, CheckCircle2, Star, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useSession } from "@/lib/hooks/use-sessions";
 import { cn } from "@/lib/utils";
 

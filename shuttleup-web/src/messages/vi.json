@@ -1,0 +1,92 @@
+{
+  "Metadata": {
+    "home": {
+      "title": "ShuttleUp | Cộng đồng Cầu lông Tuyệt vời hơn",
+      "description": "Tìm và tổ chức các phiên giao lưu cầu lông một cách dễ dàng."
+    }
+  },
+  "Navbar": {
+    "brandName": "ShuttleUp",
+    "homeLabel": "ShuttleUp — Trang chủ",
+    "findSession": "Tìm Phiên",
+    "dashboard": "Bảng Điều Khiển",
+    "profile": "Hồ Sơ",
+    "signOut": "Đăng Xuất",
+    "login": "Đăng Nhập",
+    "accountMenu": "Menu tài khoản cho {name}",
+    "openMenu": "Mở menu điều hướng",
+    "navMenu": "Menu điều hướng"
+  },
+  "Footer": {
+    "copyright": "© {year} ShuttleUp. Đã đăng ký bản quyền.",
+    "builtFor": "Được xây dựng cho cộng đồng cầu lông 🏸"
+  },
+  "HomePage": {
+    "hero": {
+      "badge": "Hơn 1,000 người chơi khắp Việt Nam",
+      "title": "Tìm Kèo <primary>Cầu Lông</primary> Gần Bạn",
+      "subtitle": "Ngừng nhắn tin cho nhiều nhóm để tìm slot. Khám phá các sân đang hoạt động, kết nối với người chơi cùng trình độ và đặt chỗ ngay lập tức.",
+      "findSession": "Tìm Kèo Nào",
+      "hostSession": "Tạo Kèo Cầu Lông"
+    },
+    "stats": {
+      "players": "Người chơi tích cực",
+      "courts": "Sân đối tác",
+      "sessions": "Phiên mỗi tuần",
+      "rating": "Đánh giá trung bình"
+    },
+    "features": {
+      "title": "Mọi Thứ Bạn Cần Để Chơi",
+      "subtitle": "Một nền tảng duy nhất để tìm trận đấu tiếp theo, quản lý phiên và nâng cao trình độ của bạn.",
+      "items": {
+        "location": {
+          "title": "Dựa trên Vị trí",
+          "desc": "Tìm các sân gần bạn ngay lập tức với bản đồ tương tác và tìm kiếm địa lý.",
+          "cta": "Khám phá sân"
+        },
+        "skill": {
+          "title": "Ghép cặp Trình độ",
+          "desc": "Lọc các phiên theo trình độ để đảm bảo các trận đấu cạnh tranh và vui vẻ cho mọi người.",
+          "cta": "Kiểm tra trình độ"
+        },
+        "booking": {
+          "title": "Đặt chỗ Tức thì",
+          "desc": "Bảo đảm vị trí của bạn với tình trạng trực tiếp và thanh toán dễ dàng qua hệ thống tích hợp.",
+          "cta": "Đặt ngay"
+        }
+      }
+    },
+    "cta": {
+      "title": "Sẵn sàng Chơi chưa?",
+      "subtitle": "Duyệt qua danh sách trực tiếp các phiên sắp diễn ra trong khu vực của bạn trong 7 ngày tới.",
+      "button": "Duyệt Tất Cả Phiên"
+    }
+  },
+  "LocaleSwitcher": {
+    "toggleLanguage": "Chuyển ngôn ngữ",
+    "english": "English",
+    "vietnamese": "Tiếng Việt"
+  },
+  "SessionsPage": {
+    "title": "Tìm Phiên Đánh",
+    "subtitle": "Tham gia các trận đấu sắp tới phù hợp với trình độ của bạn",
+    "hostSession": "Tổ Chức Phiên",
+    "loading": "Đang tải các phiên…",
+    "errorTitle": "Không Thể Tải Các Phiên",
+    "errorDesc": "Không thể kết nối tới API. Hãy đảm bảo backend đang chạy tại <primary>localhost:3000</primary>.",
+    "emptyTitle": "Chưa Có Phiên Nào",
+    "emptyDesc": "Trở thành người đầu tiên tổ chức một phiên đánh cầu lông trong khu vực của bạn!",
+    "full": "Đã đầy",
+    "left": "còn {count} chỗ",
+    "unknownCourt": "Sân Không Rõ",
+    "hostedBy": "Tổ chức bởi ",
+    "viewDetails": "Xem chi tiết",
+    "skills": {
+      "BEGINNER": "Người Mới",
+      "INTERMEDIATE": "Trung Bình",
+      "ADVANCED": "Nâng Cao",
+      "PRO": "Chuyên Nghiệp",
+      "ALL": "Mọi Trình Độ"
+    }
+  }
+}

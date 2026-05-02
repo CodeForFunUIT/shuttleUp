@@ -1,10 +1,10 @@
 "use client";
 
 import { useSession } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useEffect } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 import { LayoutDashboard, CalendarPlus, List, CreditCard, User, LogOut, Loader2, Trophy } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 

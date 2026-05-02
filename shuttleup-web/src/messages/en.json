@@ -1,0 +1,92 @@
+{
+  "Metadata": {
+    "home": {
+      "title": "ShuttleUp | Better Badminton Community",
+      "description": "Find and host badminton sessions effortlessly."
+    }
+  },
+  "Navbar": {
+    "brandName": "ShuttleUp",
+    "homeLabel": "ShuttleUp — Home",
+    "findSession": "Find Session",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "signOut": "Sign Out",
+    "login": "Login",
+    "accountMenu": "Account menu for {name}",
+    "openMenu": "Open navigation menu",
+    "navMenu": "Navigation menu"
+  },
+  "Footer": {
+    "copyright": "© {year} ShuttleUp. All rights reserved.",
+    "builtFor": "Built for the badminton community 🏸"
+  },
+  "HomePage": {
+    "hero": {
+      "badge": "1,000+ players across Vietnam",
+      "title": "Find the Perfect <primary>Badminton</primary> Session Near You",
+      "subtitle": "Stop messaging multiple groups to find an open slot. Discover active courts, match with players at your skill level, and book instantly.",
+      "findSession": "Find a Session",
+      "hostSession": "Host a Session"
+    },
+    "stats": {
+      "players": "Active Players",
+      "courts": "Partner Courts",
+      "sessions": "Sessions / Week",
+      "rating": "Average Rating"
+    },
+    "features": {
+      "title": "Everything You Need to Play",
+      "subtitle": "One platform to find your next game, manage your sessions, and level up your game.",
+      "items": {
+        "location": {
+          "title": "Location Based",
+          "desc": "Find courts near you instantly with our interactive map and geo-search.",
+          "cta": "Explore courts"
+        },
+        "skill": {
+          "title": "Skill Matching",
+          "desc": "Filter sessions by skill levels to ensure competitive and fun games for everyone.",
+          "cta": "Check your level"
+        },
+        "booking": {
+          "title": "Instant Booking",
+          "desc": "Secure your slot with live availability and pay effortlessly through integrated payments.",
+          "cta": "Book now"
+        }
+      }
+    },
+    "cta": {
+      "title": "Ready to Play?",
+      "subtitle": "Browse our live feed of upcoming sessions happening in your area over the next 7 days.",
+      "button": "Browse All Sessions"
+    }
+  },
+  "LocaleSwitcher": {
+    "toggleLanguage": "Toggle language",
+    "english": "English",
+    "vietnamese": "Tiếng Việt"
+  },
+  "SessionsPage": {
+    "title": "Find Sessions",
+    "subtitle": "Join upcoming games matched to your skill level",
+    "hostSession": "Host a Session",
+    "loading": "Loading sessions…",
+    "errorTitle": "Failed to Load Sessions",
+    "errorDesc": "Could not connect to the API. Make sure the backend is running at <primary>localhost:3000</primary>.",
+    "emptyTitle": "No Sessions Yet",
+    "emptyDesc": "Be the first to host a badminton session in your area!",
+    "full": "Full",
+    "left": "{count} left",
+    "unknownCourt": "Unknown Court",
+    "hostedBy": "Hosted by ",
+    "viewDetails": "View details",
+    "skills": {
+      "BEGINNER": "Beginner",
+      "INTERMEDIATE": "Intermediate",
+      "ADVANCED": "Advanced",
+      "PRO": "Pro",
+      "ALL": "All Levels"
+    }
+  }
+}

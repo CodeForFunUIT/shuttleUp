@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { ArrowRight, MapPin, Calendar, Star, ChevronRight } from "lucide-react";
 import { AnimatedSection } from "@/components/ui/animated-section";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { StaggerContainer, StaggerItem } from "@/components/ui/stagger-container";
+import { useTranslations } from "next-intl";
 
 /* ── Framer Motion Variants ─────────────────────────────────────────────── */
 
@@ -74,6 +75,8 @@ const galleryImages = [
 /* ── Component ───────────────────────────────────────────────────────────── */
 
 export function HeroSection() {
+  const t = useTranslations('HomePage.hero');
+  
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Background photo with Ken Burns zoom */}
@@ -106,7 +109,7 @@ export function HeroSection() {
             className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-1.5 text-sm text-white font-medium mb-8"
           >
             <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" aria-hidden="true" />
-            1,000+ players across Vietnam
+            {t('badge')}
           </motion.div>
 
           {/* Headline */}
@@ -114,9 +117,9 @@ export function HeroSection() {
             variants={heroChildVariants}
             className="font-display text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white mb-6 leading-none"
           >
-            Find the Perfect{" "}
-            <span className="text-primary">Badminton</span>{" "}
-            Session Near You
+            {t.rich('title', {
+              primary: (chunks) => <span className="text-primary">{chunks}</span>
+            })}
           </motion.h1>
 
           {/* Subtitle */}
@@ -124,8 +127,7 @@ export function HeroSection() {
             variants={heroChildVariants}
             className="text-lg text-white/80 max-w-xl mb-10 leading-relaxed"
           >
-            Stop messaging multiple groups to find an open slot. Discover active courts,
-            match with players at your skill level, and book instantly.
+            {t('subtitle')}
           </motion.p>
 
           {/* CTAs */}
@@ -135,7 +137,7 @@ export function HeroSection() {
                 size="lg"
                 className="h-13 px-8 text-base font-semibold bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30"
               >
-                Find a Session
+                {t('findSession')}
                 <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
               </Button>
             </Link>
@@ -145,7 +147,7 @@ export function HeroSection() {
                 variant="outline"
                 className="h-13 px-8 text-base font-semibold border-white/30 bg-white/10 text-white hover:bg-white/20 backdrop-blur-sm"
               >
-                Host a Session
+                {t('hostSession')}
               </Button>
             </Link>
           </motion.div>
@@ -162,13 +164,22 @@ export function HeroSection() {
 }
 
 export function StatsStrip() {
+  const t = useTranslations('HomePage.stats');
+  
+  const statsLocales = [
+    { value: 1000, suffix: "+", label: t('players') },
+    { value: 50, suffix: "+", label: t('courts') },
+    { value: 200, suffix: "+", label: t('sessions') },
+    { value: 4.9, suffix: " ★", label: t('rating'), isDecimal: true },
+  ];
+
   return (
     <section className="bg-background border-b py-10">
       <StaggerContainer
         className="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
         staggerDelay={0.12}
       >
-        {stats.map(({ value, suffix, label, isDecimal }) => (
+        {statsLocales.map(({ value, suffix, label, isDecimal }) => (
           <StaggerItem key={label}>
             <div className="font-display text-3xl font-bold text-primary tabular-nums">
               {isDecimal ? (
@@ -186,21 +197,47 @@ export function StatsStrip() {
 }
 
 export function FeaturesSection() {
+  const t = useTranslations('HomePage.features');
+  
+  const featureLocales = [
+    {
+      icon: MapPin,
+      title: t('items.location.title'),
+      description: t('items.location.desc'),
+      cta: t('items.location.cta'),
+      iconBg: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
+    },
+    {
+      icon: Star,
+      title: t('items.skill.title'),
+      description: t('items.skill.desc'),
+      cta: t('items.skill.cta'),
+      iconBg: "bg-secondary text-primary",
+    },
+    {
+      icon: Calendar,
+      title: t('items.booking.title'),
+      description: t('items.booking.desc'),
+      cta: t('items.booking.cta'),
+      iconBg: "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400",
+    },
+  ];
+
   return (
     <section className="py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section header */}
         <AnimatedSection className="text-center mb-16">
           <h2 className="font-display text-4xl font-bold mb-4">
-            Everything You Need to Play
+            {t('title')}
           </h2>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            One platform to find your next game, manage your sessions, and level up your game.
+            {t('subtitle')}
           </p>
         </AnimatedSection>
 
         <StaggerContainer className="grid md:grid-cols-3 gap-8" staggerDelay={0.15}>
-          {features.map(({ icon: Icon, title, description, cta, iconBg }) => (
+          {featureLocales.map(({ icon: Icon, title, description, cta, iconBg }) => (
             <StaggerItem key={title}>
               <div className="group flex flex-col p-8 rounded-2xl border bg-card hover:border-primary/30 hover:shadow-lg transition-all duration-300 cursor-pointer h-full">
                 <div className={`h-14 w-14 ${iconBg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
@@ -247,21 +284,23 @@ export function GalleryStrip() {
 }
 
 export function CtaBanner() {
+  const t = useTranslations('HomePage.cta');
+  
   return (
     <section className="py-24 bg-primary text-primary-foreground">
       <AnimatedSection className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="font-display text-4xl md:text-5xl font-extrabold mb-4">
-          Ready to Play?
+          {t('title')}
         </h2>
         <p className="text-primary-foreground/80 mb-10 max-w-xl mx-auto text-lg">
-          Browse our live feed of upcoming sessions happening in your area over the next 7 days.
+          {t('subtitle')}
         </p>
         <Link href="/sessions">
           <Button
             size="lg"
             className="text-base px-10 h-13 bg-white text-primary hover:bg-white/90 font-semibold shadow-lg"
           >
-            Browse All Sessions
+            {t('button')}
             <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
           </Button>
         </Link>
