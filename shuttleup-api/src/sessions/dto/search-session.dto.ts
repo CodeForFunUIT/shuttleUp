@@ -3,6 +3,10 @@ import { Type } from 'class-transformer';
 
 export class SearchSessionDto {
   @IsOptional()
+  @IsString()
+  title?: string;
+
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
   lat?: number;

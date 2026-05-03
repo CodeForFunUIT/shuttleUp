@@ -59,6 +59,9 @@ export class SessionsService {
   }
 
   async searchNearby(query: SearchSessionDto) {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 12;
+
     if (query.lat && query.lng) {
       const radius = query.radiusMm || 5000;
 
@@ -70,45 +73,78 @@ export class SessionsService {
         ? Prisma.sql`AND s."pricePerSlot" <= ${query.priceMax}`
         : Prisma.empty;
 
-      const page = Number(query.page) || 1;
-      const limit = Number(query.limit) || 10;
+      const titleFilter = query.title
+        ? Prisma.sql`AND s."title" ILIKE ${'%' + query.title + '%'}`
+        : Prisma.empty;
 
-      return this.prisma.$queryRaw`
-        SELECT s.id, s.title, s."startTime", s."endTime", s."pricePerSlot", s.status, s."availableSlots",
-               c.name as "courtName", c.address, c.lat, c.lng,
-               ST_Distance(c.geometry::geography, ST_SetSRID(ST_MakePoint(${query.lng}, ${query.lat}), 4326)::geography) as distance
-        FROM court_sessions s
-        JOIN courts c ON s."courtId" = c.id
-        WHERE ST_DWithin(
-          c.geometry::geography,
-          ST_SetSRID(ST_MakePoint(${query.lng}, ${query.lat}), 4326)::geography,
-          ${radius}
-        )
-        AND s.status = 'OPEN'
-        ${skillFilter}
-        ${priceFilter}
-        ORDER BY distance ASC
-        LIMIT ${limit} OFFSET ${(page - 1) * limit};
-      `;
+      const [data, countResult] = await Promise.all([
+        this.prisma.$queryRaw`
+          SELECT s.id, s.title, s."startTime", s."endTime", s."pricePerSlot", s.status,
+                 s."availableSlots", s."totalSlots", s."skillRequired", s."hostId", s."courtId",
+                 s."createdAt", s."updatedAt", s.description,
+                 c.name as "courtName", c.address, c.district, c.lat, c.lng,
+                 ST_Distance(c.geometry::geography, ST_SetSRID(ST_MakePoint(${query.lng}, ${query.lat}), 4326)::geography) as distance
+          FROM court_sessions s
+          JOIN courts c ON s."courtId" = c.id
+          WHERE ST_DWithin(
+            c.geometry::geography,
+            ST_SetSRID(ST_MakePoint(${query.lng}, ${query.lat}), 4326)::geography,
+            ${radius}
+          )
+          AND s.status = 'OPEN'
+          ${skillFilter}
+          ${priceFilter}
+          ${titleFilter}
+          ORDER BY distance ASC
+          LIMIT ${limit} OFFSET ${(page - 1) * limit};
+        `,
+        this.prisma.$queryRaw<[{ count: bigint }]>`
+          SELECT COUNT(*) as count
+          FROM court_sessions s
+          JOIN courts c ON s."courtId" = c.id
+          WHERE ST_DWithin(
+            c.geometry::geography,
+            ST_SetSRID(ST_MakePoint(${query.lng}, ${query.lat}), 4326)::geography,
+            ${radius}
+          )
+          AND s.status = 'OPEN'
+          ${skillFilter}
+          ${priceFilter}
+          ${titleFilter}
+        `,
+      ]);
+
+      return {
+        data,
+        total: Number(countResult[0]?.count ?? 0),
+        page,
+        limit,
+      };
     }
 
-    const page = Number(query.page) || 1;
-    const limit = Number(query.limit) || 10;
+    // Non-geo branch: standard Prisma query with pagination
+    const where: Prisma.CourtSessionWhereInput = {
+      status: SessionStatus.OPEN,
+      ...(query.district && { court: { district: query.district } }),
+      ...(query.skillRequired && { skillRequired: query.skillRequired }),
+      ...(query.priceMax && { pricePerSlot: { lte: query.priceMax } }),
+      ...(query.title && { title: { contains: query.title, mode: 'insensitive' as const } }),
+    };
 
-    return this.prisma.courtSession.findMany({
-      where: {
-        status: SessionStatus.OPEN,
-        ...(query.district && { court: { district: query.district } }),
-        ...(query.skillRequired && { skillRequired: query.skillRequired }),
-        ...(query.priceMax && { pricePerSlot: { lte: query.priceMax } }),
-      },
-      include: {
-        court: true,
-        host: { select: { id: true, name: true, eloScore: true } },
-      },
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: { startTime: 'asc' },
-    });
+    const [data, total] = await Promise.all([
+      this.prisma.courtSession.findMany({
+        where,
+        include: {
+          court: true,
+          host: { select: { id: true, name: true, eloScore: true } },
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { startTime: 'asc' },
+      }),
+      this.prisma.courtSession.count({ where }),
+    ]);
+
+    return { data, total, page, limit };
   }
 }
