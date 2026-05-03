@@ -87,6 +87,34 @@
       "ADVANCED": "Nâng Cao",
       "PRO": "Chuyên Nghiệp",
       "ALL": "Mọi Trình Độ"
+    },
+    "gridView": "Danh sách",
+    "mapView": "Bản đồ",
+    "searchPlaceholder": "Tìm kiếm phiên đánh…",
+    "allDistricts": "Tất cả quận",
+    "allSkills": "Mọi trình độ",
+    "noResults": "Không có phiên nào phù hợp",
+    "noResultsHint": "Hãy thử thay đổi bộ lọc hoặc xóa bộ lọc.",
+    "filter": {
+      "allLevels": "Mọi Trình Độ",
+      "beginner": "Người Mới",
+      "intermediate": "Trung Bình",
+      "advanced": "Nâng Cao",
+      "pro": "Chuyên Nghiệp",
+      "nearMe": "Gần tôi",
+      "locating": "Đang định vị…",
+      "clear": "Xóa bộ lọc",
+      "results": "{count, plural, =0 {Không tìm thấy phiên nào} other {Tìm thấy # phiên}}"
+    },
+    "pagination": {
+      "prev": "Trước",
+      "next": "Tiếp",
+      "pageOf": "Trang {page} / {total}"
+    },
+    "mapFilter": {
+      "title": "Bộ lọc",
+      "courts": "sân",
+      "sessions": "phiên"
     }
   }
 }

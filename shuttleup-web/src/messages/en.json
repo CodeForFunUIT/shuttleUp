@@ -87,6 +87,34 @@
       "ADVANCED": "Advanced",
       "PRO": "Pro",
       "ALL": "All Levels"
+    },
+    "gridView": "Grid",
+    "mapView": "Map",
+    "searchPlaceholder": "Search by session name…",
+    "allDistricts": "All Districts",
+    "allSkills": "All Skills",
+    "noResults": "No sessions match your filters",
+    "noResultsHint": "Try adjusting your search or clearing filters.",
+    "filter": {
+      "allLevels": "All Levels",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "pro": "Pro",
+      "nearMe": "Near me",
+      "locating": "Locating…",
+      "clear": "Clear filters",
+      "results": "{count, plural, =0 {No sessions found} =1 {1 session found} other {# sessions found}}"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {total}"
+    },
+    "mapFilter": {
+      "title": "Filters",
+      "courts": "courts",
+      "sessions": "sessions"
     }
   }
 }
