@@ -1,5 +1,6 @@
 "use client";
 
+import { use } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -66,8 +67,9 @@ function HostAvatar({ name }: { name: string }) {
   );
 }
 
-export default function SessionDetailPage({ params }: { params: { id: string } }) {
-  const { data: session, isLoading, error } = useSession(params.id);
+export default function SessionDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const { data: session, isLoading, error } = useSession(id);
 
   /* Loading */
   if (isLoading) {

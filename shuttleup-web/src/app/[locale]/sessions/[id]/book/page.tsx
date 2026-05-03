@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,8 @@ import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 
-export default function GuestBookingPage({ params }: { params: { id: string } }) {
+export default function GuestBookingPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,14 +28,14 @@ export default function GuestBookingPage({ params }: { params: { id: string } })
       description: "The host will confirm your slot shortly.",
     });
 
-    router.push(`/sessions/${params.id}`);
+    router.push(`/sessions/${id}`);
     router.refresh();
   };
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-lg">
       <Link
-        href={`/sessions/${params.id}`}
+        href={`/sessions/${id}`}
         className="text-sm text-primary hover:underline mb-6 inline-flex items-center gap-1"
       >
         <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
