@@ -19,13 +19,6 @@ import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher"
 
-export function Navbar() {
-  const t = useTranslations('Navbar');
-  
-  const NAV_LINKS = [
-    { href: "/sessions", label: t('findSession'), icon: Telescope },
-  ]
-
 /** Initials avatar from full name */
 function UserAvatar({ name }: { name: string }) {
   const initials = name
@@ -44,6 +37,13 @@ function UserAvatar({ name }: { name: string }) {
     </div>
   )
 }
+
+export function Navbar() {
+  const t = useTranslations('Navbar');
+  
+  const NAV_LINKS = [
+    { href: "/sessions", label: t('findSession'), icon: Telescope },
+  ]
 
 
   const { data: session, isPending } = useSession()

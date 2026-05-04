@@ -63,6 +63,7 @@ export function CourtSelect({ courts, value, onSelect, disabled }: CourtSelectPr
         type="button"
         role="combobox"
         aria-expanded={open}
+        aria-controls="court-select-listbox"
         disabled={disabled}
         onClick={() => setOpen(!open)}
         className={cn(

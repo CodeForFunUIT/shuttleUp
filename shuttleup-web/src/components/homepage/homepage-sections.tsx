@@ -28,41 +28,6 @@ const heroChildVariants = {
   },
 };
 
-/* ── Stats Data ──────────────────────────────────────────────────────────── */
-
-const stats = [
-  { value: 1000, suffix: "+", label: "Active Players" },
-  { value: 50, suffix: "+", label: "Partner Courts" },
-  { value: 200, suffix: "+", label: "Sessions / Week" },
-  { value: 4.9, suffix: " ★", label: "Average Rating", isDecimal: true },
-];
-
-/* ── Features Data ───────────────────────────────────────────────────────── */
-
-const features = [
-  {
-    icon: MapPin,
-    title: "Location Based",
-    description: "Find courts near you instantly with our interactive map and geo-search.",
-    cta: "Explore courts",
-    iconBg: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400",
-  },
-  {
-    icon: Star,
-    title: "Skill Matching",
-    description: "Filter sessions by skill levels to ensure competitive and fun games for everyone.",
-    cta: "Check your level",
-    iconBg: "bg-secondary text-primary",
-  },
-  {
-    icon: Calendar,
-    title: "Instant Booking",
-    description: "Secure your slot with live availability and pay effortlessly through integrated payments.",
-    cta: "Book now",
-    iconBg: "bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400",
-  },
-];
-
 /* ── Gallery Data ────────────────────────────────────────────────────────── */
 
 const galleryImages = [

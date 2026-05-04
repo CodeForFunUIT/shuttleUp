@@ -14,7 +14,7 @@ export class I18nService {
   }
 
   private loadTranslations() {
-    // Load once and cache in memory would be better for prod, 
+    // Load once and cache in memory would be better for prod,
     // but for simplicity we load here or use static properties if we want to share.
     // Let's use a static cache so we don't read from disk on every request.
     if (!I18nService.cacheLoaded) {
@@ -24,16 +24,23 @@ export class I18nService {
         for (const file of files) {
           if (file.endsWith('.json')) {
             const locale = file.replace('.json', '');
-            const content = fs.readFileSync(path.join(localesPath, file), 'utf8');
+            const content = fs.readFileSync(
+              path.join(localesPath, file),
+              'utf8',
+            );
             I18nService.globalTranslations[locale] = JSON.parse(content);
           }
         }
         I18nService.cacheLoaded = true;
       } catch (e) {
-        console.warn('Failed to load translations from', localesPath);
+        console.warn(
+          'Failed to load translations from',
+          localesPath,
+          e.toString(),
+        );
       }
     }
-    
+
     this.translations = I18nService.globalTranslations;
   }
 
@@ -43,15 +50,17 @@ export class I18nService {
   get currentLocale(): string {
     const acceptLanguage = this.request.headers['accept-language'];
     if (!acceptLanguage) return this.defaultLocale;
-    
+
     // Parse accept-language (e.g., "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7")
-    const languages = acceptLanguage.split(',').map((l) => l.split(';')[0].trim().toLowerCase());
-    
+    const languages = acceptLanguage
+      .split(',')
+      .map((l) => l.split(';')[0].trim().toLowerCase());
+
     for (const lang of languages) {
       if (lang.startsWith('vi')) return 'vi';
       if (lang.startsWith('en')) return 'en';
     }
-    
+
     return this.defaultLocale;
   }
 
@@ -79,7 +88,7 @@ export class I18nService {
 
     if (typeof result !== 'string') return key;
 
-    let text = result as string;
+    let text = result;
     if (args) {
       for (const [k, v] of Object.entries(args)) {
         text = text.replace(new RegExp(`{${k}}`, 'g'), String(v));

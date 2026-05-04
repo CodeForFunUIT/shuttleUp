@@ -128,7 +128,9 @@ export class SessionsService {
       ...(query.district && { court: { district: query.district } }),
       ...(query.skillRequired && { skillRequired: query.skillRequired }),
       ...(query.priceMax && { pricePerSlot: { lte: query.priceMax } }),
-      ...(query.title && { title: { contains: query.title, mode: 'insensitive' as const } }),
+      ...(query.title && {
+        title: { contains: query.title, mode: 'insensitive' as const },
+      }),
     };
 
     const [data, total] = await Promise.all([
