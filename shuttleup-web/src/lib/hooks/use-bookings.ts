@@ -71,3 +71,43 @@ export function useRejectBooking() {
     },
   });
 }
+
+/** Create a booking as authenticated user */
+export function useCreateBooking() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (sessionId: string) =>
+      api.post("/api/bookings", { sessionId }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["bookings"] });
+      void qc.invalidateQueries({ queryKey: ["sessions"] });
+    },
+  });
+}
+
+/** Create a booking as guest */
+export function useCreateGuestBooking() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { sessionId: string; guestName: string; guestPhone: string }) =>
+      api.post("/api/bookings/guest", data),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["sessions"] });
+    },
+  });
+}
+
+/** Check if current user already has an active booking for a session */
+export function useMyBookingStatus(sessionId: string, enabled: boolean) {
+  return useQuery<{ hasActiveBooking: boolean; booking?: { id: string; status: string } }>({
+    queryKey: ["bookings", "my-status", sessionId],
+    queryFn: async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res: any = await api.get("/api/bookings/my-status", {
+        params: { sessionId },
+      });
+      return (res?.data ?? res) as { hasActiveBooking: boolean; booking?: { id: string; status: string } };
+    },
+    enabled,
+  });
+}

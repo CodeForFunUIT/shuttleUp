@@ -16,7 +16,7 @@ jobs:
         working-directory: ./shuttleup-web
 
     env:
-      NEXT_PUBLIC_API_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:3001
 
     steps:
       - uses: actions/checkout@v4

@@ -2,7 +2,7 @@
 
 import { Link } from "@/i18n/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation"
-import { useSession } from "@/lib/auth-client"
+import { useSession, signOut } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
@@ -50,6 +50,11 @@ export function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = "/";
+  }
 
   const user = session?.user
 
@@ -121,7 +126,7 @@ export function Navbar() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => router.push("/api/auth/sign-out")}
+                    onClick={handleSignOut}
                     className="flex items-center gap-2 cursor-pointer text-destructive focus:text-destructive"
                   >
                     <LogOut className="h-4 w-4" aria-hidden="true" />
@@ -230,12 +235,12 @@ export function Navbar() {
                   </Link>
                 )}
                 {user && (
-                  <Link href="/api/auth/sign-out" onClick={() => setMobileOpen(false)} className="block">
+                  <button onClick={() => { setMobileOpen(false); void handleSignOut(); }} className="block w-full">
                     <Button variant="outline" className="w-full text-destructive border-destructive/30 hover:bg-destructive/10">
                       <LogOut className="h-4 w-4 mr-2" aria-hidden="true" />
                       {t('signOut')}
                     </Button>
-                  </Link>
+                  </button>
                 )}
               </div>
             </SheetContent>

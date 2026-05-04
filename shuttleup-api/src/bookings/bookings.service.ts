@@ -9,7 +9,11 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateBookingDto } from './dto/booking.dto';
-import { BookingStatus, PaymentStatus, SessionStatus } from '../common/constants/enums';
+import {
+  BookingStatus,
+  PaymentStatus,
+  SessionStatus,
+} from '../common/constants/enums';
 import {
   BookingCreatedEvent,
   BookingCancelledEvent,
@@ -46,6 +50,11 @@ export class BookingsService {
       throw new BadRequestException('Session not found');
     }
 
+    // Prevent host from booking their own session
+    if (userId && userId === session.hostId) {
+      throw new ForbiddenException('You cannot book your own session');
+    }
+
     if (session.gameType && !userId) {
       throw new BadRequestException(
         'ELO sessions require a registered account.',
@@ -66,6 +75,22 @@ export class BookingsService {
       });
       if (existing) {
         throw new ConflictException('You have already booked this session');
+      }
+    }
+
+    // Prevent guest duplicate bookings with same phone number
+    if (!userId && guestPhone) {
+      const existingGuest = await this.prisma.booking.findFirst({
+        where: {
+          sessionId,
+          guestPhone,
+          status: { notIn: [BookingStatus.CANCELLED, BookingStatus.REJECTED] },
+        },
+      });
+      if (existingGuest) {
+        throw new ConflictException(
+          'A booking with this phone number already exists for this session',
+        );
       }
     }
 
@@ -151,11 +176,7 @@ export class BookingsService {
 
       this.eventEmitter.emit(
         'booking.approved',
-        new BookingApprovedEvent(
-          booking.id,
-          booking.sessionId,
-          booking.userId,
-        ),
+        new BookingApprovedEvent(booking.id, booking.sessionId, booking.userId),
       );
 
       // Also emit the legacy event for existing notification flow
@@ -201,11 +222,7 @@ export class BookingsService {
 
     this.eventEmitter.emit(
       'booking.rejected',
-      new BookingRejectedEvent(
-        booking.id,
-        booking.sessionId,
-        booking.userId,
-      ),
+      new BookingRejectedEvent(booking.id, booking.sessionId, booking.userId),
     );
 
     return { message: 'Booking rejected' };
@@ -262,6 +279,21 @@ export class BookingsService {
       result[row.sessionId] = row._count.id;
     }
     return result;
+  }
+
+  /**
+   * Check if the current user already has an active booking for a session.
+   */
+  async getMyBookingStatus(sessionId: string, userId: string) {
+    const booking = await this.prisma.booking.findFirst({
+      where: {
+        sessionId,
+        userId,
+        status: { notIn: [BookingStatus.CANCELLED, BookingStatus.REJECTED] },
+      },
+      select: { id: true, status: true, createdAt: true },
+    });
+    return { hasActiveBooking: !!booking, booking: booking ?? undefined };
   }
 
   async cancel(bookingId: string, userId?: string) {

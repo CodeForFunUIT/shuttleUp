@@ -6,5 +6,5 @@ export default registerAs('app', () => ({
   apiPrefix: process.env.API_PREFIX || 'api',
   corsOrigin: process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-    : ['http://localhost:3000'],
+    : ['http://localhost:3001'],
 }));

@@ -9,27 +9,43 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
+import { useCreateGuestBooking } from "@/lib/hooks/use-bookings";
 
 export default function GuestBookingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const guestBooking = useCreateGuestBooking();
 
   const handleBooking = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    // Simulate API call delay
-    await new Promise((r) => setTimeout(r, 1000));
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await guestBooking.mutateAsync({
+        sessionId: id,
+        guestName: name,
+        guestPhone: phone,
+      });
 
-    toast.success("Booking Request Sent!", {
-      description: "The host will confirm your slot shortly.",
-    });
+      // Store bookingId in localStorage for guest tracking
+      const stored = JSON.parse(localStorage.getItem("guestBookings") || "[]");
+      const bookingId = result?.id ?? result?.data?.id;
+      if (bookingId) {
+        stored.push({ bookingId, sessionId: id, phone, createdAt: new Date().toISOString() });
+        localStorage.setItem("guestBookings", JSON.stringify(stored));
+      }
 
-    router.push(`/sessions/${id}`);
-    router.refresh();
+      toast.success("Booking Request Sent!", {
+        description: "The host will confirm your slot shortly.",
+      });
+
+      router.push(`/sessions/${id}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Booking failed. Please try again.";
+      toast.error("Booking Failed", { description: message });
+    }
   };
 
   return (
@@ -85,9 +101,9 @@ export default function GuestBookingPage({ params }: { params: Promise<{ id: str
             <Button
               className="w-full bg-primary hover:bg-primary/90 h-12"
               type="submit"
-              disabled={loading}
+              disabled={guestBooking.isPending}
             >
-              {loading ? (
+              {guestBooking.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" aria-hidden="true" />
                   Processing…

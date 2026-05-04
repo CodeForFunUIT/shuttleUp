@@ -44,6 +44,19 @@ export class BookingsController {
     return this.bookingsService.getPendingCountsByHost(userId);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Check if current user has an active booking for a session',
+  })
+  @UseGuards(AuthGuard)
+  @Get('my-status')
+  getMyStatus(
+    @CurrentUser('id') userId: string,
+    @Query('sessionId') sessionId: string,
+  ) {
+    return this.bookingsService.getMyBookingStatus(sessionId, userId);
+  }
+
   // ── Booking creation ─────────────────────────────────────────────────────
 
   @ApiOperation({ summary: 'Book a session as guest (no auth required)' })
@@ -69,10 +82,7 @@ export class BookingsController {
   @ApiOperation({ summary: 'Approve a booking request (host only)' })
   @UseGuards(AuthGuard)
   @Patch(':id/approve')
-  approve(
-    @CurrentUser('id') userId: string,
-    @Param('id') id: string,
-  ) {
+  approve(@CurrentUser('id') userId: string, @Param('id') id: string) {
     return this.bookingsService.approve(id, userId);
   }
 
@@ -80,10 +90,7 @@ export class BookingsController {
   @ApiOperation({ summary: 'Reject a booking request (host only)' })
   @UseGuards(AuthGuard)
   @Patch(':id/reject')
-  reject(
-    @CurrentUser('id') userId: string,
-    @Param('id') id: string,
-  ) {
+  reject(@CurrentUser('id') userId: string, @Param('id') id: string) {
     return this.bookingsService.reject(id, userId);
   }
 

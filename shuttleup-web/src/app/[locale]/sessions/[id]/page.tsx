@@ -7,7 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, Clock, ShieldAlert, CheckCircle2, Star, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useSession } from "@/lib/hooks/use-sessions";
+import { useSession as useAuthSession } from "@/lib/auth-client";
+import { useCreateBooking, useMyBookingStatus } from "@/lib/hooks/use-bookings";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 /** Map raw skill enum → readable label */
 const SKILL_LABELS: Record<string, string> = {
@@ -198,14 +201,7 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
-              <Link href={`/sessions/${session.id}/book`}>
-                <Button className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold" disabled={isFull}>
-                  {isFull ? "Session Full" : "Request to Join"}
-                </Button>
-              </Link>
-              <p className="text-xs text-center text-muted-foreground mt-3">
-                Host will review your request.
-              </p>
+              <BookingCTA sessionId={session.id} hostId={session.hostId} isFull={isFull} />
             </CardContent>
           </Card>
 
@@ -232,5 +228,109 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
         </div>
       </div>
     </div>
+  );
+}
+
+/** Auth-aware booking CTA */
+function BookingCTA({ sessionId, hostId, isFull }: { sessionId: string; hostId: string; isFull: boolean }) {
+  const { data: authSession, isPending: authLoading } = useAuthSession();
+  const isLoggedIn = !!authSession?.user;
+  const isHost = authSession?.user?.id === hostId;
+
+  const { data: bookingStatus } = useMyBookingStatus(sessionId, isLoggedIn && !isHost);
+  const createBooking = useCreateBooking();
+
+  const hasActiveBooking = bookingStatus?.hasActiveBooking ?? false;
+
+  const handleBookAsUser = async () => {
+    try {
+      await createBooking.mutateAsync(sessionId);
+      toast.success("Request Sent!", { description: "The host will review your request." });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Booking failed";
+      toast.error("Booking failed", { description: message });
+    }
+  };
+
+  if (authLoading) {
+    return (
+      <Button className="w-full h-12 text-lg font-semibold" disabled>
+        <Loader2 className="h-5 w-5 animate-spin mr-2" aria-hidden="true" />
+        Loading…
+      </Button>
+    );
+  }
+
+  // Host sees their own session label
+  if (isHost) {
+    return (
+      <>
+        <Button className="w-full h-12 text-lg font-semibold" variant="secondary" disabled>
+          Your Session
+        </Button>
+        <p className="text-xs text-center text-muted-foreground mt-3">
+          You are the host of this session.
+        </p>
+      </>
+    );
+  }
+
+  if (isFull) {
+    return (
+      <Button className="w-full h-12 text-lg font-semibold" variant="destructive" disabled>
+        Session Full
+      </Button>
+    );
+  }
+
+  // Already booked
+  if (hasActiveBooking) {
+    return (
+      <>
+        <Button className="w-full h-12 text-lg font-semibold bg-emerald-600" disabled>
+          <CheckCircle2 className="h-5 w-5 mr-2" aria-hidden="true" />
+          Request Pending
+        </Button>
+        <p className="text-xs text-center text-muted-foreground mt-3">
+          Your request is awaiting host approval.
+        </p>
+      </>
+    );
+  }
+
+  // Logged-in user — book directly
+  if (isLoggedIn) {
+    return (
+      <>
+        <Button
+          className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold"
+          onClick={handleBookAsUser}
+          disabled={createBooking.isPending}
+        >
+          {createBooking.isPending ? (
+            <><Loader2 className="h-5 w-5 animate-spin mr-2" aria-hidden="true" />Sending…</>
+          ) : (
+            "Request to Join"
+          )}
+        </Button>
+        <p className="text-xs text-center text-muted-foreground mt-3">
+          Host will review your request.
+        </p>
+      </>
+    );
+  }
+
+  // Guest — go to guest booking form
+  return (
+    <>
+      <Link href={`/sessions/${sessionId}/book`}>
+        <Button className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold">
+          Request to Join
+        </Button>
+      </Link>
+      <p className="text-xs text-center text-muted-foreground mt-3">
+        You&apos;ll need to provide contact details as a guest.
+      </p>
+    </>
   );
 }
