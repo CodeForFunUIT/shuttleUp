@@ -14,7 +14,7 @@ const MOCK_BOOKINGS = [
 export default function ManageSessionPage() {
   return (
     <div className="container mx-auto px-4 py-8">
-      <Link href="/dashboard" className="text-sm text-emerald-600 hover:underline mb-6 inline-block">
+      <Link href="/dashboard" className="text-sm text-primary hover:underline mb-6 inline-block">
         &larr; Back to Dashboard
       </Link>
 
@@ -32,7 +32,7 @@ export default function ManageSessionPage() {
             </CardHeader>
             <CardContent>
               <div className="divide-y border rounded-lg overflow-hidden">
-                <div className="bg-slate-50 p-3 grid grid-cols-12 gap-4 text-sm font-medium text-slate-500">
+                <div className="bg-muted p-3 grid grid-cols-12 gap-4 text-sm font-medium text-muted-foreground">
                   <div className="col-span-5">Player</div>
                   <div className="col-span-3">Status</div>
                   <div className="col-span-4 text-right">Actions</div>
@@ -42,16 +42,16 @@ export default function ManageSessionPage() {
                   <div key={booking.id} className="p-4 grid grid-cols-12 gap-4 items-center">
                     <div className="col-span-5">
                       <p className="font-medium">{booking.name} {booking.isGuest && <Badge variant="secondary" className="ml-1 text-xs">Guest</Badge>}</p>
-                      <p className="text-sm text-slate-500">{booking.phone}</p>
+                      <p className="text-sm text-muted-foreground">{booking.phone}</p>
                     </div>
                     <div className="col-span-3">
-                      <Badge variant={booking.status === "CONFIRMED" ? "default" : "outline"} className={booking.status === "CONFIRMED" ? "bg-emerald-100 text-emerald-800" : ""}>
+                      <Badge variant={booking.status === "CONFIRMED" ? "default" : "outline"} className={booking.status === "CONFIRMED" ? "bg-primary/10 text-primary" : ""}>
                         {booking.status}
                       </Badge>
                     </div>
                     <div className="col-span-4 flex justify-end gap-2">
                        {booking.status !== "CONFIRMED" && (
-                         <Button size="sm" variant="outline" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200">
+                         <Button size="sm" variant="outline" className="bg-primary/5 text-primary hover:bg-primary/10 border-primary/20">
                            <CheckCircle className="mr-1 h-4 w-4" /> Confirm
                          </Button>
                        )}
@@ -73,15 +73,15 @@ export default function ManageSessionPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between border-b pb-2">
-                <span className="text-slate-500 flex items-center"><Users className="mr-2 h-4 w-4"/> Fill Rate</span>
+                <span className="text-muted-foreground flex items-center"><Users className="mr-2 h-4 w-4"/> Fill Rate</span>
                 <span className="font-bold">2 / 8</span>
               </div>
               <div className="flex items-center justify-between border-b pb-2">
-                <span className="text-slate-500">Confirmed Revenue</span>
-                <span className="font-bold text-emerald-700">50,000 ₫</span>
+                <span className="text-muted-foreground">Confirmed Revenue</span>
+                <span className="font-bold text-primary">50,000 ₫</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-slate-500">Pending Revenue</span>
+                <span className="text-muted-foreground">Pending Revenue</span>
                 <span className="font-bold">50,000 ₫</span>
               </div>
             </CardContent>

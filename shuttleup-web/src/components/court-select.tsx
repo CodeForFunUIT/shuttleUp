@@ -76,7 +76,7 @@ export function CourtSelect({ courts, value, onSelect, disabled }: CourtSelectPr
       >
         {selectedCourt ? (
           <span className="flex items-center gap-2 text-left truncate">
-            <MapPin className="h-4 w-4 shrink-0 text-emerald-600" />
+            <MapPin className="h-4 w-4 shrink-0 text-primary" />
             <span className="truncate">
               {selectedCourt.name}
               <span className="text-muted-foreground ml-1 text-xs">
@@ -129,7 +129,7 @@ export function CourtSelect({ courts, value, onSelect, disabled }: CourtSelectPr
                       <Check
                         className={cn(
                           "h-4 w-4 shrink-0",
-                          value === court.id ? "opacity-100 text-emerald-600" : "opacity-0"
+                          value === court.id ? "opacity-100 text-primary" : "opacity-0"
                         )}
                       />
                       <div className="min-w-0">

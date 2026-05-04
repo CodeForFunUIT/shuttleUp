@@ -69,16 +69,16 @@ export function BeloHowItWorks() {
       </div>
 
       {/* Synergy Bonus callout */}
-      <Card className="mt-4 border-emerald-200 bg-emerald-50/50">
+      <Card className="mt-4 border-primary/20 bg-primary/5">
         <CardContent className="p-4 flex items-start gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 flex-shrink-0 mt-0.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary flex-shrink-0 mt-0.5">
             🤝
           </div>
           <div>
-            <h4 className="font-semibold text-sm text-emerald-800">
+            <h4 className="font-semibold text-sm text-primary">
               Hóa học cặp đôi (Synergy Bonus)
             </h4>
-            <p className="text-xs text-emerald-700 mt-1 leading-relaxed">
+            <p className="text-xs text-primary/80 mt-1 leading-relaxed">
               Đánh cùng nhau nhiều = bonus thêm điểm cho cặp đôi.
               5-9 trận: +5 • 10-19 trận: +10 • 20+ trận: +15 (tối đa).
               Bonus được cộng vào Pair Rating khi tính xác suất thắng.

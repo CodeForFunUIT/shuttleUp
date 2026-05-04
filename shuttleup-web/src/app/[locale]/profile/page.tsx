@@ -12,7 +12,7 @@ export default function ProfilePage() {
   if (isPending) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-theme(spacing.16))]">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -28,7 +28,7 @@ export default function ProfilePage() {
 
       <Card>
         <CardContent className="p-8 flex flex-col md:flex-row items-center gap-8">
-          <div className="h-32 w-32 rounded-full bg-emerald-100 flex items-center justify-center text-4xl font-bold text-emerald-700">
+          <div className="h-32 w-32 rounded-full bg-primary/10 flex items-center justify-center text-4xl font-bold text-primary">
             {initials}
           </div>
           <div className="text-center md:text-left space-y-2 flex-1">

@@ -49,8 +49,8 @@ const tiers = [
   {
     name: "Nhập môn",
     range: "< 800",
-    color: "bg-green-50 text-green-700 border-green-200",
-    barColor: "bg-green-400",
+    color: "bg-purple-50 text-purple-700 border-purple-200",
+    barColor: "bg-purple-400",
     barWidth: "w-[25%]",
     emoji: "🌱",
     percent: "Lần đầu",

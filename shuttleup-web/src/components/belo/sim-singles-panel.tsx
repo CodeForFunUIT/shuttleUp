@@ -60,7 +60,7 @@ export function SimSinglesPanel() {
           </div>
           {/* Actions */}
           <div className="flex gap-2 pt-1">
-            <Button onClick={handleSimulate} className="flex-1 bg-emerald-600 hover:bg-emerald-700 cursor-pointer">
+            <Button onClick={handleSimulate} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer">
               <Play className="mr-2 h-4 w-4" /> Tính ELO
             </Button>
             <Button variant="outline" onClick={handleReset} className="cursor-pointer">

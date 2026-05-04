@@ -96,7 +96,7 @@ export default function CreateSessionPage() {
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Link
         href="/dashboard"
-        className="text-sm text-emerald-600 hover:underline mb-6 inline-block"
+        className="text-sm text-primary hover:underline mb-6 inline-block"
       >
         &larr; Back to Dashboard
       </Link>
@@ -337,7 +337,7 @@ export default function CreateSessionPage() {
                 </Button>
               </Link>
               <Button
-                className="bg-emerald-600 hover:bg-emerald-700"
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
                 type="submit"
                 disabled={createSession.isPending}
               >

@@ -56,7 +56,7 @@ export function HeroSection() {
 
       {/* Dark gradient overlay */}
       <div
-        className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/75 to-slate-900/30"
+        className="absolute inset-0 bg-gradient-to-r from-[#0D0F12]/90 via-[#0D0F12]/75 to-[#0D0F12]/30"
         aria-hidden="true"
       />
 

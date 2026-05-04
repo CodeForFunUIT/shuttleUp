@@ -14,7 +14,7 @@ export function BeloPublicSimulator() {
     <div>
       {/* Section header */}
       <div className="text-center mb-10">
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-sm text-emerald-400 font-medium mb-4">
+        <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm text-primary font-medium mb-4">
           <Trophy className="h-3.5 w-3.5" />
           BELo Ranking System
         </div>

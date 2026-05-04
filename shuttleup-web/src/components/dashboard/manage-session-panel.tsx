@@ -98,7 +98,7 @@ function PendingRow({ booking }: { booking: PendingBooking }) {
         <Button
           size="sm"
           variant="outline"
-          className="h-8 w-8 p-0 text-emerald-600 border-emerald-200 hover:bg-emerald-50"
+          className="h-8 w-8 p-0 text-primary border-primary/20 hover:bg-primary/5"
           onClick={handleApprove}
           disabled={busy}
           title="Accept"

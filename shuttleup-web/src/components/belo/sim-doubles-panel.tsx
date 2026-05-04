@@ -78,7 +78,7 @@ export function SimDoublesPanel({ gameLabel, teamLabelsA = DEFAULT_A, teamLabels
             </Select>
           </div>
           <div className="flex gap-2 pt-1">
-            <Button onClick={handleSimulate} className="flex-1 bg-emerald-600 hover:bg-emerald-700 cursor-pointer">
+            <Button onClick={handleSimulate} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer">
               <Play className="mr-2 h-4 w-4" /> Tính ELO
             </Button>
             <Button variant="outline" onClick={handleReset} className="cursor-pointer">
@@ -121,7 +121,7 @@ function DoublesResultView({ result, winner, eloA1, eloA2, eloB1, eloB2, labelsA
       <div className="space-y-2">
         <div className="flex items-center gap-2 text-xs font-semibold text-blue-700">
           <span>Đội A</span>
-          {result.synergyBonusA > 0 && <Badge className="bg-emerald-50 text-emerald-700 text-[10px]">🤝 +{result.synergyBonusA}</Badge>}
+          {result.synergyBonusA > 0 && <Badge className="bg-primary/5 text-primary text-[10px]">🤝 +{result.synergyBonusA}</Badge>}
           <span className="text-muted-foreground font-normal">PR: {result.pairRatingA}</span>
         </div>
         <PlayerResultCard label={labelsA[0]} eloBefore={eloA1} eloAfter={result.playerA1.newElo}
@@ -134,7 +134,7 @@ function DoublesResultView({ result, winner, eloA1, eloA2, eloB1, eloB2, labelsA
       <div className="space-y-2">
         <div className="flex items-center gap-2 text-xs font-semibold text-rose-700">
           <span>Đội B</span>
-          {result.synergyBonusB > 0 && <Badge className="bg-emerald-50 text-emerald-700 text-[10px]">🤝 +{result.synergyBonusB}</Badge>}
+          {result.synergyBonusB > 0 && <Badge className="bg-primary/5 text-primary text-[10px]">🤝 +{result.synergyBonusB}</Badge>}
           <span className="text-muted-foreground font-normal">PR: {result.pairRatingB}</span>
         </div>
         <PlayerResultCard label={labelsB[0]} eloBefore={eloB1} eloAfter={result.playerB1.newElo}

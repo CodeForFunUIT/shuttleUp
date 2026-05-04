@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   if (isPending || !session?.user) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-theme(spacing.16))]">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -45,10 +45,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8 max-w-7xl flex flex-col md:flex-row gap-8">
       {/* Sidebar Navigation */}
       <aside className="w-full md:w-64 flex-shrink-0">
-        <div className="bg-white rounded-xl border shadow-sm p-4 sticky top-24">
+        <div className="bg-card rounded-xl border shadow-sm p-4 sticky top-24">
           <div className="mb-6 px-3">
             <h2 className="text-xl font-bold truncate">{session.user.name}</h2>
-            <p className="text-sm text-slate-500 truncate">{session.user.email}</p>
+            <p className="text-sm text-muted-foreground truncate">{session.user.email}</p>
           </div>
           
           <nav className="space-y-1">
@@ -62,8 +62,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                     isActive 
-                      ? "bg-emerald-50 text-emerald-700 font-medium" 
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-primary/10 text-primary font-medium" 
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
                   <Icon className="h-5 w-5" />

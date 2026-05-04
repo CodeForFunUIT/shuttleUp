@@ -287,7 +287,7 @@ function BookingCTA({ sessionId, hostId, isFull }: { sessionId: string; hostId: 
   if (hasActiveBooking) {
     return (
       <>
-        <Button className="w-full h-12 text-lg font-semibold bg-emerald-600" disabled>
+        <Button className="w-full h-12 text-lg font-semibold bg-primary text-primary-foreground" disabled>
           <CheckCircle2 className="h-5 w-5 mr-2" aria-hidden="true" />
           Request Pending
         </Button>

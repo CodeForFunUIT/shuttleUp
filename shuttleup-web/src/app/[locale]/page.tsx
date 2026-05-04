@@ -22,7 +22,7 @@ export default function Home() {
       <FeaturesSection />
 
       {/* ── BELo Ranking Simulator — scroll reveal ───────────────────────── */}
-      <section className="py-24 bg-slate-950">
+      <section className="py-24 bg-[#0D0F12]">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <AnimatedSection>
             <BeloPublicSimulator />

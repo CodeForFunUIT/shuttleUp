@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Barlow+Condensed:wght@500;600&family=JetBrains+Mono:wght@400&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -12,7 +12,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono);
   --font-heading: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -43,119 +43,144 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-3xl: 28px;
+  --radius-4xl: 9999px;
 }
 
-/* ── Light Mode — Emerald Sports ──────────────────────────────────────────── */
+/* ── BELo Design System — Light Mode ─────────────────────────────────────── */
 :root {
   color-scheme: light;
 
-  /* Brand — Emerald */
-  --primary: oklch(0.59 0.17 162);           /* #059669 */
-  --primary-foreground: oklch(1 0 0);        /* white */
+  /* Brand — Shuttle Gold */
+  --primary: #F5C842;
+  --primary-foreground: #0D0F12;
 
-  /* CTA — Orange */
-  --accent: oklch(0.70 0.18 48);             /* #F97316 */
-  --accent-foreground: oklch(1 0 0);
+  /* Accent — Energy Orange */
+  --accent: #FF6B35;
+  --accent-foreground: #FFFFFF;
 
-  /* Surfaces */
-  --background: oklch(0.98 0 0);             /* #F8FAFC */
-  --foreground: oklch(0.14 0 0);             /* #0F172A slate-900 */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.14 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.14 0 0);
+  /* Surfaces — BELo §2.3 */
+  --background: #F5F6F8;
+  --foreground: #0D0F12;
+  --card: #FFFFFF;
+  --card-foreground: #0D0F12;
+  --popover: #FFFFFF;
+  --popover-foreground: #0D0F12;
 
-  /* Secondary surfaces */
-  --secondary: oklch(0.95 0.07 162);         /* #D1FAE5 emerald-100 */
-  --secondary-foreground: oklch(0.29 0.10 162); /* emerald-900 */
+  /* Secondary */
+  --secondary: #EAECF0;
+  --secondary-foreground: #1A1E24;
 
-  /* Muted */
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.43 0 0);       /* #475569 slate-600 — min readable */
+  /* Muted — BELo §2.4 */
+  --muted: #EAECF0;
+  --muted-foreground: #4B5563;
 
-  /* Borders & inputs */
-  --border: oklch(0.91 0 0);                 /* #E2E8F0 */
-  --input: oklch(0.91 0 0);
-  --ring: oklch(0.59 0.17 162);              /* focus ring = primary */
+  /* Borders — BELo §2.6 */
+  --border: rgba(0,0,0,0.12);
+  --input: rgba(0,0,0,0.12);
+  --ring: #F5C842;
 
-  /* Destructive */
-  --destructive: oklch(0.577 0.245 27.325);
+  /* Destructive — Rally Red */
+  --destructive: #E8385A;
 
-  /* Radius */
-  --radius: 0.625rem;
+  /* Radius — BELo §5.1 */
+  --radius: 10px;
 
   /* Charts */
-  --chart-1: oklch(0.59 0.17 162);
-  --chart-2: oklch(0.70 0.18 48);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --chart-1: #F5C842;
+  --chart-2: #FF6B35;
+  --chart-3: #378ADD;
+  --chart-4: #4ADE80;
+  --chart-5: #E8385A;
 
   /* Sidebar */
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.59 0.17 162);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.95 0.07 162);
-  --sidebar-accent-foreground: oklch(0.29 0.10 162);
-  --sidebar-border: oklch(0.91 0 0);
-  --sidebar-ring: oklch(0.59 0.17 162);
+  --sidebar: #F5F6F8;
+  --sidebar-foreground: #0D0F12;
+  --sidebar-primary: #F5C842;
+  --sidebar-primary-foreground: #0D0F12;
+  --sidebar-accent: #EAECF0;
+  --sidebar-accent-foreground: #1A1E24;
+  --sidebar-border: rgba(0,0,0,0.08);
+  --sidebar-ring: #F5C842;
 
-  /* Typography */
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Barlow', 'Geist', sans-serif;
+  /* BELo Semantic — §2.5 */
+  --color-win: #4ADE80;
+  --color-loss: #F87171;
+  --color-info: #378ADD;
+  --color-warning: #F5C842;
+  --color-danger: #E8385A;
+
+  /* BELo Brand Gradient */
+  --color-brand-gradient: linear-gradient(90deg, #F5C842 0%, #FF6B35 50%, #E8385A 100%);
+
+  /* Typography — BELo §3.1 */
+  --font-display: 'Barlow Condensed', 'Inter', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Motion — BELo §8.1 */
+  --duration-micro: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
 }
 
-/* ── Dark Mode ────────────────────────────────────────────────────────────── */
+/* ── BELo Design System — Dark Mode (Default) ───────────────────────────── */
 .dark {
   color-scheme: dark;
 
-  --primary: oklch(0.73 0.17 162);           /* #34D399 emerald-400 */
-  --primary-foreground: oklch(0.14 0 0);
+  /* Brand — Gold stays identical in dark */
+  --primary: #F5C842;
+  --primary-foreground: #0D0F12;
 
-  --accent: oklch(0.75 0.18 48);
-  --accent-foreground: oklch(0.14 0 0);
+  --accent: #FF6B35;
+  --accent-foreground: #0D0F12;
 
-  --background: oklch(0.10 0.01 240);        /* #0A0F1A */
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.16 0.01 240);              /* #111827 */
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.16 0.01 240);
-  --popover-foreground: oklch(0.985 0 0);
+  /* Surfaces — BELo §2.2 Court Black */
+  --background: #0D0F12;
+  --foreground: #F0F2F5;
+  --card: #161A20;
+  --card-foreground: #F0F2F5;
+  --popover: #1C2128;
+  --popover-foreground: #F0F2F5;
 
-  --secondary: oklch(0.22 0.02 162);
-  --secondary-foreground: oklch(0.985 0 0);
+  /* Secondary */
+  --secondary: #1C2128;
+  --secondary-foreground: #F0F2F5;
 
-  --muted: oklch(0.22 0.01 240);
-  --muted-foreground: oklch(0.65 0 0);
+  /* Muted — BELo §2.4 */
+  --muted: #1C2128;
+  --muted-foreground: #6B7280;
 
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.73 0.17 162);
+  /* Borders — BELo §2.6 */
+  --border: rgba(255,255,255,0.12);
+  --input: rgba(255,255,255,0.15);
+  --ring: #F5C842;
 
-  --destructive: oklch(0.704 0.191 22.216);
+  /* Destructive — Rally Red */
+  --destructive: #E8385A;
 
-  --chart-1: oklch(0.73 0.17 162);
-  --chart-2: oklch(0.75 0.18 48);
-  --chart-3: oklch(0.556 0 0);
-  --chart-4: oklch(0.439 0 0);
-  --chart-5: oklch(0.371 0 0);
+  /* Charts */
+  --chart-1: #F5C842;
+  --chart-2: #FF6B35;
+  --chart-3: #378ADD;
+  --chart-4: #4ADE80;
+  --chart-5: #E8385A;
 
-  --sidebar: oklch(0.16 0.01 240);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.73 0.17 162);
-  --sidebar-primary-foreground: oklch(0.14 0 0);
-  --sidebar-accent: oklch(0.22 0.02 162);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.73 0.17 162);
+  /* Sidebar */
+  --sidebar: #161A20;
+  --sidebar-foreground: #F0F2F5;
+  --sidebar-primary: #F5C842;
+  --sidebar-primary-foreground: #0D0F12;
+  --sidebar-accent: #1C2128;
+  --sidebar-accent-foreground: #F0F2F5;
+  --sidebar-border: rgba(255,255,255,0.08);
+  --sidebar-ring: #F5C842;
 }
 
 /* ── Base Styles ──────────────────────────────────────────────────────────── */
@@ -185,9 +210,10 @@
   h1 { text-wrap: balance; }
   h2 { text-wrap: balance; }
 
-  /* Smooth transitions for interactive elements */
+  /* BELo §8.1 — fast transitions for sporty feel */
   button, a, [role="button"] {
-    @apply transition-colors duration-200;
+    @apply transition-colors;
+    transition-duration: var(--duration-fast);
   }
 }
 
@@ -199,13 +225,21 @@
   .font-body {
     font-family: var(--font-body);
   }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
 
-  /* Skill level badge colors */
+  /* Skill level badge colors — BELo tier-inspired */
   .skill-beginner    { @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400; }
   .skill-intermediate { @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400; }
   .skill-advanced    { @apply bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400; }
   .skill-pro         { @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400; }
   .skill-all         { @apply bg-muted text-muted-foreground; }
+
+  /* BELo brand gradient utility */
+  .bg-brand-gradient {
+    background: var(--color-brand-gradient);
+  }
 }
 
 /* ── Animation Keyframes ─────────────────────────────────────────────────── */
@@ -225,6 +259,14 @@
   50%      { transform: translateY(-8px); }
 }
 
+/* BELo §8.3 — Delta highlight animation */
+@keyframes deltaIn {
+  0%   { opacity: 0; transform: translateY(-8px); }
+  20%  { opacity: 1; transform: translateY(0); }
+  80%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-4px); }
+}
+
 @layer utilities {
   .animate-ken-burns {
     animation: ken-burns 8s ease-out forwards;
@@ -242,6 +284,10 @@
   .animate-float-delayed {
     animation: float-gentle 5s ease-in-out 1s infinite;
   }
+
+  .animate-delta {
+    animation: deltaIn 2s ease forwards;
+  }
 }
 
 /* ── Reduced Motion — Accessibility ──────────────────────────────────────── */
@@ -254,43 +300,45 @@
   }
 }
 
-/* ── Leaflet Map Cluster Icons ───────────────────────────────────────────── */
+/* ── Leaflet Map Cluster Icons — BELo Brand Gradient ────────────────────── */
 .cluster-icon {
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   font-family: var(--font-display);
-  font-weight: 700;
-  color: white;
+  font-weight: 600;
+  color: #0D0F12;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .cluster-small {
-  background: oklch(0.59 0.17 162);
+  background: #F5C842; /* Shuttle Gold */
   font-size: 12px;
 }
 
 .cluster-medium {
-  background: oklch(0.70 0.18 48);
+  background: #FF6B35; /* Energy Orange */
+  color: white;
   font-size: 14px;
 }
 
 .cluster-large {
-  background: oklch(0.577 0.245 27.325);
+  background: #E8385A; /* Rally Red */
+  color: white;
   font-size: 16px;
 }
 
-/* Override Leaflet popup styles to match our design system */
+/* Override Leaflet popup styles to match BELo */
 .leaflet-popup-content-wrapper {
-  border-radius: 12px !important;
+  border-radius: var(--radius-lg) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12) !important;
   padding: 0 !important;
 }
 
 .dark .leaflet-popup-content-wrapper {
-  background: oklch(0.16 0.01 240) !important;
-  color: oklch(0.985 0 0) !important;
+  background: #161A20 !important;
+  color: #F0F2F5 !important;
 }
 
 .leaflet-popup-content {
@@ -302,5 +350,5 @@
 }
 
 .dark .leaflet-popup-tip {
-  background: oklch(0.16 0.01 240) !important;
+  background: #161A20 !important;
 }

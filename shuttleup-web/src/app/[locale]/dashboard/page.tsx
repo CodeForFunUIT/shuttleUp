@@ -40,7 +40,7 @@ export default function DashboardPage() {
           <p className="text-muted-foreground mt-1">Manage your badminton sessions and bookings</p>
         </div>
         <Link href="/dashboard/sessions/new">
-          <Button className="bg-emerald-600 hover:bg-emerald-700">
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
             <PlusCircle className="mr-2 h-4 w-4" />
             Create Session
           </Button>
@@ -111,7 +111,7 @@ export default function DashboardPage() {
         <CardContent className="p-0">
           {isLoading && (
             <div className="flex items-center justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
             </div>
           )}
 
@@ -130,7 +130,7 @@ export default function DashboardPage() {
                 <div key={s.id} className="p-4 flex items-center justify-between">
                   <div>
                     <h4 className="font-medium">{s.title}</h4>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-muted-foreground">
                       {format(new Date(s.startTime), "dd MMM")} • {format(new Date(s.startTime), "HH:mm")} - {format(new Date(s.endTime), "HH:mm")}
                     </p>
                   </div>
