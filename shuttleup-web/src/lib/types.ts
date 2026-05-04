@@ -75,7 +75,9 @@ export interface Booking {
 }
 
 export type BookingStatus =
+  | "PENDING_APPROVAL"
   | "PENDING_PAYMENT"
   | "CONFIRMED"
   | "CANCELLED"
+  | "REJECTED"
   | "REFUNDED";

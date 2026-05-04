@@ -2,16 +2,20 @@ import {
   Injectable,
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateBookingDto } from './dto/booking.dto';
-import { BookingStatus, PaymentStatus } from '../common/constants/enums';
+import { BookingStatus, PaymentStatus, SessionStatus } from '../common/constants/enums';
 import {
   BookingCreatedEvent,
   BookingCancelledEvent,
+  BookingRequestedEvent,
+  BookingApprovedEvent,
+  BookingRejectedEvent,
 } from '../common/events/booking.events';
 
 @Injectable()
@@ -22,6 +26,10 @@ export class BookingsService {
     private eventEmitter: EventEmitter2,
   ) {}
 
+  /**
+   * Create a booking request (status: PENDING_APPROVAL).
+   * Slots are NOT decremented until host approves.
+   */
   async create(createBookingDto: CreateBookingDto, userId?: string) {
     const { sessionId, guestName, guestPhone } = createBookingDto;
 
@@ -29,74 +37,231 @@ export class BookingsService {
       throw new BadRequestException('Guest bookings require name and phone');
     }
 
-    const lockKey = `lock:session:${sessionId}`;
+    const session = await this.prisma.courtSession.findUnique({
+      where: { id: sessionId },
+      include: { host: { select: { name: true } } },
+    });
+
+    if (!session) {
+      throw new BadRequestException('Session not found');
+    }
+
+    if (session.gameType && !userId) {
+      throw new BadRequestException(
+        'ELO sessions require a registered account.',
+      );
+    }
+
+    if (session.availableSlots <= 0) {
+      throw new ConflictException('No slots available for this session');
+    }
+
+    if (userId) {
+      const existing = await this.prisma.booking.findFirst({
+        where: {
+          sessionId,
+          userId,
+          status: { notIn: [BookingStatus.CANCELLED, BookingStatus.REJECTED] },
+        },
+      });
+      if (existing) {
+        throw new ConflictException('You have already booked this session');
+      }
+    }
+
+    const booking = await this.prisma.booking.create({
+      data: {
+        sessionId,
+        userId: userId || null,
+        guestName: userId ? null : guestName,
+        guestPhone: userId ? null : guestPhone,
+        status: BookingStatus.PENDING_APPROVAL,
+        amountPaid: 0,
+      },
+    });
+
+    // Emit event for notifications
+    const requesterName = guestName || 'A registered user';
+    this.eventEmitter.emit(
+      'booking.requested',
+      new BookingRequestedEvent(
+        booking.id,
+        session.id,
+        session.hostId,
+        requesterName,
+        session.title,
+      ),
+    );
+
+    return booking;
+  }
+
+  /**
+   * Host approves a pending booking request.
+   * Decrements availableSlots atomically with Redis lock.
+   */
+  async approve(bookingId: string, hostUserId: string) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { session: true },
+    });
+
+    if (!booking) throw new NotFoundException('Booking not found');
+
+    if (booking.session.hostId !== hostUserId) {
+      throw new ForbiddenException('Only the session host can approve');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    if (booking.status !== BookingStatus.PENDING_APPROVAL) {
+      throw new ConflictException('Booking is not pending approval');
+    }
+
+    const lockKey = `lock:session:${booking.sessionId}`;
     const locked = await this.redis.acquireLock(lockKey, 5);
     if (!locked) {
-      throw new ConflictException(
-        'Session is being booked by another user. Please retry briefly.',
-      );
+      throw new ConflictException('Please retry briefly.');
     }
 
     try {
+      // Re-check slots under lock
       const session = await this.prisma.courtSession.findUnique({
-        where: { id: sessionId },
+        where: { id: booking.sessionId },
       });
 
-      if (!session) {
-        throw new BadRequestException('Session not found');
+      if (!session || session.availableSlots <= 0) {
+        throw new ConflictException('Session is full — cannot approve');
       }
 
-      // ELO sessions require registered users (guests cannot participate in ranked matches)
-      if (session.gameType && !userId) {
-        throw new BadRequestException(
-          'ELO sessions require a registered account. Please sign up to join this session.',
-        );
-      }
+      const newAvailable = session.availableSlots - 1;
 
-      if (session.availableSlots <= 0) {
-        throw new ConflictException('No slots available for this session');
-      }
-
-      if (userId) {
-        const existing = await this.prisma.booking.findFirst({
-          where: {
-            sessionId,
-            userId,
-
-            status: { not: BookingStatus.CANCELLED },
-          },
-        });
-        if (existing)
-          throw new ConflictException('You have already booked this session');
-      }
-
-      const [booking] = await this.prisma.$transaction([
-        this.prisma.booking.create({
-          data: {
-            sessionId,
-            userId: userId || null,
-            guestName: userId ? null : guestName,
-            guestPhone: userId ? null : guestPhone,
-            status: BookingStatus.PENDING_PAYMENT,
-            amountPaid: 0,
-          },
+      await this.prisma.$transaction([
+        this.prisma.booking.update({
+          where: { id: bookingId },
+          data: { status: BookingStatus.PENDING_PAYMENT },
         }),
         this.prisma.courtSession.update({
-          where: { id: sessionId },
-          data: { availableSlots: { decrement: 1 } },
+          where: { id: booking.sessionId },
+          data: {
+            availableSlots: { decrement: 1 },
+            ...(newAvailable === 0 ? { status: SessionStatus.FULL } : {}),
+          },
         }),
       ]);
 
-      // Emit event — NotificationsService listens via @OnEvent()
       this.eventEmitter.emit(
-        'booking.created',
-        new BookingCreatedEvent(booking.id, session.id, session.hostId),
+        'booking.approved',
+        new BookingApprovedEvent(
+          booking.id,
+          booking.sessionId,
+          booking.userId,
+        ),
       );
 
-      return booking;
+      // Also emit the legacy event for existing notification flow
+      this.eventEmitter.emit(
+        'booking.created',
+        new BookingCreatedEvent(
+          booking.id,
+          booking.sessionId,
+          booking.session.hostId,
+        ),
+      );
+
+      return { message: 'Booking approved' };
     } finally {
       await this.redis.releaseLock(lockKey);
     }
+  }
+
+  /**
+   * Host rejects a pending booking request.
+   */
+  async reject(bookingId: string, hostUserId: string) {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: { session: true },
+    });
+
+    if (!booking) throw new NotFoundException('Booking not found');
+
+    if (booking.session.hostId !== hostUserId) {
+      throw new ForbiddenException('Only the session host can reject');
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    if (booking.status !== BookingStatus.PENDING_APPROVAL) {
+      throw new ConflictException('Booking is not pending approval');
+    }
+
+    await this.prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: BookingStatus.REJECTED },
+    });
+
+    this.eventEmitter.emit(
+      'booking.rejected',
+      new BookingRejectedEvent(
+        booking.id,
+        booking.sessionId,
+        booking.userId,
+      ),
+    );
+
+    return { message: 'Booking rejected' };
+  }
+
+  /**
+   * Get pending-approval bookings for a specific session (host-only).
+   */
+  async getPendingBySession(sessionId: string, hostUserId: string) {
+    const session = await this.prisma.courtSession.findUnique({
+      where: { id: sessionId },
+    });
+
+    if (!session) throw new NotFoundException('Session not found');
+    if (session.hostId !== hostUserId) {
+      throw new ForbiddenException('Not the host of this session');
+    }
+
+    return this.prisma.booking.findMany({
+      where: { sessionId, status: BookingStatus.PENDING_APPROVAL },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            eloScore: true,
+            skillLevel: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+  }
+
+  /**
+   * Get pending-approval counts grouped by session for all sessions hosted by user.
+   * Returns { [sessionId]: count } for the dashboard notification dots.
+   */
+  async getPendingCountsByHost(
+    hostUserId: string,
+  ): Promise<Record<string, number>> {
+    const counts = await this.prisma.booking.groupBy({
+      by: ['sessionId'],
+      where: {
+        status: BookingStatus.PENDING_APPROVAL,
+        session: { hostId: hostUserId },
+      },
+      _count: { id: true },
+    });
+
+    const result: Record<string, number> = {};
+    for (const row of counts) {
+      result[row.sessionId] = row._count.id;
+    }
+    return result;
   }
 
   async cancel(bookingId: string, userId?: string) {
@@ -118,15 +283,23 @@ export class BookingsService {
       throw new ConflictException('Booking is already cancelled');
     }
 
-    // Cancellation logic simulating mock refund and freeing up slots
+    // If still pending approval, just mark as cancelled — no slot to return
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+    if (booking.status === BookingStatus.PENDING_APPROVAL) {
+      await this.prisma.booking.update({
+        where: { id: bookingId },
+        data: { status: BookingStatus.CANCELLED },
+      });
+      return { message: 'Booking request cancelled' };
+    }
+
+    // Cancellation logic — return slot and handle refund
     await this.prisma.$transaction(async (tx) => {
-      // 1. Mark booking cancelled
       await tx.booking.update({
         where: { id: bookingId },
         data: { status: BookingStatus.CANCELLED },
       });
 
-      // Mock refund if previously paid
       // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
       if (booking.payment && booking.payment.status === PaymentStatus.SUCCESS) {
         await tx.payment.update({
@@ -135,14 +308,12 @@ export class BookingsService {
         });
       }
 
-      // 3. Return the slot to the pool
       await tx.courtSession.update({
         where: { id: booking.sessionId },
         data: { availableSlots: { increment: 1 } },
       });
     });
 
-    // Emit event — NotificationsService listens via @OnEvent()
     this.eventEmitter.emit(
       'booking.cancelled',
       new BookingCancelledEvent(booking.id, booking.sessionId),

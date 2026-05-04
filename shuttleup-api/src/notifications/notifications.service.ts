@@ -6,6 +6,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import {
   BookingCreatedEvent,
   BookingCancelledEvent,
+  BookingRequestedEvent,
+  BookingApprovedEvent,
+  BookingRejectedEvent,
 } from '../common/events/booking.events';
 
 @Injectable()
@@ -48,6 +51,35 @@ export class NotificationsService {
     void this.dispatch('booking.cancelled', {
       bookingId: event.bookingId,
       sessionId: event.sessionId,
+    });
+  }
+
+  @OnEvent('booking.requested')
+  handleBookingRequested(event: BookingRequestedEvent) {
+    void this.dispatch('booking.requested', {
+      bookingId: event.bookingId,
+      sessionId: event.sessionId,
+      hostId: event.hostId,
+      requesterName: event.requesterName,
+      sessionTitle: event.sessionTitle,
+    });
+  }
+
+  @OnEvent('booking.approved')
+  handleBookingApproved(event: BookingApprovedEvent) {
+    void this.dispatch('booking.approved', {
+      bookingId: event.bookingId,
+      sessionId: event.sessionId,
+      userId: event.userId,
+    });
+  }
+
+  @OnEvent('booking.rejected')
+  handleBookingRejected(event: BookingRejectedEvent) {
+    void this.dispatch('booking.rejected', {
+      bookingId: event.bookingId,
+      sessionId: event.sessionId,
+      userId: event.userId,
     });
   }
 

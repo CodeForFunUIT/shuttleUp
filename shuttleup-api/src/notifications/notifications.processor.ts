@@ -54,6 +54,38 @@ export class NotificationsProcessor extends WorkerHost {
         );
         break;
       }
+      case 'booking.requested': {
+        await this.handleBookingRequested(
+          job.data as {
+            bookingId: string;
+            sessionId: string;
+            hostId: string;
+            requesterName: string;
+            sessionTitle: string;
+          },
+        );
+        break;
+      }
+      case 'booking.approved': {
+        await this.handleBookingApproved(
+          job.data as {
+            bookingId: string;
+            sessionId: string;
+            userId: string | null;
+          },
+        );
+        break;
+      }
+      case 'booking.rejected': {
+        await this.handleBookingRejected(
+          job.data as {
+            bookingId: string;
+            sessionId: string;
+            userId: string | null;
+          },
+        );
+        break;
+      }
       default:
         this.logger.warn(`Unknown job name: ${job.name}`);
     }
@@ -235,5 +267,69 @@ export class NotificationsProcessor extends WorkerHost {
         this.logger.error('Failed to send FCM push', e);
       }
     }
+  }
+
+  private async handleBookingRequested(data: {
+    bookingId: string;
+    sessionId: string;
+    hostId: string;
+    requesterName: string;
+    sessionTitle: string;
+  }) {
+    await this.prisma.notification.create({
+      data: {
+        userId: data.hostId,
+        title: 'New Join Request',
+        message: `${data.requesterName} wants to join "${data.sessionTitle}"`,
+        type: 'BOOKING_REQUESTED',
+        link: `/dashboard?session=${data.sessionId}`,
+      },
+    });
+  }
+
+  private async handleBookingApproved(data: {
+    bookingId: string;
+    sessionId: string;
+    userId: string | null;
+  }) {
+    // Skip notification for guest bookings (no account)
+    if (!data.userId) return;
+
+    const session = await this.prisma.courtSession.findUnique({
+      where: { id: data.sessionId },
+    });
+
+    await this.prisma.notification.create({
+      data: {
+        userId: data.userId,
+        title: 'Request Approved!',
+        message: `Your request to join "${session?.title ?? 'a session'}" was approved.`,
+        type: 'BOOKING_APPROVED',
+        link: `/sessions/${data.sessionId}`,
+      },
+    });
+  }
+
+  private async handleBookingRejected(data: {
+    bookingId: string;
+    sessionId: string;
+    userId: string | null;
+  }) {
+    // Skip notification for guest bookings (no account)
+    if (!data.userId) return;
+
+    const session = await this.prisma.courtSession.findUnique({
+      where: { id: data.sessionId },
+    });
+
+    await this.prisma.notification.create({
+      data: {
+        userId: data.userId,
+        title: 'Request Declined',
+        message: `Your request to join "${session?.title ?? 'a session'}" was declined.`,
+        type: 'BOOKING_REJECTED',
+        link: `/sessions/${data.sessionId}`,
+      },
+    });
   }
 }

@@ -1,16 +1,26 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, Calendar as CalendarIcon, Users, Loader2, AlertCircle } from "lucide-react";
+import { PlusCircle, Calendar as CalendarIcon, Users, Bell, Loader2, AlertCircle } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useSessions } from "@/lib/hooks/use-sessions";
 import { useSession } from "@/lib/auth-client";
+import { usePendingCounts } from "@/lib/hooks/use-bookings";
+import { ManageSessionPanel } from "@/components/dashboard/manage-session-panel";
 import { format } from "date-fns";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
   const { data: sessions, isLoading, error } = useSessions();
+  const { data: pendingCounts } = usePendingCounts();
+
+  // Manage panel state
+  const [manageSession, setManageSession] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
 
   // Filter sessions hosted by current user
   const mySessions = sessions?.filter(s => s.hostId === session?.user?.id) ?? [];
@@ -18,6 +28,9 @@ export default function DashboardPage() {
   const totalParticipants = mySessions.reduce(
     (sum, s) => sum + (s.totalSlots - s.availableSlots), 0
   );
+  const totalPending = pendingCounts
+    ? Object.values(pendingCounts).reduce((a, b) => a + b, 0)
+    : 0;
 
   return (
     <div className="space-y-8">
@@ -72,6 +85,16 @@ export default function DashboardPage() {
             )}
           </CardContent>
         </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
+            <Bell className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totalPending}</div>
+            <p className="text-xs text-muted-foreground">Awaiting your review</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Error */}
@@ -111,13 +134,34 @@ export default function DashboardPage() {
                       {format(new Date(s.startTime), "dd MMM")} • {format(new Date(s.startTime), "HH:mm")} - {format(new Date(s.endTime), "HH:mm")}
                     </p>
                   </div>
-                  <Button size="sm" variant="outline">Manage</Button>
+                  <div className="relative">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setManageSession({ id: s.id, title: s.title })}
+                    >
+                      Manage
+                    </Button>
+                    {(pendingCounts?.[s.id] ?? 0) > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 h-5 min-w-5 px-1 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center font-bold pointer-events-none animate-pulse">
+                        {pendingCounts![s.id]}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           )}
         </CardContent>
       </Card>
+
+      {/* Manage Session Panel */}
+      <ManageSessionPanel
+        sessionId={manageSession?.id ?? null}
+        sessionTitle={manageSession?.title ?? ""}
+        open={!!manageSession}
+        onClose={() => setManageSession(null)}
+      />
     </div>
   );
 }

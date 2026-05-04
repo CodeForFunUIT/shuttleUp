@@ -200,11 +200,11 @@ export default function SessionDetailPage({ params }: { params: Promise<{ id: st
             <CardContent className="p-6">
               <Link href={`/sessions/${session.id}/book`}>
                 <Button className="w-full bg-primary hover:bg-primary/90 h-12 text-lg font-semibold" disabled={isFull}>
-                  {isFull ? "Session Full" : "Book Slot Now"}
+                  {isFull ? "Session Full" : "Request to Join"}
                 </Button>
               </Link>
               <p className="text-xs text-center text-muted-foreground mt-3">
-                No account required to book.
+                Host will review your request.
               </p>
             </CardContent>
           </Card>
