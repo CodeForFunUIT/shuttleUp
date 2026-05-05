@@ -44,6 +44,3 @@ coverage/
 !.env.example
 
 # agents
-.agent
-docs
-plans
