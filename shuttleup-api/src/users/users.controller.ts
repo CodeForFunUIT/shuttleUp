@@ -1,7 +1,15 @@
-import { Controller, Get, Body, Patch, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SubmitOnboardingDto } from './dto/submit-onboarding.dto';
 import { AuthGuard } from '../common/guards/auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 
@@ -16,6 +24,17 @@ export class UsersController {
   @Get('me')
   getProfile(@CurrentUser('id') userId: string) {
     return this.usersService.findOne(userId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Submit onboarding skill questionnaire' })
+  @UseGuards(AuthGuard)
+  @Patch('me/onboarding')
+  submitOnboarding(
+    @CurrentUser('id') userId: string,
+    @Body() dto: SubmitOnboardingDto,
+  ) {
+    return this.usersService.submitOnboarding(userId, dto);
   }
 
   @ApiOperation({ summary: 'Get all users (admin)' })

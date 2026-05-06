@@ -86,6 +86,11 @@ export class AuthService {
           },
           eloScore: { type: 'number', required: false, defaultValue: 1200 },
           role: { type: 'string', required: false, defaultValue: 'USER' },
+          onboardingCompleted: {
+            type: 'boolean',
+            required: false,
+            defaultValue: false,
+          },
         },
       },
 
