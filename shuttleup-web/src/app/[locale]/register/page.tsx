@@ -55,14 +55,13 @@ export default function RegisterPage() {
       return;
     }
 
-    toast.success("Account created successfully!");
-    router.push("/dashboard");
-    router.refresh();
+    toast.success("Account created! Let's set up your skill level.");
+    router.push("/register/onboarding");
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-theme(spacing.16))] bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="w-full max-w-md shadow-lg border-0 bg-white">
+    <div className="flex items-center justify-center min-h-[calc(100vh-theme(spacing.16))] bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <Card className="w-full max-w-md shadow-lg border bg-card">
         <CardHeader className="space-y-2 text-center pb-8 pt-8">
           <CardTitle className="text-3xl font-display font-bold tracking-tight">Create an Account</CardTitle>
           <CardDescription className="text-base">
@@ -143,8 +142,8 @@ export default function RegisterPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex justify-center pb-8 border-t pt-6 bg-slate-50/50 rounded-b-xl">
-          <div className="text-sm text-slate-500">
+        <CardFooter className="flex justify-center pb-8 border-t pt-6 bg-muted/50 rounded-b-xl">
+          <div className="text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link href="/login" className="font-semibold text-primary hover:text-primary hover:underline">
               Sign in

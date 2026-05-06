@@ -352,3 +352,32 @@
 .dark .leaflet-popup-tip {
   background: #161A20 !important;
 }
+
+/* ── Onboarding Wizard Animations ─────────────────────────────────────── */
+
+@keyframes slide-in-right {
+  from { transform: translateX(40px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from { transform: translateX(-40px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 150ms ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 150ms ease-out;
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
