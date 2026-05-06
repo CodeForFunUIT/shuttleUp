@@ -25,6 +25,10 @@ model User {
   eloScore     Int      @default(1200)
   role         String   @default("USER") // USER, ADMIN
 
+  // Onboarding — weighted scoring questionnaire
+  onboardingCompleted Boolean @default(false)
+  onboardingAnswers   Json?   // Raw answers for analytics
+
   // Better Auth anonymous plugin field
   isAnonymous  Boolean  @default(false)
 
