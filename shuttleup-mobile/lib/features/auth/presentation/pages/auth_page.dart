@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:shuttleup_mobile/app/routes.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -20,7 +20,7 @@ class _AuthPageState extends State<AuthPage> {
       await Future.delayed(const Duration(seconds: 1)); 
       if (mounted) {
         setState(() => _isLoading = false);
-        context.go('/dashboard');
+        const DashboardRoute().go(context);
       }
     }
   }

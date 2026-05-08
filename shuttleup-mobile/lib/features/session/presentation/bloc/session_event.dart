@@ -3,6 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'session_event.freezed.dart';
 
 @freezed
-class SessionEvent with _$SessionEvent {
+sealed class SessionEvent with _$SessionEvent {
   const factory SessionEvent.loadSessions({String? query}) = _LoadSessions;
 }

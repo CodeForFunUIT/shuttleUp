@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:shuttleup_mobile/app/routes.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -12,11 +12,11 @@ class DashboardPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
-            onPressed: () => context.push('/profile'),
+            onPressed: () => const ProfileRoute().push(context),
           ),
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () => context.go('/'),
+            onPressed: () => const SessionListRoute().go(context),
           )
         ],
       ),

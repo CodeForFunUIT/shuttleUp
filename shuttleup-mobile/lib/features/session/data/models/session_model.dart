@@ -4,7 +4,7 @@ part 'session_model.freezed.dart';
 part 'session_model.g.dart';
 
 @freezed
-class SessionModel with _$SessionModel {
+sealed class SessionModel with _$SessionModel {
   const factory SessionModel({
     required String id,
     required String title,

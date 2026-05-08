@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../data/models/session_model.dart';
 import 'package:intl/intl.dart';
+import 'package:shuttleup_mobile/app/routes.dart';
+import 'package:shuttleup_mobile/features/session/data/models/session_model.dart';
 
 class SessionCard extends StatelessWidget {
   final SessionModel session;
@@ -18,7 +18,7 @@ class SessionCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: () {
-          context.push('/sessions/${session.id}', extra: session);
+          SessionDetailRoute(id: session.id, $extra: session).push(context);
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(

@@ -112,10 +112,7 @@ return loadSessions(_that);case _:
 final _that = this;
 switch (_that) {
 case _LoadSessions():
-return loadSessions(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return loadSessions(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -174,10 +171,7 @@ return loadSessions(_that.query);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? query)  loadSessions,}) {final _that = this;
 switch (_that) {
 case _LoadSessions():
-return loadSessions(_that.query);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return loadSessions(_that.query);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../../../session/data/models/session_model.dart';
 import 'package:intl/intl.dart';
+import 'package:shuttleup_mobile/app/routes.dart';
+import 'package:shuttleup_mobile/features/session/session.dart';
 
 class GuestBookingPage extends StatefulWidget {
   final SessionModel session;
@@ -44,7 +44,7 @@ class _GuestBookingPageState extends State<GuestBookingPage> {
         );
         
         // Return to home using pop/go
-        context.go('/');
+        const SessionListRoute().go(context);
       }
     }
   }
