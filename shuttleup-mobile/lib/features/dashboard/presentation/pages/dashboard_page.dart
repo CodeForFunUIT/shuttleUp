@@ -1,74 +1,245 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/widgets/animated_counter.dart';
 
+/// Host dashboard with BELo design — gradient revenue card,
+/// animated counters, branded session list.
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Host Dashboard'),
+        title: Text(
+          'HOST DASHBOARD',
+          style: theme.textTheme.headlineMedium,
+        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.person_outline_rounded),
             onPressed: () => context.push('/profile'),
+            tooltip: 'Profile',
           ),
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => context.go('/'),
-          )
+            icon: const Icon(Icons.logout_rounded),
+            onPressed: () => context.go('/home'),
+            tooltip: 'Logout',
+          ),
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.md),
         children: [
-          Card(
-            color: const Color(0xFFD1FAE5), // emerald 50
-            elevation: 0,
-            child: const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Text('Total Revenue', style: TextStyle(color: Colors.grey)),
-                  SizedBox(height: 8),
-                  Text('1,250,000 ₫', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Color(0xFF047857))),
-                ],
+          // ── Revenue card with gradient ──
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                    ? [
+                        AppColors.shuttleGold.withValues(alpha: 0.15),
+                        AppColors.energyOrange.withValues(alpha: 0.08),
+                      ]
+                    : [
+                        AppColors.shuttleGold.withValues(alpha: 0.12),
+                        AppColors.energyOrange.withValues(alpha: 0.06),
+                      ],
+              ),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+              border: Border.all(
+                color: AppColors.shuttleGold.withValues(alpha: 0.2),
               ),
             ),
+            child: Column(
+              children: [
+                Text(
+                  'Total Revenue',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                AnimatedCounter(
+                  value: 1250000,
+                  suffix: ' ₫',
+                  style: theme.textTheme.displayMedium?.copyWith(
+                    color: AppColors.shuttleGold,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  duration: const Duration(milliseconds: 1000),
+                ),
+                const SizedBox(height: AppSpacing.md),
+                // ── Mini stats row ──
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _MiniStat(
+                      label: 'Sessions',
+                      value: '12',
+                      icon: Icons.calendar_today_rounded,
+                    ),
+                    _MiniStat(
+                      label: 'Guests',
+                      value: '84',
+                      icon: Icons.people_outline_rounded,
+                    ),
+                    _MiniStat(
+                      label: 'Rating',
+                      value: '4.8★',
+                      icon: Icons.star_outline_rounded,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.lg),
+
+          // ── Session list header ──
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Your Sessions', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              TextButton(onPressed: () {}, child: const Text('Create New', style: TextStyle(color: Color(0xFF059669))))
+              Text(
+                'YOUR SESSIONS',
+                style: theme.textTheme.headlineSmall,
+              ),
+              TextButton(
+                onPressed: () {},
+                child: const Text('Create New'),
+              ),
             ],
           ),
-          const SizedBox(height: 16),
-          ListTile(
-            tileColor: Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: Colors.grey.shade200)),
-            leading: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: const Color(0xFFD1FAE5), borderRadius: BorderRadius.circular(8)),
-              child: const Icon(Icons.sports_tennis, color: Color(0xFF059669)),
-            ),
-            title: const Text('Weekend Smash District 7', style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: const Text('Sat, Oct 14 • 8/10 Guests'),
-            trailing: const Icon(Icons.chevron_right),
+          const SizedBox(height: AppSpacing.md12),
+
+          // ── Session items ──
+          _SessionListItem(
+            title: 'Weekend Smash District 7',
+            subtitle: 'Sat, Oct 14 • 8/10 Guests',
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Manage session tapped')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Manage session tapped')),
+              );
             },
+          ),
+          _SessionListItem(
+            title: 'Evening Rally Quận 2',
+            subtitle: 'Thu, Oct 12 • 6/8 Guests',
+            onTap: () {},
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF059669),
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Open Create Form')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Open Create Form')),
+          );
         },
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add_rounded),
+      ),
+    );
+  }
+}
+
+class _MiniStat extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+
+  const _MiniStat({
+    required this.label,
+    required this.value,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      children: [
+        Icon(icon, size: 18, color: theme.colorScheme.onSurfaceVariant),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          value,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SessionListItem extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const _SessionListItem({
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md12),
+      decoration: BoxDecoration(
+        color: theme.cardTheme.color,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        border: Border.all(color: theme.colorScheme.outline),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.xs,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+        ),
+        leading: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            gradient: AppColors.brandGradient,
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          ),
+          child: const Icon(
+            Icons.sports_tennis_rounded,
+            color: Color(0xFF0D0F12),
+            size: 22,
+          ),
+        ),
+        title: Text(
+          title,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        trailing: const Icon(Icons.chevron_right_rounded),
+        onTap: onTap,
       ),
     );
   }

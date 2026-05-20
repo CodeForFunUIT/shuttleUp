@@ -8,8 +8,11 @@ class ShuttleUpApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'ShuttleUp Mobile',
+      title: 'ShuttleUp',
+      debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system,
       routerConfig: appRouter,
     );
   }

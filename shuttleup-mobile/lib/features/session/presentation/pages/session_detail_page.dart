@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../data/models/session_model.dart';
 import 'package:intl/intl.dart';
 
+/// Session detail page with BELo design — hero gradient area,
+/// branded info cards, animated slot counter, gold CTA button.
 class SessionDetailPage extends StatelessWidget {
   final SessionModel session;
 
@@ -11,92 +15,224 @@ class SessionDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isFull = session.bookedPlayers >= session.maxPlayers;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final slotProgress =
+        session.maxPlayers > 0 ? session.bookedPlayers / session.maxPlayers : 0.0;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Session Details'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              session.title,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Card(
-              elevation: 0,
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: Colors.grey.shade200),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    _buildInfoRow(
-                      Icons.access_time, 
-                      'Time', 
-                      '${DateFormat('E, MMM d').format(session.startTime)} • ${DateFormat('HH:mm').format(session.startTime)} - ${DateFormat('HH:mm').format(session.endTime)}'
+      body: CustomScrollView(
+        slivers: [
+          // ── Gradient hero app bar ──
+          SliverAppBar(
+            expandedHeight: 160,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: isDark
+                        ? [AppColors.darkSurface, AppColors.darkBackground]
+                        : [
+                            AppColors.shuttleGold.withValues(alpha: 0.15),
+                            AppColors.energyOrange.withValues(alpha: 0.08),
+                            Colors.white,
+                          ],
+                  ),
+                ),
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.lg,
+                      AppSpacing.xxl,
+                      AppSpacing.lg,
+                      AppSpacing.md,
                     ),
-                    const Divider(height: 24),
-                    _buildInfoRow(
-                      Icons.location_on_outlined, 
-                      'Court', 
-                      session.courtName
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          session.title,
+                          style: theme.textTheme.displaySmall,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                    const Divider(height: 24),
-                    _buildInfoRow(
-                      Icons.attach_money, 
-                      'Price', 
-                      '${NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(session.price)} / slot'
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Requirements',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            title: Text(
+              'Session Details',
+              style: theme.textTheme.headlineSmall,
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                _buildBadge('Skill: ${session.requiredSkill}', Colors.blue.shade700),
-                const SizedBox(width: 8),
-                _buildBadge('${session.bookedPlayers}/${session.maxPlayers} Players', isFull ? Colors.red : Colors.green),
-              ],
+          ),
+
+          // ── Content ──
+          SliverPadding(
+            padding: const EdgeInsets.all(AppSpacing.md),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // ── Info card ──
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.cardTheme.color,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                    border: Border.all(color: theme.colorScheme.outline),
+                  ),
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    children: [
+                      _buildInfoRow(
+                        context,
+                        Icons.access_time_rounded,
+                        'Time',
+                        '${DateFormat('E, MMM d').format(session.startTime)} • ${DateFormat('HH:mm').format(session.startTime)} - ${DateFormat('HH:mm').format(session.endTime)}',
+                      ),
+                      Divider(
+                        height: AppSpacing.lg,
+                        color: theme.colorScheme.outline,
+                      ),
+                      _buildInfoRow(
+                        context,
+                        Icons.location_on_outlined,
+                        'Court',
+                        session.courtName,
+                      ),
+                      Divider(
+                        height: AppSpacing.lg,
+                        color: theme.colorScheme.outline,
+                      ),
+                      _buildInfoRow(
+                        context,
+                        Icons.attach_money_rounded,
+                        'Price',
+                        '${NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(session.price)} / slot',
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                // ── Slot progress ──
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.cardTheme.color,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                    border: Border.all(color: theme.colorScheme.outline),
+                  ),
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Players', style: theme.textTheme.titleSmall),
+                          Text(
+                            '${session.bookedPlayers}/${session.maxPlayers}',
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              color: isFull
+                                  ? AppColors.rallyRed
+                                  : AppColors.netGreen,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: slotProgress,
+                          minHeight: 6,
+                          backgroundColor: theme.colorScheme.outline,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            isFull
+                                ? AppColors.rallyRed
+                                : slotProgress > 0.7
+                                    ? AppColors.energyOrange
+                                    : AppColors.netGreen,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.md),
+
+                // ── Requirements ──
+                Text('Requirements', style: theme.textTheme.headlineSmall),
+                const SizedBox(height: AppSpacing.sm),
+                Row(
+                  children: [
+                    _buildSkillBadge(context, session.requiredSkill),
+                    const SizedBox(width: AppSpacing.sm),
+                    _buildBadge(
+                      context,
+                      '${session.bookedPlayers}/${session.maxPlayers} Players',
+                      isFull ? AppColors.rallyRed : AppColors.netGreen,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.xl),
+
+                // ── About Host ──
+                Text('About Host', style: theme.textTheme.headlineSmall),
+                const SizedBox(height: AppSpacing.sm),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      gradient: AppColors.brandGradient,
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'MT',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: const Color(0xFF0D0F12),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    'Minh Tran',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'ELO: 1450 • Advanced',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ]),
             ),
-            const SizedBox(height: 32),
-            const Text(
-              'About Host',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const CircleAvatar(
-                backgroundColor: Color(0xFFD1FAE5),
-                foregroundColor: Color(0xFF047857),
-                child: Text('MT'),
-              ),
-              title: const Text('Minh Tran', style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: const Text('ELO: 1450 • Advanced'),
-            )
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(AppSpacing.md),
           child: ElevatedButton(
-            onPressed: isFull ? null : () {
-              context.push('/sessions/${session.id}/book', extra: session);
-            },
+            onPressed: isFull
+                ? null
+                : () {
+                    context.push(
+                      '/sessions/${session.id}/book',
+                      extra: session,
+                    );
+                  },
             child: Text(isFull ? 'Session Full' : 'Book a Slot'),
           ),
         ),
@@ -104,19 +240,39 @@ class SessionDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildInfoRow(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String value,
+  ) {
+    final theme = Theme.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Colors.grey, size: 20),
-        const SizedBox(width: 12),
+        Icon(
+          icon,
+          color: theme.colorScheme.onSurfaceVariant,
+          size: 20,
+        ),
+        const SizedBox(width: AppSpacing.md12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              Text(
+                label,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
               const SizedBox(height: 2),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 15)),
+              Text(
+                value,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ],
           ),
         ),
@@ -124,15 +280,68 @@ class SessionDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBadge(String text, [Color color = Colors.grey]) {
+  Widget _buildSkillBadge(BuildContext context, String skill) {
+    final skillLower = skill.toLowerCase();
+    Color bg;
+    Color fg;
+
+    if (skillLower.contains('beginner')) {
+      bg = AppColors.skillBeginnerBg;
+      fg = AppColors.skillBeginnerFg;
+    } else if (skillLower.contains('intermediate')) {
+      bg = AppColors.skillIntermediateBg;
+      fg = AppColors.skillIntermediateFg;
+    } else if (skillLower.contains('advanced')) {
+      bg = AppColors.skillAdvancedBg;
+      fg = AppColors.skillAdvancedFg;
+    } else if (skillLower.contains('pro')) {
+      bg = AppColors.skillProBg;
+      fg = AppColors.skillProFg;
+    } else {
+      bg = Theme.of(context).colorScheme.surfaceContainerHighest;
+      fg = Theme.of(context).colorScheme.onSurface;
+    }
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.5)),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md12,
+        vertical: AppSpacing.sm,
       ),
-      child: Text(text, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+        border: Border.all(color: fg.withValues(alpha: 0.3)),
+      ),
+      child: Text(
+        'Skill: $skill',
+        style: TextStyle(
+          color: fg,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBadge(BuildContext context, String text, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md12,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }

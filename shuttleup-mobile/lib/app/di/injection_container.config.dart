@@ -17,6 +17,8 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../core/api/api_client.dart' as _i430;
 import '../../core/di/core_module.dart' as _i233;
+import '../../features/session/data/repositories/session_repository.dart'
+    as _i1041;
 import '../../features/session/presentation/bloc/session_bloc.dart' as _i844;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -31,10 +33,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => coreModule.prefs,
       preResolve: true,
     );
-    gh.factory<_i844.SessionBloc>(() => _i844.SessionBloc());
     gh.singleton<_i430.ApiClient>(() => _i430.ApiClient());
     gh.lazySingleton<_i974.Logger>(() => coreModule.logger);
     gh.lazySingleton<_i361.Dio>(() => coreModule.dioClient);
+    gh.factory<_i1041.SessionRepository>(
+      () => _i1041.SessionRepository(gh<_i430.ApiClient>()),
+    );
+    gh.factory<_i844.SessionBloc>(
+      () => _i844.SessionBloc(gh<_i1041.SessionRepository>()),
+    );
     return this;
   }
 }
