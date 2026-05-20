@@ -14,61 +14,30 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SessionEvent {
 
- String? get query;
-/// Create a copy of SessionEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SessionEventCopyWith<SessionEvent> get copyWith => _$SessionEventCopyWithImpl<SessionEvent>(this as SessionEvent, _$identity);
+
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionEvent&&(identical(other.query, query) || other.query == query));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionEvent);
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SessionEvent(query: $query)';
+  return 'SessionEvent()';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $SessionEventCopyWith<$Res>  {
-  factory $SessionEventCopyWith(SessionEvent value, $Res Function(SessionEvent) _then) = _$SessionEventCopyWithImpl;
-@useResult
-$Res call({
- String? query
-});
-
-
-
-
-}
-/// @nodoc
-class _$SessionEventCopyWithImpl<$Res>
-    implements $SessionEventCopyWith<$Res> {
-  _$SessionEventCopyWithImpl(this._self, this._then);
-
-  final SessionEvent _self;
-  final $Res Function(SessionEvent) _then;
-
-/// Create a copy of SessionEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? query = freezed,}) {
-  return _then(_self.copyWith(
-query: freezed == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
-as String?,
-  ));
-}
-
+class $SessionEventCopyWith<$Res>  {
+$SessionEventCopyWith(SessionEvent _, $Res Function(SessionEvent) __);
 }
 
 
@@ -86,11 +55,13 @@ extension SessionEventPatterns on SessionEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _LoadSessions value)?  loadSessions,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _LoadSessions value)?  loadSessions,TResult Function( _UpdateFilter value)?  updateFilter,TResult Function( _LocateUser value)?  locateUser,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _LoadSessions() when loadSessions != null:
-return loadSessions(_that);case _:
+return loadSessions(_that);case _UpdateFilter() when updateFilter != null:
+return updateFilter(_that);case _LocateUser() when locateUser != null:
+return locateUser(_that);case _:
   return orElse();
 
 }
@@ -108,14 +79,13 @@ return loadSessions(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _LoadSessions value)  loadSessions,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _LoadSessions value)  loadSessions,required TResult Function( _UpdateFilter value)  updateFilter,required TResult Function( _LocateUser value)  locateUser,}){
 final _that = this;
 switch (_that) {
 case _LoadSessions():
-return loadSessions(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return loadSessions(_that);case _UpdateFilter():
+return updateFilter(_that);case _LocateUser():
+return locateUser(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -129,11 +99,13 @@ return loadSessions(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _LoadSessions value)?  loadSessions,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _LoadSessions value)?  loadSessions,TResult? Function( _UpdateFilter value)?  updateFilter,TResult? Function( _LocateUser value)?  locateUser,}){
 final _that = this;
 switch (_that) {
 case _LoadSessions() when loadSessions != null:
-return loadSessions(_that);case _:
+return loadSessions(_that);case _UpdateFilter() when updateFilter != null:
+return updateFilter(_that);case _LocateUser() when locateUser != null:
+return locateUser(_that);case _:
   return null;
 
 }
@@ -150,10 +122,12 @@ return loadSessions(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? query)?  loadSessions,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( SessionFilter? filter)?  loadSessions,TResult Function( SessionFilter filter)?  updateFilter,TResult Function()?  locateUser,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoadSessions() when loadSessions != null:
-return loadSessions(_that.query);case _:
+return loadSessions(_that.filter);case _UpdateFilter() when updateFilter != null:
+return updateFilter(_that.filter);case _LocateUser() when locateUser != null:
+return locateUser();case _:
   return orElse();
 
 }
@@ -171,13 +145,12 @@ return loadSessions(_that.query);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? query)  loadSessions,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( SessionFilter? filter)  loadSessions,required TResult Function( SessionFilter filter)  updateFilter,required TResult Function()  locateUser,}) {final _that = this;
 switch (_that) {
 case _LoadSessions():
-return loadSessions(_that.query);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return loadSessions(_that.filter);case _UpdateFilter():
+return updateFilter(_that.filter);case _LocateUser():
+return locateUser();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -191,10 +164,12 @@ return loadSessions(_that.query);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? query)?  loadSessions,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( SessionFilter? filter)?  loadSessions,TResult? Function( SessionFilter filter)?  updateFilter,TResult? Function()?  locateUser,}) {final _that = this;
 switch (_that) {
 case _LoadSessions() when loadSessions != null:
-return loadSessions(_that.query);case _:
+return loadSessions(_that.filter);case _UpdateFilter() when updateFilter != null:
+return updateFilter(_that.filter);case _LocateUser() when locateUser != null:
+return locateUser();case _:
   return null;
 
 }
@@ -206,14 +181,14 @@ return loadSessions(_that.query);case _:
 
 
 class _LoadSessions implements SessionEvent {
-  const _LoadSessions({this.query});
+  const _LoadSessions({this.filter});
   
 
-@override final  String? query;
+ final  SessionFilter? filter;
 
 /// Create a copy of SessionEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
+@JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 _$LoadSessionsCopyWith<_LoadSessions> get copyWith => __$LoadSessionsCopyWithImpl<_LoadSessions>(this, _$identity);
 
@@ -221,16 +196,16 @@ _$LoadSessionsCopyWith<_LoadSessions> get copyWith => __$LoadSessionsCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadSessions&&(identical(other.query, query) || other.query == query));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadSessions&&(identical(other.filter, filter) || other.filter == filter));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,query);
+int get hashCode => Object.hash(runtimeType,filter);
 
 @override
 String toString() {
-  return 'SessionEvent.loadSessions(query: $query)';
+  return 'SessionEvent.loadSessions(filter: $filter)';
 }
 
 
@@ -239,13 +214,13 @@ String toString() {
 /// @nodoc
 abstract mixin class _$LoadSessionsCopyWith<$Res> implements $SessionEventCopyWith<$Res> {
   factory _$LoadSessionsCopyWith(_LoadSessions value, $Res Function(_LoadSessions) _then) = __$LoadSessionsCopyWithImpl;
-@override @useResult
+@useResult
 $Res call({
- String? query
+ SessionFilter? filter
 });
 
 
-
+$SessionFilterCopyWith<$Res>? get filter;
 
 }
 /// @nodoc
@@ -258,14 +233,133 @@ class __$LoadSessionsCopyWithImpl<$Res>
 
 /// Create a copy of SessionEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? query = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? filter = freezed,}) {
   return _then(_LoadSessions(
-query: freezed == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
-as String?,
+filter: freezed == filter ? _self.filter : filter // ignore: cast_nullable_to_non_nullable
+as SessionFilter?,
   ));
 }
 
+/// Create a copy of SessionEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SessionFilterCopyWith<$Res>? get filter {
+    if (_self.filter == null) {
+    return null;
+  }
+
+  return $SessionFilterCopyWith<$Res>(_self.filter!, (value) {
+    return _then(_self.copyWith(filter: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _UpdateFilter implements SessionEvent {
+  const _UpdateFilter(this.filter);
+  
+
+ final  SessionFilter filter;
+
+/// Create a copy of SessionEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$UpdateFilterCopyWith<_UpdateFilter> get copyWith => __$UpdateFilterCopyWithImpl<_UpdateFilter>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateFilter&&(identical(other.filter, filter) || other.filter == filter));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,filter);
+
+@override
+String toString() {
+  return 'SessionEvent.updateFilter(filter: $filter)';
+}
+
 
 }
+
+/// @nodoc
+abstract mixin class _$UpdateFilterCopyWith<$Res> implements $SessionEventCopyWith<$Res> {
+  factory _$UpdateFilterCopyWith(_UpdateFilter value, $Res Function(_UpdateFilter) _then) = __$UpdateFilterCopyWithImpl;
+@useResult
+$Res call({
+ SessionFilter filter
+});
+
+
+$SessionFilterCopyWith<$Res> get filter;
+
+}
+/// @nodoc
+class __$UpdateFilterCopyWithImpl<$Res>
+    implements _$UpdateFilterCopyWith<$Res> {
+  __$UpdateFilterCopyWithImpl(this._self, this._then);
+
+  final _UpdateFilter _self;
+  final $Res Function(_UpdateFilter) _then;
+
+/// Create a copy of SessionEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? filter = null,}) {
+  return _then(_UpdateFilter(
+null == filter ? _self.filter : filter // ignore: cast_nullable_to_non_nullable
+as SessionFilter,
+  ));
+}
+
+/// Create a copy of SessionEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SessionFilterCopyWith<$Res> get filter {
+  
+  return $SessionFilterCopyWith<$Res>(_self.filter, (value) {
+    return _then(_self.copyWith(filter: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class _LocateUser implements SessionEvent {
+  const _LocateUser();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LocateUser);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SessionEvent.locateUser()';
+}
+
+
+}
+
+
+
 
 // dart format on

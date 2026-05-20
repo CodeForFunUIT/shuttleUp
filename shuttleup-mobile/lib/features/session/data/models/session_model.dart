@@ -4,7 +4,7 @@ part 'session_model.freezed.dart';
 part 'session_model.g.dart';
 
 @freezed
-class SessionModel with _$SessionModel {
+sealed class SessionModel with _$SessionModel {
   const factory SessionModel({
     required String id,
     required String title,
@@ -15,7 +15,15 @@ class SessionModel with _$SessionModel {
     required int bookedPlayers,
     required double price,
     required String requiredSkill,
+    // ── Geo / court fields (from backend CourtSession) ──
+    String? courtId,
+    String? district,
+    double? latitude,
+    double? longitude,
+    String? description,
+    String? hostName,
   }) = _SessionModel;
 
-  factory SessionModel.fromJson(Map<String, dynamic> json) => _$SessionModelFromJson(json);
+  factory SessionModel.fromJson(Map<String, dynamic> json) =>
+      _$SessionModelFromJson(json);
 }

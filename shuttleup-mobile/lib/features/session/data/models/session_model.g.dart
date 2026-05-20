@@ -17,6 +17,12 @@ _SessionModel _$SessionModelFromJson(Map<String, dynamic> json) =>
       bookedPlayers: (json['bookedPlayers'] as num).toInt(),
       price: (json['price'] as num).toDouble(),
       requiredSkill: json['requiredSkill'] as String,
+      courtId: json['courtId'] as String?,
+      district: json['district'] as String?,
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      description: json['description'] as String?,
+      hostName: json['hostName'] as String?,
     );
 
 Map<String, dynamic> _$SessionModelToJson(_SessionModel instance) =>
@@ -30,4 +36,10 @@ Map<String, dynamic> _$SessionModelToJson(_SessionModel instance) =>
       'bookedPlayers': instance.bookedPlayers,
       'price': instance.price,
       'requiredSkill': instance.requiredSkill,
+      'courtId': instance.courtId,
+      'district': instance.district,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
+      'description': instance.description,
+      'hostName': instance.hostName,
     };

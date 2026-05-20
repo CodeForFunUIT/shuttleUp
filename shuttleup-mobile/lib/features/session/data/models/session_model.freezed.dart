@@ -15,7 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SessionModel {
 
- String get id; String get title; DateTime get startTime; DateTime get endTime; String get courtName; int get maxPlayers; int get bookedPlayers; double get price; String get requiredSkill;
+ String get id; String get title; DateTime get startTime; DateTime get endTime; String get courtName; int get maxPlayers; int get bookedPlayers; double get price; String get requiredSkill;// ── Geo / court fields (from backend CourtSession) ──
+ String? get courtId; String? get district; double? get latitude; double? get longitude; String? get description; String? get hostName;
 /// Create a copy of SessionModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +29,16 @@ $SessionModelCopyWith<SessionModel> get copyWith => _$SessionModelCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.courtName, courtName) || other.courtName == courtName)&&(identical(other.maxPlayers, maxPlayers) || other.maxPlayers == maxPlayers)&&(identical(other.bookedPlayers, bookedPlayers) || other.bookedPlayers == bookedPlayers)&&(identical(other.price, price) || other.price == price)&&(identical(other.requiredSkill, requiredSkill) || other.requiredSkill == requiredSkill));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.courtName, courtName) || other.courtName == courtName)&&(identical(other.maxPlayers, maxPlayers) || other.maxPlayers == maxPlayers)&&(identical(other.bookedPlayers, bookedPlayers) || other.bookedPlayers == bookedPlayers)&&(identical(other.price, price) || other.price == price)&&(identical(other.requiredSkill, requiredSkill) || other.requiredSkill == requiredSkill)&&(identical(other.courtId, courtId) || other.courtId == courtId)&&(identical(other.district, district) || other.district == district)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.description, description) || other.description == description)&&(identical(other.hostName, hostName) || other.hostName == hostName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,startTime,endTime,courtName,maxPlayers,bookedPlayers,price,requiredSkill);
+int get hashCode => Object.hash(runtimeType,id,title,startTime,endTime,courtName,maxPlayers,bookedPlayers,price,requiredSkill,courtId,district,latitude,longitude,description,hostName);
 
 @override
 String toString() {
-  return 'SessionModel(id: $id, title: $title, startTime: $startTime, endTime: $endTime, courtName: $courtName, maxPlayers: $maxPlayers, bookedPlayers: $bookedPlayers, price: $price, requiredSkill: $requiredSkill)';
+  return 'SessionModel(id: $id, title: $title, startTime: $startTime, endTime: $endTime, courtName: $courtName, maxPlayers: $maxPlayers, bookedPlayers: $bookedPlayers, price: $price, requiredSkill: $requiredSkill, courtId: $courtId, district: $district, latitude: $latitude, longitude: $longitude, description: $description, hostName: $hostName)';
 }
 
 
@@ -48,7 +49,7 @@ abstract mixin class $SessionModelCopyWith<$Res>  {
   factory $SessionModelCopyWith(SessionModel value, $Res Function(SessionModel) _then) = _$SessionModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, DateTime startTime, DateTime endTime, String courtName, int maxPlayers, int bookedPlayers, double price, String requiredSkill
+ String id, String title, DateTime startTime, DateTime endTime, String courtName, int maxPlayers, int bookedPlayers, double price, String requiredSkill, String? courtId, String? district, double? latitude, double? longitude, String? description, String? hostName
 });
 
 
@@ -65,7 +66,7 @@ class _$SessionModelCopyWithImpl<$Res>
 
 /// Create a copy of SessionModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? startTime = null,Object? endTime = null,Object? courtName = null,Object? maxPlayers = null,Object? bookedPlayers = null,Object? price = null,Object? requiredSkill = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? startTime = null,Object? endTime = null,Object? courtName = null,Object? maxPlayers = null,Object? bookedPlayers = null,Object? price = null,Object? requiredSkill = null,Object? courtId = freezed,Object? district = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? description = freezed,Object? hostName = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -76,7 +77,13 @@ as String,maxPlayers: null == maxPlayers ? _self.maxPlayers : maxPlayers // igno
 as int,bookedPlayers: null == bookedPlayers ? _self.bookedPlayers : bookedPlayers // ignore: cast_nullable_to_non_nullable
 as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double,requiredSkill: null == requiredSkill ? _self.requiredSkill : requiredSkill // ignore: cast_nullable_to_non_nullable
-as String,
+as String,courtId: freezed == courtId ? _self.courtId : courtId // ignore: cast_nullable_to_non_nullable
+as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
+as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,hostName: freezed == hostName ? _self.hostName : hostName // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -123,10 +130,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _SessionModel():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -161,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  DateTime startTime,  DateTime endTime,  String courtName,  int maxPlayers,  int bookedPlayers,  double price,  String requiredSkill)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  DateTime startTime,  DateTime endTime,  String courtName,  int maxPlayers,  int bookedPlayers,  double price,  String requiredSkill,  String? courtId,  String? district,  double? latitude,  double? longitude,  String? description,  String? hostName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SessionModel() when $default != null:
-return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtName,_that.maxPlayers,_that.bookedPlayers,_that.price,_that.requiredSkill);case _:
+return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtName,_that.maxPlayers,_that.bookedPlayers,_that.price,_that.requiredSkill,_that.courtId,_that.district,_that.latitude,_that.longitude,_that.description,_that.hostName);case _:
   return orElse();
 
 }
@@ -182,13 +186,10 @@ return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  DateTime startTime,  DateTime endTime,  String courtName,  int maxPlayers,  int bookedPlayers,  double price,  String requiredSkill)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  DateTime startTime,  DateTime endTime,  String courtName,  int maxPlayers,  int bookedPlayers,  double price,  String requiredSkill,  String? courtId,  String? district,  double? latitude,  double? longitude,  String? description,  String? hostName)  $default,) {final _that = this;
 switch (_that) {
 case _SessionModel():
-return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtName,_that.maxPlayers,_that.bookedPlayers,_that.price,_that.requiredSkill);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtName,_that.maxPlayers,_that.bookedPlayers,_that.price,_that.requiredSkill,_that.courtId,_that.district,_that.latitude,_that.longitude,_that.description,_that.hostName);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -202,10 +203,10 @@ return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  DateTime startTime,  DateTime endTime,  String courtName,  int maxPlayers,  int bookedPlayers,  double price,  String requiredSkill)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  DateTime startTime,  DateTime endTime,  String courtName,  int maxPlayers,  int bookedPlayers,  double price,  String requiredSkill,  String? courtId,  String? district,  double? latitude,  double? longitude,  String? description,  String? hostName)?  $default,) {final _that = this;
 switch (_that) {
 case _SessionModel() when $default != null:
-return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtName,_that.maxPlayers,_that.bookedPlayers,_that.price,_that.requiredSkill);case _:
+return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtName,_that.maxPlayers,_that.bookedPlayers,_that.price,_that.requiredSkill,_that.courtId,_that.district,_that.latitude,_that.longitude,_that.description,_that.hostName);case _:
   return null;
 
 }
@@ -217,7 +218,7 @@ return $default(_that.id,_that.title,_that.startTime,_that.endTime,_that.courtNa
 @JsonSerializable()
 
 class _SessionModel implements SessionModel {
-  const _SessionModel({required this.id, required this.title, required this.startTime, required this.endTime, required this.courtName, required this.maxPlayers, required this.bookedPlayers, required this.price, required this.requiredSkill});
+  const _SessionModel({required this.id, required this.title, required this.startTime, required this.endTime, required this.courtName, required this.maxPlayers, required this.bookedPlayers, required this.price, required this.requiredSkill, this.courtId, this.district, this.latitude, this.longitude, this.description, this.hostName});
   factory _SessionModel.fromJson(Map<String, dynamic> json) => _$SessionModelFromJson(json);
 
 @override final  String id;
@@ -229,6 +230,13 @@ class _SessionModel implements SessionModel {
 @override final  int bookedPlayers;
 @override final  double price;
 @override final  String requiredSkill;
+// ── Geo / court fields (from backend CourtSession) ──
+@override final  String? courtId;
+@override final  String? district;
+@override final  double? latitude;
+@override final  double? longitude;
+@override final  String? description;
+@override final  String? hostName;
 
 /// Create a copy of SessionModel
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.courtName, courtName) || other.courtName == courtName)&&(identical(other.maxPlayers, maxPlayers) || other.maxPlayers == maxPlayers)&&(identical(other.bookedPlayers, bookedPlayers) || other.bookedPlayers == bookedPlayers)&&(identical(other.price, price) || other.price == price)&&(identical(other.requiredSkill, requiredSkill) || other.requiredSkill == requiredSkill));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionModel&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.startTime, startTime) || other.startTime == startTime)&&(identical(other.endTime, endTime) || other.endTime == endTime)&&(identical(other.courtName, courtName) || other.courtName == courtName)&&(identical(other.maxPlayers, maxPlayers) || other.maxPlayers == maxPlayers)&&(identical(other.bookedPlayers, bookedPlayers) || other.bookedPlayers == bookedPlayers)&&(identical(other.price, price) || other.price == price)&&(identical(other.requiredSkill, requiredSkill) || other.requiredSkill == requiredSkill)&&(identical(other.courtId, courtId) || other.courtId == courtId)&&(identical(other.district, district) || other.district == district)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.description, description) || other.description == description)&&(identical(other.hostName, hostName) || other.hostName == hostName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,startTime,endTime,courtName,maxPlayers,bookedPlayers,price,requiredSkill);
+int get hashCode => Object.hash(runtimeType,id,title,startTime,endTime,courtName,maxPlayers,bookedPlayers,price,requiredSkill,courtId,district,latitude,longitude,description,hostName);
 
 @override
 String toString() {
-  return 'SessionModel(id: $id, title: $title, startTime: $startTime, endTime: $endTime, courtName: $courtName, maxPlayers: $maxPlayers, bookedPlayers: $bookedPlayers, price: $price, requiredSkill: $requiredSkill)';
+  return 'SessionModel(id: $id, title: $title, startTime: $startTime, endTime: $endTime, courtName: $courtName, maxPlayers: $maxPlayers, bookedPlayers: $bookedPlayers, price: $price, requiredSkill: $requiredSkill, courtId: $courtId, district: $district, latitude: $latitude, longitude: $longitude, description: $description, hostName: $hostName)';
 }
 
 
@@ -263,7 +271,7 @@ abstract mixin class _$SessionModelCopyWith<$Res> implements $SessionModelCopyWi
   factory _$SessionModelCopyWith(_SessionModel value, $Res Function(_SessionModel) _then) = __$SessionModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, DateTime startTime, DateTime endTime, String courtName, int maxPlayers, int bookedPlayers, double price, String requiredSkill
+ String id, String title, DateTime startTime, DateTime endTime, String courtName, int maxPlayers, int bookedPlayers, double price, String requiredSkill, String? courtId, String? district, double? latitude, double? longitude, String? description, String? hostName
 });
 
 
@@ -280,7 +288,7 @@ class __$SessionModelCopyWithImpl<$Res>
 
 /// Create a copy of SessionModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? startTime = null,Object? endTime = null,Object? courtName = null,Object? maxPlayers = null,Object? bookedPlayers = null,Object? price = null,Object? requiredSkill = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? startTime = null,Object? endTime = null,Object? courtName = null,Object? maxPlayers = null,Object? bookedPlayers = null,Object? price = null,Object? requiredSkill = null,Object? courtId = freezed,Object? district = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? description = freezed,Object? hostName = freezed,}) {
   return _then(_SessionModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -291,7 +299,13 @@ as String,maxPlayers: null == maxPlayers ? _self.maxPlayers : maxPlayers // igno
 as int,bookedPlayers: null == bookedPlayers ? _self.bookedPlayers : bookedPlayers // ignore: cast_nullable_to_non_nullable
 as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double,requiredSkill: null == requiredSkill ? _self.requiredSkill : requiredSkill // ignore: cast_nullable_to_non_nullable
-as String,
+as String,courtId: freezed == courtId ? _self.courtId : courtId // ignore: cast_nullable_to_non_nullable
+as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
+as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
+as double?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,hostName: freezed == hostName ? _self.hostName : hostName // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
