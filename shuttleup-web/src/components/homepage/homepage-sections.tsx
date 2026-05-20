@@ -10,6 +10,8 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { StaggerContainer, StaggerItem } from "@/components/ui/stagger-container";
 import { useTranslations } from "next-intl";
 
+import { ShuttlecockHero } from "./shuttlecock-hero";
+
 /* ── Framer Motion Variants ─────────────────────────────────────────────── */
 
 const heroContentVariants = {
@@ -60,8 +62,11 @@ export function HeroSection() {
         aria-hidden="true"
       />
 
+      {/* ── 3D Floating Shuttlecock (right side) ── */}
+      <ShuttlecockHero />
+
       {/* Content — staggered entrance */}
-      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-24 z-10">
         <motion.div
           className="max-w-2xl"
           variants={heroContentVariants}
