@@ -17,10 +17,12 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
-// Mock next/navigation (useRouter + usePathname)
+// Mock next/navigation (useRouter + usePathname + redirect)
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
   usePathname: () => '/',
+  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
 }));
 
 // Mock next/link
@@ -38,6 +40,29 @@ vi.mock('@/lib/auth-client', () => ({
 // Mock ThemeToggle (uses next-themes internally)
 vi.mock('@/components/theme-toggle', () => ({
   ThemeToggle: () => <button>toggle</button>,
+}));
+
+// Mock LocaleSwitcher
+vi.mock('@/components/layout/LocaleSwitcher', () => ({
+  LocaleSwitcher: () => <button>lang</button>,
+}));
+
+// Mock @/i18n/navigation
+vi.mock('@/i18n/navigation', () => ({
+  Link: ({ children, href, onClick, className }: any) => (
+    <a href={href} onClick={onClick} className={className}>{children}</a>
+  ),
+  usePathname: () => '/',
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), back: vi.fn() }),
+}));
+
+// Mock next-intl
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => {
+    if (key === 'brandName') return 'ShuttleUp';
+    return key;
+  },
+  useLocale: () => 'vi',
 }));
 
 describe('Navbar Component', () => {
