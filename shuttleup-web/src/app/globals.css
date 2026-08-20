@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Barlow+Condensed:wght@500;600&family=JetBrains+Mono:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -52,114 +52,114 @@
   --radius-4xl: 9999px;
 }
 
-/* ── BELo Design System — Light Mode ─────────────────────────────────────── */
+/* ── Championship Gold Design System — Light Mode ────────────────────────── */
 :root {
   color-scheme: light;
 
-  /* Brand — Shuttle Gold */
-  --primary: #F5C842;
-  --primary-foreground: #0D0F12;
+  /* Brand — Polished Gold */
+  --primary: #D9A300;
+  --primary-foreground: #0B0E14;
 
-  /* Accent — Energy Orange */
+  /* Accent — Energy Flame */
   --accent: #FF6B35;
   --accent-foreground: #FFFFFF;
 
-  /* Surfaces — BELo §2.3 */
-  --background: #F5F6F8;
-  --foreground: #0D0F12;
+  /* Surfaces */
+  --background: #F4F6F9;
+  --foreground: #0B0E14;
   --card: #FFFFFF;
-  --card-foreground: #0D0F12;
+  --card-foreground: #0B0E14;
   --popover: #FFFFFF;
-  --popover-foreground: #0D0F12;
+  --popover-foreground: #0B0E14;
 
   /* Secondary */
-  --secondary: #EAECF0;
-  --secondary-foreground: #1A1E24;
+  --secondary: #E8ECF2;
+  --secondary-foreground: #121722;
 
-  /* Muted — BELo §2.4 */
-  --muted: #EAECF0;
-  --muted-foreground: #4B5563;
+  /* Muted */
+  --muted: #E8ECF2;
+  --muted-foreground: #5A6A80;
 
-  /* Borders — BELo §2.6 */
-  --border: rgba(0,0,0,0.12);
-  --input: rgba(0,0,0,0.12);
-  --ring: #F5C842;
+  /* Borders */
+  --border: rgba(11, 14, 20, 0.10);
+  --input: rgba(11, 14, 20, 0.12);
+  --ring: #D9A300;
 
   /* Destructive — Rally Red */
   --destructive: #E8385A;
 
-  /* Radius — BELo §5.1 */
-  --radius: 10px;
+  /* Radius */
+  --radius: 12px;
 
   /* Charts */
-  --chart-1: #F5C842;
+  --chart-1: #D9A300;
   --chart-2: #FF6B35;
-  --chart-3: #378ADD;
-  --chart-4: #4ADE80;
+  --chart-3: #2563EB;
+  --chart-4: #10B981;
   --chart-5: #E8385A;
 
   /* Sidebar */
-  --sidebar: #F5F6F8;
-  --sidebar-foreground: #0D0F12;
-  --sidebar-primary: #F5C842;
-  --sidebar-primary-foreground: #0D0F12;
-  --sidebar-accent: #EAECF0;
-  --sidebar-accent-foreground: #1A1E24;
-  --sidebar-border: rgba(0,0,0,0.08);
-  --sidebar-ring: #F5C842;
+  --sidebar: #F4F6F9;
+  --sidebar-foreground: #0B0E14;
+  --sidebar-primary: #D9A300;
+  --sidebar-primary-foreground: #0B0E14;
+  --sidebar-accent: #E8ECF2;
+  --sidebar-accent-foreground: #121722;
+  --sidebar-border: rgba(11, 14, 20, 0.08);
+  --sidebar-ring: #D9A300;
 
-  /* BELo Semantic — §2.5 */
-  --color-win: #4ADE80;
-  --color-loss: #F87171;
-  --color-info: #378ADD;
-  --color-warning: #F5C842;
+  /* BELo Semantic */
+  --color-win: #10B981;
+  --color-loss: #EF4444;
+  --color-info: #2563EB;
+  --color-warning: #D9A300;
   --color-danger: #E8385A;
 
-  /* BELo Brand Gradient */
-  --color-brand-gradient: linear-gradient(90deg, #F5C842 0%, #FF6B35 50%, #E8385A 100%);
+  /* Brand Gradient */
+  --color-brand-gradient: linear-gradient(135deg, #F5C842 0%, #FF6B35 55%, #E8385A 100%);
 
-  /* Typography — BELo §3.1 */
-  --font-display: 'Barlow Condensed', 'Inter', sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  /* Typography */
+  --font-display: 'Barlow Condensed', 'Plus Jakarta Sans', sans-serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  /* Motion — BELo §8.1 */
+  /* Motion */
   --duration-micro: 100ms;
   --duration-fast: 150ms;
   --duration-normal: 200ms;
   --duration-slow: 300ms;
 }
 
-/* ── BELo Design System — Dark Mode (Default) ───────────────────────────── */
+/* ── Championship Gold Design System — Dark Mode (Default) ──────────────── */
 .dark {
   color-scheme: dark;
 
-  /* Brand — Gold stays identical in dark */
+  /* Brand — Radiant Shuttle Gold */
   --primary: #F5C842;
-  --primary-foreground: #0D0F12;
+  --primary-foreground: #0B0E14;
 
-  --accent: #FF6B35;
-  --accent-foreground: #0D0F12;
+  --accent: #FF7A45;
+  --accent-foreground: #0B0E14;
 
-  /* Surfaces — BELo §2.2 Court Black */
-  --background: #0D0F12;
-  --foreground: #F0F2F5;
-  --card: #161A20;
-  --card-foreground: #F0F2F5;
-  --popover: #1C2128;
-  --popover-foreground: #F0F2F5;
+  /* Surfaces — Pro Court Black & Midnight Plate */
+  --background: #0B0E14;
+  --foreground: #F0F4F8;
+  --card: #131822;
+  --card-foreground: #F0F4F8;
+  --popover: #181F2C;
+  --popover-foreground: #F0F4F8;
 
   /* Secondary */
-  --secondary: #1C2128;
-  --secondary-foreground: #F0F2F5;
+  --secondary: #1C2433;
+  --secondary-foreground: #F0F4F8;
 
-  /* Muted — BELo §2.4 */
-  --muted: #1C2128;
-  --muted-foreground: #6B7280;
+  /* Muted */
+  --muted: #181F2C;
+  --muted-foreground: #8B9BB4;
 
-  /* Borders — BELo §2.6 */
-  --border: rgba(255,255,255,0.12);
-  --input: rgba(255,255,255,0.15);
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.12);
   --ring: #F5C842;
 
   /* Destructive — Rally Red */
@@ -167,19 +167,19 @@
 
   /* Charts */
   --chart-1: #F5C842;
-  --chart-2: #FF6B35;
-  --chart-3: #378ADD;
-  --chart-4: #4ADE80;
-  --chart-5: #E8385A;
+  --chart-2: #FF7A45;
+  --chart-3: #38BDF8;
+  --chart-4: #34D399;
+  --chart-5: #F87171;
 
   /* Sidebar */
-  --sidebar: #161A20;
-  --sidebar-foreground: #F0F2F5;
+  --sidebar: #131822;
+  --sidebar-foreground: #F0F4F8;
   --sidebar-primary: #F5C842;
-  --sidebar-primary-foreground: #0D0F12;
-  --sidebar-accent: #1C2128;
-  --sidebar-accent-foreground: #F0F2F5;
-  --sidebar-border: rgba(255,255,255,0.08);
+  --sidebar-primary-foreground: #0B0E14;
+  --sidebar-accent: #1C2433;
+  --sidebar-accent-foreground: #F0F4F8;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
   --sidebar-ring: #F5C842;
 }
 
@@ -210,7 +210,7 @@
   h1 { text-wrap: balance; }
   h2 { text-wrap: balance; }
 
-  /* BELo §8.1 — fast transitions for sporty feel */
+  /* Fast transitions for sporty feel */
   button, a, [role="button"] {
     @apply transition-colors;
     transition-duration: var(--duration-fast);
@@ -229,14 +229,34 @@
     font-family: var(--font-mono);
   }
 
+  /* Text Gold Gradient */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #FFE072 0%, #F5C842 45%, #FF8C38 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Glow Effects */
+  .glow-gold {
+    box-shadow: 0 0 24px -4px rgba(245, 200, 66, 0.35);
+  }
+  
+  .glow-gold-subtle {
+    box-shadow: 0 0 16px -4px rgba(245, 200, 66, 0.18);
+  }
+
+  .glow-gold-hover:hover {
+    box-shadow: 0 0 28px -2px rgba(245, 200, 66, 0.45);
+  }
+
   /* Skill level badge colors — BELo tier-inspired */
-  .skill-beginner    { @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400; }
-  .skill-intermediate { @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400; }
-  .skill-advanced    { @apply bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400; }
-  .skill-pro         { @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400; }
+  .skill-beginner    { @apply bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border dark:border-emerald-800/40; }
+  .skill-intermediate { @apply bg-sky-100 text-sky-800 dark:bg-sky-950/40 dark:text-sky-300 dark:border dark:border-sky-800/40; }
+  .skill-advanced    { @apply bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 dark:border dark:border-amber-800/40; }
+  .skill-pro         { @apply bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300 dark:border dark:border-rose-800/40; }
   .skill-all         { @apply bg-muted text-muted-foreground; }
 
-  /* BELo brand gradient utility */
+  /* Brand gradient utility */
   .bg-brand-gradient {
     background: var(--color-brand-gradient);
   }

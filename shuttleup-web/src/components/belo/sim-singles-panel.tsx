@@ -3,21 +3,21 @@
 import { useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select, SelectTrigger, SelectValue, SelectContent, SelectItem,
 } from "@/components/ui/select";
-import { Play, RotateCcw } from "lucide-react";
-import { getTierInfo, simulateSingles, type SinglesSimResult } from "./belo-calc-engine";
+import { Play, RotateCcw, Swords, Activity } from "lucide-react";
+import { simulateSingles, type SinglesSimResult } from "./belo-calc-engine";
 import { PlayerResultCard, DetailRow, VsDivider } from "./sim-result-display";
+import { BeloTierBadge } from "./belo-tier-badge";
 
 export function SimSinglesPanel() {
-  const [eloA, setEloA] = useState(1200);
-  const [eloB, setEloB] = useState(1000);
-  const [gamesA, setGamesA] = useState(10);
-  const [gamesB, setGamesB] = useState(25);
+  const [eloA, setEloA] = useState(1550);
+  const [eloB, setEloB] = useState(1320);
+  const [gamesA, setGamesA] = useState(14);
+  const [gamesB, setGamesB] = useState(30);
   const [winner, setWinner] = useState<"A" | "B">("A");
   const [result, setResult] = useState<SinglesSimResult | null>(null);
 
@@ -26,72 +26,96 @@ export function SimSinglesPanel() {
   }, [eloA, eloB, winner, gamesA, gamesB]);
 
   const handleReset = () => {
-    setEloA(1200); setEloB(1000); setGamesA(10); setGamesB(25);
+    setEloA(1550); setEloB(1320); setGamesA(14); setGamesB(30);
     setWinner("A"); setResult(null);
   };
 
-  const tierA = getTierInfo(eloA);
-  const tierB = getTierInfo(eloB);
-
   return (
-    <div className="grid gap-5 lg:grid-cols-2">
+    <div className="grid gap-6 lg:grid-cols-2">
       {/* Input panel */}
-      <Card className="border-slate-200">
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base">Thông tin trận đấu</CardTitle>
+      <Card className="border border-white/10 bg-[#131822] shadow-xl">
+        <CardHeader className="pb-3 border-b border-white/5">
+          <CardTitle className="font-display text-xl font-bold uppercase tracking-tight flex items-center gap-2 text-white">
+            <Swords className="h-5 w-5 text-primary" />
+            Thiết Lập Kèo Solo Đơn
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-5">
+        <CardContent className="space-y-4 pt-5">
           {/* Player A */}
-          <PlayerInput label="Người chơi A" color="blue" tier={tierA}
+          <PlayerInput label="Người chơi A (Bạn)" color="blue"
             elo={eloA} onEloChange={setEloA} games={gamesA} onGamesChange={setGamesA} />
+          
+          <VsDivider />
+
           {/* Player B */}
-          <PlayerInput label="Người chơi B" color="rose" tier={tierB}
+          <PlayerInput label="Người chơi B (Đối thủ)" color="rose"
             elo={eloB} onEloChange={setEloB} games={gamesB} onGamesChange={setGamesB} />
+          
           {/* Winner */}
-          <div>
-            <Label className="text-xs">Người thắng</Label>
+          <div className="pt-2">
+            <Label className="text-xs font-semibold text-slate-300">Kết quả trận đấu</Label>
             <Select value={winner} onValueChange={(v) => setWinner(v as "A" | "B")}>
-              <SelectTrigger className="mt-1 h-9"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="A">Người chơi A thắng</SelectItem>
-                <SelectItem value="B">Người chơi B thắng</SelectItem>
+              <SelectTrigger className="mt-1.5 h-11 border-white/15 bg-white/5 text-white font-medium cursor-pointer">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-[#181F2C] border-white/10 text-white">
+                <SelectItem value="A" className="cursor-pointer font-medium">🏆 Người chơi A thắng</SelectItem>
+                <SelectItem value="B" className="cursor-pointer font-medium">🏆 Người chơi B thắng</SelectItem>
               </SelectContent>
             </Select>
           </div>
+
           {/* Actions */}
-          <div className="flex gap-2 pt-1">
-            <Button onClick={handleSimulate} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer">
-              <Play className="mr-2 h-4 w-4" /> Tính ELO
+          <div className="flex gap-3 pt-3">
+            <Button
+              onClick={handleSimulate}
+              className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-lg glow-gold cursor-pointer transition-transform active:scale-95"
+            >
+              <Play className="mr-2 h-4 w-4 fill-primary-foreground" /> Tính Điểm ELO Ngay
             </Button>
-            <Button variant="outline" onClick={handleReset} className="cursor-pointer">
-              <RotateCcw className="mr-1 h-4 w-4" /> Reset
+            <Button
+              variant="outline"
+              onClick={handleReset}
+              className="h-12 border-white/15 bg-white/5 hover:bg-white/10 text-white cursor-pointer"
+            >
+              <RotateCcw className="mr-1.5 h-4 w-4" /> Reset
             </Button>
           </div>
         </CardContent>
       </Card>
 
       {/* Result panel */}
-      <Card className="border-slate-200">
-        <CardHeader className="pb-4"><CardTitle className="text-base">Kết quả</CardTitle></CardHeader>
-        <CardContent>
+      <Card className="border border-white/10 bg-[#131822] shadow-xl flex flex-col justify-between">
+        <CardHeader className="pb-3 border-b border-white/5">
+          <CardTitle className="font-display text-xl font-bold uppercase tracking-tight flex items-center gap-2 text-white">
+            <Activity className="h-5 w-5 text-emerald-400" />
+            Biến Động Điểm BELo Sau Trận
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-5 flex-1 flex flex-col justify-center">
           {!result ? (
-            <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-              <Play className="h-10 w-10 mb-3 opacity-20" />
-              <p className="text-sm">Nhấn &quot;Tính ELO&quot; để xem kết quả</p>
+            <div className="flex flex-col items-center justify-center py-16 text-center text-slate-400">
+              <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-4 text-primary">
+                <Play className="h-7 w-7 fill-primary" />
+              </div>
+              <h4 className="font-display text-lg font-bold text-white mb-1">Sẵn Sàng Tính Toán</h4>
+              <p className="text-xs text-slate-400 max-w-xs">
+                Điều chỉnh điểm Elo và chọn người thắng, sau đó nhấn &quot;Tính Điểm ELO Ngay&quot;.
+              </p>
             </div>
           ) : (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <PlayerResultCard label="Người chơi A" eloBefore={eloA} eloAfter={result.newEloA}
                 delta={result.deltaA} expected={result.expectedA} isWinner={winner === "A"} colorScheme="blue" />
-              <VsDivider />
+              
               <PlayerResultCard label="Người chơi B" eloBefore={eloB} eloAfter={result.newEloB}
                 delta={result.deltaB} expected={result.expectedB} isWinner={winner === "B"} colorScheme="rose" />
-              <div className="mt-4 p-3 rounded-lg bg-slate-50 border border-slate-100 space-y-1.5">
-                <h4 className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Chi tiết tính toán</h4>
-                <DetailRow label="K-Factor" value={result.kFactor.toString()} />
-                <DetailRow label="Xác suất A thắng" value={`${(result.expectedA * 100).toFixed(1)}%`} />
-                <DetailRow label="Xác suất B thắng" value={`${(result.expectedB * 100).toFixed(1)}%`} />
-                <DetailRow label="Tổng delta" value={`${result.deltaA > 0 ? "+" : ""}${result.deltaA} / ${result.deltaB > 0 ? "+" : ""}${result.deltaB}`} />
+              
+              <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 space-y-1">
+                <h4 className="text-[11px] font-bold text-primary uppercase tracking-wider mb-2">Thông Số Thuật Toán ELO</h4>
+                <DetailRow label="K-Factor linh hoạt" value={result.kFactor.toString()} />
+                <DetailRow label="Kỳ vọng Người A" value={`${(result.expectedA * 100).toFixed(1)}%`} />
+                <DetailRow label="Kỳ vọng Người B" value={`${(result.expectedB * 100).toFixed(1)}%`} />
               </div>
             </div>
           )}
@@ -103,34 +127,44 @@ export function SimSinglesPanel() {
 
 // ─── Player Input Sub-component ───────────────────────────────────────────
 
-function PlayerInput({ label, color, tier, elo, onEloChange, games, onGamesChange }: {
+function PlayerInput({ label, color, elo, onEloChange, games, onGamesChange }: {
   label: string; color: "blue" | "rose";
-  tier: { name: string; emoji: string; color: string };
   elo: number; onEloChange: (v: number) => void;
   games: number; onGamesChange: (v: number) => void;
 }) {
-  const bgClass = color === "blue" ? "bg-blue-50/50 border-blue-100" : "bg-rose-50/50 border-rose-100";
-  const labelColor = color === "blue" ? "text-blue-800" : "text-rose-800";
-  const inputLabel = color === "blue" ? "text-blue-700" : "text-rose-700";
+  const borderClass = color === "blue" ? "border-sky-500/20 bg-sky-500/5" : "border-rose-500/20 bg-rose-500/5";
 
   return (
-    <div className={`space-y-3 p-4 rounded-lg ${bgClass} border`}>
+    <div className={`p-4 rounded-xl border ${borderClass} space-y-3`}>
       <div className="flex items-center justify-between">
-        <span className={`font-semibold text-sm ${labelColor}`}>{label}</span>
-        <Badge className={tier.color}>{tier.emoji} {tier.name}</Badge>
+        <span className="font-display font-bold text-sm text-white tracking-wide">{label}</span>
+        <BeloTierBadge elo={elo} size="sm" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <Label className={`text-xs ${inputLabel}`}>ELO hiện tại</Label>
-          <Input type="number" value={elo} onChange={(e) => onEloChange(Number(e.target.value))}
-            className="mt-1 h-9" min={100} max={3000} />
+          <Label className="text-[11px] text-slate-400">Điểm BELo</Label>
+          <Input
+            type="number"
+            value={elo}
+            onChange={(e) => onEloChange(Number(e.target.value))}
+            className="mt-1 h-10 border-white/15 bg-white/5 text-white font-mono font-bold"
+            min={100}
+            max={3000}
+          />
         </div>
         <div>
-          <Label className={`text-xs ${inputLabel}`}>Tổng số trận</Label>
-          <Input type="number" value={games} onChange={(e) => onGamesChange(Number(e.target.value))}
-            className="mt-1 h-9" min={0} max={999} />
+          <Label className="text-[11px] text-slate-400">Số trận đã đấu</Label>
+          <Input
+            type="number"
+            value={games}
+            onChange={(e) => onGamesChange(Number(e.target.value))}
+            className="mt-1 h-10 border-white/15 bg-white/5 text-white font-mono font-bold"
+            min={0}
+            max={999}
+          />
         </div>
       </div>
     </div>
   );
 }
+

@@ -2,7 +2,8 @@
 
 import { Badge } from "@/components/ui/badge";
 import { getTierInfo } from "./belo-calc-engine";
-import { ArrowUp, ArrowDown, Minus } from "lucide-react";
+import { BeloTierBadge } from "./belo-tier-badge";
+import { ArrowUp, ArrowDown, Minus, Zap } from "lucide-react";
 
 // ─── PlayerResultCard ─────────────────────────────────────────────────────
 
@@ -14,80 +15,98 @@ interface PlayerResultProps {
   expected: number;
   isWinner: boolean;
   colorScheme: "blue" | "rose" | "emerald" | "violet";
-  /** Optional carry weight % for doubles */
   carryWeight?: number;
 }
 
 export function PlayerResultCard({
-  label, eloBefore, eloAfter, delta, expected, isWinner, colorScheme, carryWeight,
+  label,
+  eloBefore,
+  eloAfter,
+  delta,
+  expected,
+  isWinner,
+  colorScheme,
+  carryWeight,
 }: PlayerResultProps) {
   const tierBefore = getTierInfo(eloBefore);
   const tierAfter = getTierInfo(eloAfter);
   const tierChanged = tierBefore.name !== tierAfter.name;
 
   const bgMap = {
-    blue: "bg-blue-50/60 border-blue-100",
-    rose: "bg-rose-50/60 border-rose-100",
-    emerald: "bg-primary/5 border-primary/10",
-    violet: "bg-violet-50/60 border-violet-100",
+    blue: "bg-sky-500/5 border-sky-500/20",
+    rose: "bg-rose-500/5 border-rose-500/20",
+    emerald: "bg-emerald-500/5 border-emerald-500/20",
+    violet: "bg-violet-500/5 border-violet-500/20",
   };
 
   const DeltaIcon = delta > 0 ? ArrowUp : delta < 0 ? ArrowDown : Minus;
-  const deltaColor = delta > 0 ? "text-[var(--color-win)]" : delta < 0 ? "text-[var(--color-loss)]" : "text-muted-foreground";
+  const deltaColor =
+    delta > 0
+      ? "text-emerald-400 bg-emerald-950/50 border-emerald-800/40"
+      : delta < 0
+      ? "text-rose-400 bg-rose-950/50 border-rose-800/40"
+      : "text-muted-foreground bg-secondary/50 border-border";
 
   return (
-    <div className={`p-4 rounded-lg border ${bgMap[colorScheme]}`}>
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-semibold">{label}</span>
+    <div className={`p-5 rounded-2xl border ${bgMap[colorScheme]} backdrop-blur-md transition-all duration-300`}>
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
+          <span className="font-display text-lg font-bold tracking-tight text-foreground">{label}</span>
           {carryWeight !== undefined && (
-            <span className="text-[10px] text-muted-foreground font-mono">
-              CW: {(carryWeight * 100).toFixed(0)}%
+            <span className="text-[11px] text-muted-foreground font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10">
+              Gánh: {(carryWeight * 100).toFixed(0)}%
             </span>
           )}
-          <Badge className={isWinner ? "bg-[var(--color-win)]/15 text-[var(--color-win)]" : "bg-red-50 text-red-600"}>
-            {isWinner ? "Thắng" : "Thua"}
-          </Badge>
         </div>
+        <Badge
+          className={
+            isWinner
+              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-3 py-1 font-bold text-xs"
+              : "bg-rose-500/20 text-rose-400 border border-rose-500/30 px-3 py-1 font-bold text-xs"
+          }
+        >
+          {isWinner ? "🏆 THẮNG" : "THUA"}
+        </Badge>
       </div>
 
-      <div className="flex items-end gap-4">
+      <div className="flex items-end justify-between gap-3">
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">Trước</p>
-          <p className="text-lg font-bold text-muted-foreground">{eloBefore}</p>
+          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Trước Trận</p>
+          <p className="text-xl font-bold font-mono text-muted-foreground">{eloBefore}</p>
         </div>
-        <div className="flex items-center gap-1 pb-1">
-          <span className="text-muted-foreground/40">→</span>
-          <span className={`flex items-center gap-0.5 text-sm font-bold ${deltaColor}`}>
-            <DeltaIcon className="h-3.5 w-3.5" />
+
+        <div className="flex items-center gap-1.5 pb-1">
+          <span className={`flex items-center gap-1 px-3 py-1 rounded-lg border text-sm font-black font-mono ${deltaColor}`}>
+            <DeltaIcon className="h-4 w-4" />
             {delta > 0 ? `+${delta}` : delta}
           </span>
-          <span className="text-muted-foreground/40">→</span>
         </div>
+
         <div className="text-center">
-          <p className="text-xs text-muted-foreground">Sau</p>
-          <p className="text-lg font-extrabold">{eloAfter}</p>
+          <p className="text-[11px] font-semibold text-primary uppercase tracking-wider mb-0.5">Sau Trận</p>
+          <p className="text-2xl font-black font-mono text-foreground">{eloAfter}</p>
         </div>
-        <div className="ml-auto text-right">
-          <Badge className={tierAfter.color}>
-            {tierAfter.emoji} {tierAfter.name}
-          </Badge>
+
+        <div className="ml-auto text-right flex flex-col items-end">
+          <BeloTierBadge elo={eloAfter} size="sm" />
           {tierChanged && (
-            <p className="text-[10px] text-primary font-medium mt-1">Thay đổi tier!</p>
+            <span className="inline-flex items-center gap-1 text-[11px] text-primary font-bold mt-1.5 animate-pulse">
+              <Zap className="h-3 w-3 fill-primary" /> THĂNG HẠNG!
+            </span>
           )}
         </div>
       </div>
 
-      {/* Win probability bar */}
-      <div className="mt-3">
-        <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
-          <span>Xác suất thắng kỳ vọng</span>
-          <span className="font-medium">{(expected * 100).toFixed(1)}%</span>
+      {/* Win probability gauge */}
+      <div className="mt-4 pt-3 border-t border-white/5">
+        <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
+          <span>Xác suất thắng kỳ vọng thuật toán</span>
+          <span className="font-mono font-bold text-foreground">{(expected * 100).toFixed(1)}%</span>
         </div>
-        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+        <div className="h-2 rounded-full bg-secondary overflow-hidden">
           <div
-            className="h-full rounded-full bg-primary transition-all duration-500"
-            style={{ width: `${expected * 100}%` }}
+            className="h-full rounded-full bg-gradient-to-r from-amber-400 to-primary transition-all duration-700 ease-out"
+            style={{ width: `${Math.max(5, expected * 100)}%` }}
           />
         </div>
       </div>
@@ -99,9 +118,9 @@ export function PlayerResultCard({
 
 export function DetailRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between text-xs">
+    <div className="flex justify-between items-center text-xs py-1">
       <span className="text-muted-foreground">{label}</span>
-      <span className="font-mono font-medium">{value}</span>
+      <span className="font-mono font-bold text-foreground">{value}</span>
     </div>
   );
 }
@@ -110,10 +129,13 @@ export function DetailRow({ label, value }: { label: string; value: string }) {
 
 export function VsDivider() {
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 h-px bg-border" />
-      <span className="text-xs text-muted-foreground font-medium">VS</span>
-      <div className="flex-1 h-px bg-border" />
+    <div className="flex items-center gap-3 my-3">
+      <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="h-7 w-7 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center font-display font-black text-xs text-primary glow-gold-subtle">
+        VS
+      </div>
+      <div className="flex-1 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
     </div>
   );
 }
+

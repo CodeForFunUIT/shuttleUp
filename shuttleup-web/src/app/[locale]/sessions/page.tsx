@@ -198,6 +198,10 @@ export default function SessionsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sessions.map((session) => {
                 const isFull = session.availableSlots <= 0;
+                const totalSlots = session.maxParticipants || (session.availableSlots + 4);
+                const filledSlots = Math.max(0, totalSlots - session.availableSlots);
+                const percentFilled = Math.min(100, Math.round((filledSlots / totalSlots) * 100));
+                const isUrgent = session.availableSlots > 0 && session.availableSlots <= 2;
                 const skillClass = SKILL_CLASS[session.skillRequired] ?? "skill-all";
                 const skillLabel = getSkillLabel(session.skillRequired);
                 const price = new Intl.NumberFormat(locale === "vi" ? "vi-VN" : "en-US", {
@@ -209,17 +213,17 @@ export default function SessionsPage() {
                   <Link
                     key={session.id}
                     href={`/sessions/${session.id}`}
-                    className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
+                    className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl cursor-pointer"
                   >
-                    <article className="h-full flex flex-col rounded-2xl border bg-card overflow-hidden hover:shadow-lg hover:border-primary/30 transition-[shadow,border-color] duration-300">
-                      {/* Colored top bar based on skill */}
+                    <article className="h-full flex flex-col rounded-2xl border border-white/10 bg-card overflow-hidden hover:shadow-2xl hover:border-primary/40 transition-all duration-300 group-hover:-translate-y-1">
+                      {/* Top Skill accent bar */}
                       <div
                         className={cn(
                           "h-1.5 w-full",
-                          session.skillRequired === "BEGINNER" && "bg-green-500",
-                          session.skillRequired === "INTERMEDIATE" && "bg-blue-500",
-                          session.skillRequired === "ADVANCED" && "bg-orange-500",
-                          session.skillRequired === "PRO" && "bg-red-500",
+                          session.skillRequired === "BEGINNER" && "bg-emerald-500",
+                          session.skillRequired === "INTERMEDIATE" && "bg-sky-500",
+                          session.skillRequired === "ADVANCED" && "bg-amber-500",
+                          session.skillRequired === "PRO" && "bg-rose-500",
                           !["BEGINNER", "INTERMEDIATE", "ADVANCED", "PRO"].includes(session.skillRequired) && "bg-primary"
                         )}
                         aria-hidden="true"
@@ -227,24 +231,46 @@ export default function SessionsPage() {
 
                       {/* Card body */}
                       <div className="flex flex-col flex-1 p-5 gap-4">
-                        {/* Title + slot badge */}
+                        {/* Title + Status Badge */}
                         <div className="flex justify-between items-start gap-2">
                           <h2 className="font-display text-lg font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
                             {session.title}
                           </h2>
                           <Badge
-                            variant={isFull ? "destructive" : "secondary"}
                             className={cn(
-                              "shrink-0 text-xs font-semibold",
-                              !isFull && "bg-primary/10 text-primary border-primary/20"
+                              "shrink-0 text-xs font-bold px-2.5 py-0.5 rounded-full",
+                              isFull
+                                ? "bg-destructive/20 text-destructive border-destructive/30"
+                                : isUrgent
+                                ? "bg-amber-500/20 text-amber-400 border-amber-500/40 animate-pulse"
+                                : "bg-primary/15 text-primary border-primary/30"
                             )}
                           >
                             {isFull ? t("full") : t("left", { count: session.availableSlots })}
                           </Badge>
                         </div>
 
+                        {/* Slot Capacity Gauge */}
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-[11px] text-muted-foreground font-mono">
+                            <span>Sĩ số: {filledSlots}/{totalSlots} tay vợt</span>
+                            <span className={isUrgent ? "text-amber-400 font-bold" : "text-slate-300"}>
+                              {isFull ? "Đã đủ" : isUrgent ? "Sắp kín slot!" : "Đang mở"}
+                            </span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-secondary overflow-hidden">
+                            <div
+                              className={cn(
+                                "h-full rounded-full transition-all duration-500",
+                                isFull ? "bg-destructive" : isUrgent ? "bg-amber-400" : "bg-primary"
+                              )}
+                              style={{ width: `${percentFilled}%` }}
+                            />
+                          </div>
+                        </div>
+
                         {/* Meta info */}
-                        <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+                        <div className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground pt-1">
                           <div className="flex items-center gap-2">
                             <MapPin className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
                             <span className="truncate">{session.court?.name ?? t("unknownCourt")}</span>
@@ -263,7 +289,7 @@ export default function SessionsPage() {
                         </div>
 
                         {/* Skill badge */}
-                        <div>
+                        <div className="pt-1">
                           <span className={cn("text-xs font-semibold px-2.5 py-1 rounded-full", skillClass)}>
                             {skillLabel}
                           </span>
@@ -271,20 +297,23 @@ export default function SessionsPage() {
 
                         {/* Host info */}
                         {session.host && (
-                          <div className="flex items-center gap-2 pt-2 border-t">
+                          <div className="flex items-center gap-2.5 pt-3 border-t border-white/5 mt-auto">
                             <HostAvatar name={session.host.name ?? "Host"} />
-                            <div className="min-w-0">
-                              <span className="text-xs text-muted-foreground">{t("hostedBy")}</span>
-                              <span className="text-xs font-medium truncate">{session.host.name}</span>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-[11px] text-muted-foreground">{t("hostedBy")}</div>
+                              <div className="text-xs font-semibold truncate text-foreground">{session.host.name}</div>
+                            </div>
+                            <div className="text-xs font-bold text-amber-400 flex items-center gap-0.5">
+                              ★ 4.9
                             </div>
                           </div>
                         )}
                       </div>
 
                       {/* Footer */}
-                      <div className="flex items-center justify-between px-5 py-3 border-t bg-muted/30">
-                        <span className="font-display font-bold text-primary tabular-nums">{price}</span>
-                        <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">
+                      <div className="flex items-center justify-between px-5 py-3 border-t border-white/5 bg-secondary/30">
+                        <span className="font-display text-lg font-black text-primary tabular-nums tracking-tight">{price}</span>
+                        <span className="flex items-center gap-1 text-xs font-bold text-muted-foreground group-hover:text-primary transition-colors">
                           {t("viewDetails")}
                           <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                         </span>
