@@ -22,13 +22,10 @@ const ONBOARDING_WEIGHTS = {
 
 const BASE_ELO = 1200;
 
-function calculateWeightedElo(
-  answers: Record<string, number>,
-): number {
+function calculateWeightedElo(answers: Record<string, number>): number {
   let bonus = 0;
   for (const [key, index] of Object.entries(answers)) {
-    const table =
-      ONBOARDING_WEIGHTS[key as keyof typeof ONBOARDING_WEIGHTS];
+    const table = ONBOARDING_WEIGHTS[key as keyof typeof ONBOARDING_WEIGHTS];
     if (table && index >= 0 && index < table.length) {
       bonus += table[index];
     }
@@ -109,7 +106,9 @@ export class UsersService {
       throw new BadRequestException('Onboarding already completed');
     }
 
-    const newElo = calculateWeightedElo(dto.answers as unknown as Record<string, number>);
+    const newElo = calculateWeightedElo(
+      dto.answers as unknown as Record<string, number>,
+    );
     const skillLevel = deriveSkillLevel(newElo);
 
     return this.prisma.user.update({

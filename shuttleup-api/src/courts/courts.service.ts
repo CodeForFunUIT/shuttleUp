@@ -21,7 +21,6 @@ export class CourtsService {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async findNearby(lat: number, lng: number, _radiusKm: number = 5) {
     // For now, returning all courts (SearchModule handles advanced PostGIS)
     return this.prisma.court.findMany();

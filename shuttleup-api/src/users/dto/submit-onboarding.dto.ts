@@ -1,15 +1,13 @@
-import {
-  IsInt,
-  Min,
-  Max,
-  ValidateNested,
-  IsObject,
-} from 'class-validator';
+import { IsInt, Min, Max, ValidateNested, IsObject } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 class OnboardingAnswersDto {
-  @ApiProperty({ description: 'Playing experience (0-4)', minimum: 0, maximum: 4 })
+  @ApiProperty({
+    description: 'Playing experience (0-4)',
+    minimum: 0,
+    maximum: 4,
+  })
   @IsInt()
   @Min(0)
   @Max(4)
@@ -21,7 +19,11 @@ class OnboardingAnswersDto {
   @Max(3)
   frequency: number;
 
-  @ApiProperty({ description: 'Tournament experience (0-3)', minimum: 0, maximum: 3 })
+  @ApiProperty({
+    description: 'Tournament experience (0-3)',
+    minimum: 0,
+    maximum: 3,
+  })
   @IsInt()
   @Min(0)
   @Max(3)
@@ -33,13 +35,21 @@ class OnboardingAnswersDto {
   @Max(2)
   gameStyle: number;
 
-  @ApiProperty({ description: 'Technique consistency (0-3)', minimum: 0, maximum: 3 })
+  @ApiProperty({
+    description: 'Technique consistency (0-3)',
+    minimum: 0,
+    maximum: 3,
+  })
   @IsInt()
   @Min(0)
   @Max(3)
   technique: number;
 
-  @ApiProperty({ description: 'Training background (0-3)', minimum: 0, maximum: 3 })
+  @ApiProperty({
+    description: 'Training background (0-3)',
+    minimum: 0,
+    maximum: 3,
+  })
   @IsInt()
   @Min(0)
   @Max(3)

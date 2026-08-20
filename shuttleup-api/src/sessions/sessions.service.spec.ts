@@ -99,6 +99,7 @@ describe('SessionsService', () => {
         id: 'new-session-id',
         hostId: 'host-1',
         ...createDto,
+        gameType: 'singles',
         status: 'OPEN',
         availableSlots: 10,
         startTime: new Date(createDto.startTime),
@@ -124,6 +125,7 @@ describe('SessionsService', () => {
           availableSlots: 10,
           pricePerSlot: 50000,
           skillRequired: 'BEGINNER',
+          gameType: 'singles',
           status: 'OPEN',
         },
       });
