@@ -32,7 +32,7 @@ void main() {
       sessionBloc.add(const SessionEvent.loadSessions());
 
       // Wait for the mock delay (1 second) + small buffer
-      await Future.delayed(const Duration(milliseconds: 1200));
+      await Future<void>.delayed(const Duration(milliseconds: 1200));
 
       // Verify states
       // In this async environment, the first state might be emitted very quickly

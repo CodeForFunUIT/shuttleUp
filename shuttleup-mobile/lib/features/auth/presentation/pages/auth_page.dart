@@ -17,7 +17,7 @@ class _AuthPageState extends State<AuthPage> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       // Giả lập API gọi lên NestJS Better Auth
-      await Future.delayed(const Duration(seconds: 1)); 
+      await Future<void>.delayed(const Duration(seconds: 1)); 
       if (mounted) {
         setState(() => _isLoading = false);
         const DashboardRoute().go(context);

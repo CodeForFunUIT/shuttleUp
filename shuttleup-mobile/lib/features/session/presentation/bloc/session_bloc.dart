@@ -13,7 +13,7 @@ class SessionBloc extends Bloc<SessionEvent, SessionState> {
           emit(const SessionState.loading());
           try {
             // Mock API delay
-            await Future.delayed(const Duration(seconds: 1));
+            await Future<void>.delayed(const Duration(seconds: 1));
             
             // Mock data
             final mockSessions = [

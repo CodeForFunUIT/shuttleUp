@@ -5,7 +5,7 @@ import 'core/services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  configureDependencies();
+  await configureDependencies();
   
   // Initialize Mock Notifications
   await NotificationService().initialize();

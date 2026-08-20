@@ -47,7 +47,7 @@ features/<feature>/
 │   └── widgets/       # Reusable UI components
 ```
 
-## Critical Gotchas
+## Critical Gotchas & Safety Rules
 
 ### Freezed v3 requires `sealed class`
 
@@ -61,6 +61,34 @@ sealed class SessionModel with _$SessionModel { ... }
 class SessionModel with _$SessionModel { ... }
 ```
 
+### Async `BuildContext` Safety (MANDATORY)
+
+Never use `BuildContext` across async gaps without checking `mounted`:
+
+```dart
+// ✅ CORRECT — check mounted after await
+final result = await getIt<AuthRepository>().login(credentials);
+if (!context.mounted) return;
+context.go('/dashboard');
+
+// ❌ WRONG — unsafe BuildContext usage after async operation
+final result = await getIt<AuthRepository>().login(credentials);
+Navigator.of(context).pushNamed('/dashboard');
+```
+
+### File Size & Modularization
+
+- **Strict Limit**: Keep every Dart file under 200 lines.
+- **Widgets**: Extract sub-components into `features/<feature>/presentation/widgets/`.
+- **Composition**: Prefer composing small StatelessWidgets with `const` constructors over deep single widget trees.
+
+### Performance & Clean Code Checklist
+
+- Use `const` constructors everywhere applicable (`prefer_const_constructors`).
+- Use `const SizedBox(height: 16)` instead of `Container(height: 16)`.
+- Never put API calls or repository calls inside widget `build()` methods.
+- Free up resources in `close()` (BLoCs) or `dispose()` (Controllers/Subscriptions).
+
 ### After editing any `@freezed` or `@injectable` class
 
 Always regenerate: `dart run build_runner build --delete-conflicting-outputs`
@@ -73,12 +101,14 @@ Always regenerate: `dart run build_runner build --delete-conflicting-outputs`
 
 ## Forbidden Patterns
 
-- ❌ `setState()` for state management — use BLoC
+- ❌ `setState()` for business/app state — use BLoC
 - ❌ Raw `http` package — use Dio via `ApiClient`
 - ❌ Manual DI registration — use `@injectable` / `@singleton` annotations
 - ❌ `class` (non-sealed) with Freezed v3 `@freezed` annotation
 - ❌ Hardcoded strings for routes — define in `app/routes.dart`
 - ❌ **Direct instantiation** of services, BLoCs, or repositories — ALWAYS inject via constructor
+- ❌ Using `BuildContext` after `await` without `if (!context.mounted) return;`
+- ❌ Files exceeding 200 lines of code — split into focused sub-widgets/helpers
 
 ## Dependency Injection Rules (MANDATORY)
 
@@ -123,3 +153,4 @@ final api = ApiClient();  // Should be: getIt<ApiClient>()
 <type>(mobile): <description>
 Types: feat, fix, docs, refactor, test, chore
 ```
+

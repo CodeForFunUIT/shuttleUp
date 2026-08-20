@@ -61,7 +61,7 @@ class SessionDetailPage extends StatelessWidget {
             const SizedBox(height: 16),
             const Text(
               'Requirements',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Row(
@@ -77,15 +77,15 @@ class SessionDetailPage extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            ListTile(
+            const ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const CircleAvatar(
+              leading: CircleAvatar(
                 backgroundColor: Color(0xFFD1FAE5),
                 foregroundColor: Color(0xFF047857),
                 child: Text('MT'),
               ),
-              title: const Text('Minh Tran', style: TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: const Text('ELO: 1450 • Advanced'),
+              title: Text('Minh Tran', style: TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text('ELO: 1450 • Advanced'),
             )
           ],
         ),
@@ -95,7 +95,7 @@ class SessionDetailPage extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
             onPressed: isFull ? null : () {
-              GuestBookingRoute(id: session.id, $extra: session).push(context);
+              GuestBookingRoute(id: session.id, $extra: session).push<void>(context);
             },
             child: Text(isFull ? 'Session Full' : 'Book a Slot'),
           ),
@@ -128,9 +128,9 @@ class SessionDetailPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.5)),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
       ),
       child: Text(text, style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 12)),
     );

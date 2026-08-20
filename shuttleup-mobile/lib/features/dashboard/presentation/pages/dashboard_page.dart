@@ -12,7 +12,7 @@ class DashboardPage extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
-            onPressed: () => const ProfileRoute().push(context),
+            onPressed: () => const ProfileRoute().push<void>(context),
           ),
           IconButton(
             icon: const Icon(Icons.logout),
@@ -23,10 +23,10 @@ class DashboardPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            color: const Color(0xFFD1FAE5), // emerald 50
+          const Card(
+            color: Color(0xFFD1FAE5), // emerald 50
             elevation: 0,
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.all(16.0),
               child: Column(
                 children: [

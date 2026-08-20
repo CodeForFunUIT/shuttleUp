@@ -7,8 +7,7 @@ class AppTheme {
         seedColor: const Color(0xFF059669), // Emerald 600
         primary: const Color(0xFF059669),
         secondary: const Color(0xFF10B981),
-        surface: Colors.white,
-        background: const Color(0xFFF8FAFC), // Slate 50
+        surface: const Color(0xFFF8FAFC), // Slate 50
       ),
       useMaterial3: true,
       appBarTheme: const AppBarTheme(

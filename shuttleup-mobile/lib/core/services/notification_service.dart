@@ -18,7 +18,7 @@ class NotificationService {
     debugPrint('Mock FCM: Requesting notification permission (granted)');
     
     // Get token
-    String token = await getDeviceToken();
+    final token = await getDeviceToken();
     debugPrint('Mock FCM: Device Token = $token');
     
     // Simulate listening to foreground messages
@@ -27,7 +27,7 @@ class NotificationService {
 
   Future<String> getDeviceToken() async {
     // Return a fake FCM token
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
     return 'mock-fcm-device-token-12345';
   }
 

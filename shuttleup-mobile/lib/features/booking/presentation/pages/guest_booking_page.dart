@@ -30,7 +30,7 @@ class _GuestBookingPageState extends State<GuestBookingPage> {
       setState(() => _isLoading = true);
       
       // Simulate API call
-      await Future.delayed(const Duration(seconds: 1));
+      await Future<void>.delayed(const Duration(seconds: 1));
       
       if (mounted) {
         setState(() => _isLoading = false);

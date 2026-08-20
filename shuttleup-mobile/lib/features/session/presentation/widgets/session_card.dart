@@ -18,7 +18,7 @@ class SessionCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         onTap: () {
-          SessionDetailRoute(id: session.id, $extra: session).push(context);
+          SessionDetailRoute(id: session.id, $extra: session).push<void>(context);
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
