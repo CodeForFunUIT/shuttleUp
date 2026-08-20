@@ -1,6 +1,6 @@
 # ShuttleUp — Design Guidelines
 
-> **Last Updated:** April 16, 2026 | **Status:** Draft
+> **Last Updated:** August 20, 2026 | **Status:** Active — Championship Gold
 
 ## Brand Identity
 
@@ -8,43 +8,48 @@
 |------|-------|
 | **Name** | ShuttleUp |
 | **Tagline** | Tìm bạn chơi cầu lông — nhanh, đúng trình, gần nhà |
-| **Tone** | Friendly, sporty, energetic |
-| **Target Mood** | Accessible + modern + trustworthy |
+| **Tone** | Friendly, sporty, energetic, tournament-grade |
+| **Target Mood** | Premium athletic + modern + trustworthy |
 | **Emoji** | 🏸 |
 
-## Color Palette (Proposed)
+## Color Palette: Championship Gold
 
 ### Primary Colors
 
 | Name | Hex | Usage |
 |------|-----|-------|
-| Shuttle Green | `#10B981` | Primary CTA buttons, active states |
-| Dark Green | `#059669` | Hover states, headers |
-| Shuttle Dark | `#0F172A` | Text, dark backgrounds |
+| Shuttle Gold (Dark) | `#F5C842` | Primary CTA, highlight, active tier badges (Dark Mode) |
+| Polished Gold (Light) | `#D9A300` | Primary CTA buttons, focus states (Light Mode) |
+| Energy Flame | `#FF6B35` | Secondary highlights, live badges, accent buttons |
+| Court Black | `#0B0E14` | Primary dark canvas background |
+| Midnight Plate | `#131822` | Dark card surface and modals |
 
 ### Secondary Colors
 
 | Name | Hex | Usage |
 |------|-----|-------|
-| Court Orange | `#F59E0B` | Highlights, badges, warnings |
-| Sky Blue | `#3B82F6` | Links, info states |
-| Soft Gray | `#F1F5F9` | Backgrounds, cards |
+| Porcelain Slate | `#F4F6F9` | Light mode canvas background |
+| Light Plate | `#FFFFFF` | Light mode card surface |
+| Subdued Plate | `#1C2433` | Elevated hover surfaces (Dark) |
+| Sky Blue | `#2563EB` / `#38BDF8` | Links, informational chips |
 
 ### Semantic Colors
 
 | State | Color | Hex |
 |-------|-------|-----|
-| Success | Green | `#10B981` |
-| Warning | Amber | `#F59E0B` |
-| Error | Red | `#EF4444` |
-| Info | Blue | `#3B82F6` |
+| Win / Rank Gain | Emerald | `#10B981` (Light) / `#34D399` (Dark) |
+| Warning / Urgency | Amber | `#D9A300` (Light) / `#F5C842` (Dark) |
+| Loss / Danger | Rally Red | `#EF4444` (Light) / `#F87171` (Dark) |
+| Info | Sky Blue | `#2563EB` (Light) / `#38BDF8` (Dark) |
 
-### Dark Mode
+### Dark Mode (Default)
 
-- Background: `#0F172A` → `#1E293B` gradient
-- Surface: `#1E293B`
-- Text: `#F1F5F9`
-- Muted text: `#94A3B8`
+- Background: `#0B0E14` (Pro Court Black)
+- Surface / Cards: `#131822` (Midnight Plate)
+- Text: `#F0F4F8`
+- Muted text: `#8B9BB4`
+- Border: `rgba(255, 255, 255, 0.08)`
+- Gold Glow: `box-shadow: 0 0 24px -4px rgba(245, 200, 66, 0.35)`
 
 ## Typography
 
@@ -52,16 +57,16 @@
 
 | Role | Font | Weight | Size |
 |------|------|--------|------|
-| Headings | Geist Sans | 600–700 | 24–36px |
-| Body | Geist Sans | 400 | 16px |
-| Mono | Geist Mono | 400 | 14px |
-| Small | Geist Sans | 400 | 14px |
+| Headings | Barlow Condensed | 600–800 | 24–72px |
+| Body | Plus Jakarta Sans / Inter | 400–600 | 14–18px |
+| Mono (Stats/Elo) | JetBrains Mono | 400–600 | 12–16px |
+| Small / Badges | Plus Jakarta Sans | 500–600 | 12–14px |
 
 ### Mobile (Flutter)
 
-- Use Material 3 Typography scale
-- Primary font: System default (SF Pro on iOS, Roboto on Android)
-- Consider Google Fonts (Inter) for brand consistency
+- Primary Font: Plus Jakarta Sans / Inter (via Google Fonts or system fallbacks)
+- Display / Athletic Numbers: Barlow Condensed / Heavy weight
+- Typography scale: Material 3 Athletic styling
 
 ## Spacing System
 

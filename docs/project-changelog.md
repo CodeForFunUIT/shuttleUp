@@ -4,6 +4,30 @@
 
 ## [Unreleased]
 
+### 2026-08-20 — Championship Gold UI/UX Redesign (Web & Mobile)
+
+**Added & Enhanced:**
+- **Design System ("Championship Gold")**:
+  - Unified color tokens across Web (`globals.css`) and Mobile (`app_theme.dart`): Pro Court Black (`#0B0E14`), Midnight Plate (`#131822`), Shuttle Gold (`#F5C842`), Energy Flame (`#FF6B35`), and Porcelain Slate (`#F4F6F9`).
+  - Added metallic gold text gradient utilities (`.text-gradient-gold`) and subtle gold glow effects (`.glow-gold`).
+  - Standardized athletic typography pairing: `Barlow Condensed` for display headers, `Plus Jakarta Sans` / `Inter` for body copy, and `JetBrains Mono` for Elo and time counters.
+- **Web Homepage Revamp (`shuttleup-web`)**:
+  - **Hero Section**: Upgraded with bold gold gradient headline, live match pulse pill, glowing CTAs, and trust indicators.
+  - **Stats Strip**: Implemented dark midnight cards with golden tabular metrics.
+  - **Bento Grid Features**: Replaced static 3-column cards with an asymmetric 4-tile Bento grid highlighting BELo ranking, real-time radar map, automated QR booking, and fair-play community verification.
+  - **CTA Banner**: Upgraded with tournament-grade stadium styling and background radiant glows.
+- **BELo Rank & Simulator**:
+  - Created `belo-tier-badge.tsx` supporting 6 competitive rank tiers (Rookie, Bronze, Silver, Gold, Diamond, Master) with metallic gradient badges.
+  - Revamped `belo-public-simulator.tsx` and `sim-singles-panel.tsx` with duel battle cards, probability gauge, tier showcase ribbon, and animated rating delta counters.
+- **Sessions & Booking (`sessions/page.tsx`)**:
+  - Added real-time visual slot capacity progress bars with color shifts for urgent sessions (`Còn 1/6 slot`).
+  - Enhanced session cards with Championship Gold hover glow and elevation.
+- **Flutter Mobile App (`shuttleup-mobile`)**:
+  - Configured `AppTheme.darkTheme` and `AppTheme.lightTheme` with matching Championship Gold tokens.
+  - Upgraded `SessionCard` with slot progress indicators, status chips, and golden typography.
+- **Documentation**:
+  - Synchronized `docs/design-guidelines.md` with official Championship Gold brand specifications.
+
 ### 2026-08-19 — Full-Stack (Flutter, Next.js, NestJS) Engineering Rules & Standards Application
 
 **Added & Enhanced:**
