@@ -4,6 +4,24 @@
 
 ## [Unreleased]
 
+### 2026-08-19 — Full-Stack (Flutter, Next.js, NestJS) Engineering Rules & Standards Application
+
+**Added & Enhanced:**
+- **Backend (`shuttleup-api`)**:
+  - Created dedicated `shuttleup-api/AGENTS.md` rulebook establishing modular monolith boundaries, event-driven cross-module communication (`EventEmitter2`), `AuthGuard` + `@CurrentUser()` conventions, unified response interceptor wrapping, typed `ConfigService`, and BullMQ asynchronous queues.
+  - Enhanced `eslint.config.mjs` with `@typescript-eslint/no-floating-promises: error`, `@typescript-eslint/no-explicit-any: warn`, and clean variable rules.
+  - Synchronized Prisma Client code generation and updated `sessions.service.spec.ts` unit test expectations (100% of 76 tests passing).
+- **Mobile (`shuttleup-mobile`)**:
+  - Upgraded `analysis_options.yaml` with strict analyzer flags (`strict-casts`, `strict-inference`, `strict-raw-types`) and comprehensive lint rules (`prefer_const_constructors`, `prefer_final_locals`, `avoid_dynamic_calls`, `unawaited_futures`).
+  - Updated `shuttleup-mobile/AGENTS.md` with Freezed v3 sealed class pattern, 100% GetIt/Injectable constructor injection, async `context.mounted` safety, and 200-line modularization limits.
+  - Resolved static analysis warnings across mobile codebase (`api_client`, `app_theme`, `notification_service`, `session_detail_page`, etc.) and verified all unit/smoke tests pass.
+- **Web (`shuttleup-web`)**:
+  - Established full `shuttleup-web/AGENTS.md` rulebook for Next.js 16 + React 19 + Tailwind v4 + shadcn/ui + Better Auth.
+  - Enhanced `eslint.config.mjs` with strict `@next/next/no-img-element: error`, console policies, and TypeScript safety rules.
+  - Configured Vitest test runner with dynamic imports and next-intl navigation resolution.
+- **Documentation (`docs/code-standards.md`)**:
+  - Expanded Backend NestJS, Frontend Web, and Mobile sections with concrete code patterns, do's & don'ts, DI patterns, and async safety.
+
 ### 2026-04-16 — Web Frontend Implementation (Phase 4)
 
 **Added:**

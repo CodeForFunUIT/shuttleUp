@@ -260,25 +260,68 @@ src/
 │   ├── ui/                  # shadcn/ui primitives
 │   ├── forms/               # Form components
 │   ├── layouts/             # Layout components
-│   └── features/            # Feature-specific components
+│   └── features/            # Feature-specific composite components
 ├── lib/
 │   ├── api/                 # API client functions
 │   ├── auth/                # Better Auth client
 │   ├── hooks/               # Custom React hooks
-│   └── utils.ts             # Utility functions
+│   └── utils.ts             # Utility functions (cn)
 └── types/                   # TypeScript type definitions
 ```
 
-### Next.js Conventions
+### Next.js Conventions & Best Practices
 
 | Convention | Rule |
 |-----------|------|
-| Server Components | Default for pages and layouts |
-| Client Components | Only when interactivity is needed (`"use client"`) |
-| Data Fetching | Server-side `fetch()` in Server Components |
-| Route Handlers | `app/api/` for BFF endpoints if needed |
+| Server Components | Default for all pages, layouts, and data boundaries |
+| Client Components | Only at leaf boundaries with user interactivity (`"use client"`) |
+| Data Fetching | Server-side `fetch()` in RSC; TanStack Query for client-side queries |
+| Form Mutations | Server Actions or React 19 `useActionState` + Zod validation |
+| Browser Libs (Leaflet) | **MUST** use `next/dynamic` with `{ ssr: false }` |
+| Image Optimization | **MUST** use `next/image` (`<Image />`), never raw `<img>` |
+| Route Handlers | `app/api/` for BFF/webhook endpoints if needed |
 | Error Boundaries | `error.tsx` per route segment |
-| Loading UI | `loading.tsx` per route segment |
+| Loading UI | `loading.tsx` with skeleton loader per route segment |
+
+### React Server Component vs Client Component Pattern
+
+```tsx
+// ✅ ĐÚNG — Server Component fetches data, passes to leaf interactive client component
+// src/app/sessions/page.tsx (Server Component)
+import { SessionCard } from '@/components/features/sessions/session-card';
+import { SessionFilter } from '@/components/features/sessions/session-filter';
+
+export default async function SessionsPage() {
+  const sessions = await fetchSessions(); // Server-side fetch
+  return (
+    <div>
+      <SessionFilter /> {/* "use client" leaf component */}
+      {sessions.map((s) => (
+        <SessionCard key={s.id} session={s} />
+      ))}
+    </div>
+  );
+}
+
+// ❌ SAI — Đánh dấu "use client" cho toàn bộ trang lớn khi chỉ cần 1 button tương tác
+'use client';
+export default function SessionsPage() { ... }
+```
+
+### Dynamic Import for Map / Leaflet
+
+```tsx
+// ✅ ĐÚNG — Tránh lỗi window/document is not defined trong SSR
+import dynamic from 'next/dynamic';
+
+export const DynamicMap = dynamic(
+  () => import('@/components/features/sessions/sessions-map'),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full animate-pulse bg-muted rounded-xl" />,
+  }
+);
+```
 
 ### Styling
 
@@ -287,18 +330,6 @@ src/
 - **Design Tokens:** Defined in `globals.css` via CSS custom properties
 - **Responsive:** Mobile-first with `sm:`, `md:`, `lg:` breakpoints
 - **Dark Mode:** CSS variables + `dark:` variant
-
-### shadcn/ui Usage
-
-```bash
-# Add new components
-npx shadcn@latest add button
-npx shadcn@latest add card
-```
-
-- Style: `base-nova`
-- RSC: Enabled
-- Import alias: `@/components/ui`
 
 ---
 
@@ -311,40 +342,92 @@ lib/
 ├── app/                     # App-level config
 │   ├── app.dart             # MaterialApp root
 │   ├── router.dart          # GoRouter config
-│   └── di.dart              # GetIt dependency injection
+│   └── di/                  # GetIt dependency injection
 ├── features/                # Feature-first organization
 │   ├── auth/
-│   │   ├── bloc/
-│   │   ├── pages/
-│   │   ├── widgets/
-│   │   └── data/
+│   │   ├── data/            # Models (Freezed) & Repositories
+│   │   └── presentation/    # BLoC, Pages, Widgets
 │   ├── sessions/
 │   ├── bookings/
 │   └── profile/
 ├── core/                    # Shared utilities
 │   ├── api/                 # Dio client + interceptors
-│   ├── theme/               # App theme
-│   ├── widgets/             # Common widgets
+│   ├── theme/               # Material 3 theme
+│   ├── widgets/             # Common reusable widgets
 │   └── constants/           # App constants
 └── main.dart
 ```
 
-### Flutter Conventions
+### Flutter Conventions & Rules
 
 | Convention | Rule |
 |-----------|------|
-| State Management | Bloc pattern (flutter_bloc) |
-| DI | GetIt + Injectable |
-| HTTP | Dio with interceptors (auth token, error handling) |
-| Navigation | GoRouter (declarative routing) |
-| Naming | snake_case files, PascalCase classes |
+| State Management | BLoC pattern (`flutter_bloc` 9+) |
+| DI | GetIt + Injectable exclusively (100% constructor injection) |
+| Data Models | Freezed v3 (`sealed class`) + `json_serializable` |
+| Code Generation | `dart run build_runner build --delete-conflicting-outputs` |
+| Navigation | GoRouter with typed route definitions |
+| Async Safety | Luôn kiểm tra `if (!context.mounted) return;` sau `await` |
+| Performance | Dùng `const` constructors, `SizedBox` thay vì `Container` rỗng |
+| File Size Limit | Tối đa **200 dòng/file**, phân rã thành các sub-widgets |
 
-### Dart Style
+### Freezed v3 Pattern
 
-- Follow official [Effective Dart](https://dart.dev/effective-dart) guidelines
-- Use `final` for local variables when possible
-- Widget composition over inheritance
-- Separate presentation logic (Bloc) from UI (Widgets)
+```dart
+// ✅ ĐÚNG — Freezed v3 mixin pattern với sealed class
+@freezed
+sealed class SessionModel with _$SessionModel {
+  const factory SessionModel({
+    required String id,
+    required String title,
+    required int totalSlots,
+  }) = _SessionModel;
+
+  factory SessionModel.fromJson(Map<String, dynamic> json) =>
+      _$SessionModelFromJson(json);
+}
+
+// ❌ SAI — Non-sealed class gây lỗi missing concrete implementations
+@freezed
+class SessionModel with _$SessionModel { ... }
+```
+
+### Dependency Injection Rules
+
+```dart
+// ✅ ĐÚNG — Inject dependencies qua constructor, GetIt tự động resolve
+@injectable
+class SessionBloc extends Bloc<SessionEvent, SessionState> {
+  final SessionRepository _repository;
+  SessionBloc(this._repository) : super(const SessionState.initial());
+}
+
+// ✅ ĐÚNG — Lấy Bloc từ GetIt trong UI
+BlocProvider(create: (_) => getIt<SessionBloc>())
+
+// ❌ SAI — Khởi tạo service/bloc trực tiếp thủ công
+BlocProvider(create: (_) => SessionBloc(SessionRepository(ApiClient())))
+```
+
+### Async `BuildContext` Safety
+
+```dart
+// ✅ ĐÚNG — Guard context.mounted sau mỗi lệnh await
+Future<void> _handleBooking(BuildContext context) async {
+  final success = await getIt<BookingRepository>().createBooking(sessionId);
+  if (!context.mounted) return;
+  
+  if (success) {
+    context.go('/bookings');
+  }
+}
+
+// ❌ SAI — Dùng context trực tiếp sau await mà không kiểm tra mounted
+Future<void> _handleBooking(BuildContext context) async {
+  await getIt<BookingRepository>().createBooking(sessionId);
+  Navigator.of(context).pushNamed('/bookings'); // Gây crash nếu widget unmounted
+}
+```
 
 ---
 
